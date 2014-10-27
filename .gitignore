@@ -22,3 +22,9 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+bower_components/
+node_modules/
+dist/
+src/public/
+*.log

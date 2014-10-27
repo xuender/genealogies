@@ -1,0 +1,29 @@
+/*
+ * web.css
+ * Copyright (C) 2014 ender xu
+ *
+ * Distributed under terms of the MIT license.
+ */
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],
+.ng-cloak, .x-ng-cloak,
+.ng-hide {
+  display: none !important;
+}
+
+ng\:form {
+  display: block;
+}
+
+.nav, .pagination, .carousel, .panel-title a {
+cursor: pointer;
+}
+
+.ng-table {
+  border: 1px solid #000;
+}
+body {
+  background: white;
+  color: black;
+}
+
