@@ -5,12 +5,33 @@ import (
   "github.com/martini-contrib/gzip"
   "github.com/martini-contrib/render"
   "github.com/martini-contrib/sessions"
+  "gopkg.in/mgo.v2"
+  //"gopkg.in/mgo.v2/bson"
+  "./web"
   //"net/http"
   //"fmt"
 )
 
 func main() {
-  log.Info("启动")
+  log.Info("连接数据库")
+  s, err := mgo.Dial("127.0.0.1")
+  if err != nil {
+    log.Error(err)
+    panic(err)
+  }
+  defer s.Close()
+  s.SetMode(mgo.Monotonic, true)
+  db := s.DB("go")
+
+  log.Info("记录日志")
+  web.DB = db
+  err = web.AddLog("start")
+  if err != nil {
+    log.Error(err)
+    panic(err)
+  }
+
+  log.Info("启动服务")
   m := martini.Classic()
   // sessions
   store := sessions.NewCookieStore([]byte("secret123"))
