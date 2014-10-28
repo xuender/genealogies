@@ -18,3 +18,8 @@ func Connect() *mgo.Session {
 func GetDb(s *mgo.Session) *mgo.Database {
 	return s.DB("go")
 }
+
+// 获取测试数据库
+func GetTestDb(s *mgo.Session) *mgo.Database {
+	return s.DB("test")
+}

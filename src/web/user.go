@@ -31,17 +31,25 @@ func Register(phone, name, password string) error {
 	)
 }
 
-// 登录
-func Login(phone, password string) (User, error) {
+// 用户查找
+func UserFind(phone string) (User, error) {
 	c := DB.C("user")
 	user := User{}
 	err := c.Find(bson.M{"phone": phone}).One(&user)
-	if err != nil {
-		return user, errors.New("手机" + phone + "未注册")
-	}
-	if user.Password != password {
-		return user, errors.New("密码错误")
-	}
-	AddLog("login", user.Name)
-	return user, nil
+	return user, err
 }
+
+//// 登录
+//func Login(phone, password string) (User, error) {
+//  c := DB.C("user")
+//  user := User{}
+//  err := c.Find(bson.M{"phone": phone}).One(&user)
+//  if err != nil {
+//    return user, errors.New("手机" + phone + "未注册")
+//  }
+//  if user.Password != password {
+//    return user, errors.New("密码错误")
+//  }
+//  AddLog("login", user.Name)
+//  return user, nil
+//}
