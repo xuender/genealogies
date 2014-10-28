@@ -1,8 +1,13 @@
 package web
 
 import (
+	"encoding/json"
 	"errors"
+	log "github.com/Sirupsen/logrus"
+	"github.com/go-martini/martini"
 	"gopkg.in/mgo.v2/bson"
+	"io/ioutil"
+	"net/http"
 	"time"
 )
 
@@ -56,4 +61,46 @@ func Login(phone, password string) (session Session, user User, err error) {
 	}
 	err = c.Insert(&session)
 	return
+}
+
+// 获取用户信息
+func SessionHandle(params martini.Params) string {
+	s, err := SessionFind(params["id"])
+	ret := make(map[string]interface{})
+	ret["ok"] = (err == nil)
+	if err == nil {
+		u, _ := UserFindById(s.Uid)
+		ret["user"] = u
+	} else {
+		ret["err"] = err.Error()
+	}
+	res, _ := json.Marshal(ret)
+	return string(res)
+}
+
+// 登录
+func LoginHandle(w http.ResponseWriter, r *http.Request) (int, string) {
+	log.Info("login....")
+	// read request body
+	body, _ := ioutil.ReadAll(r.Body)
+	// credentials of current user
+	var vs map[string]string
+	ret := make(map[string]interface{})
+	// decode json
+	json.Unmarshal(body, &vs)
+	s, u, err := Login(vs["phone"], vs["password"])
+	if err != nil {
+		ret["ok"] = false
+		ret["err"] = err.Error()
+		res, _ := json.Marshal(ret)
+		return 200, string(res)
+	}
+	log.Debug(vs)
+	log.Debug(s)
+	log.Debug(u)
+	ret["id"] = s.Id.Hex()
+	ret["user"] = u
+	ret["ok"] = true
+	res, _ := json.Marshal(ret)
+	return 200, string(res)
 }

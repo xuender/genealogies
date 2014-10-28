@@ -13,22 +13,36 @@ type User struct {
 	// 使用手机登录身份认证
 	Phone    string
 	Name     string
-	Password string
+	Password string `json:"-"`
 	Ca       time.Time
 }
 
 // 注册
-func Register(phone, name, password string) error {
+func Register(phone, name, password string) (user User, err error) {
 	c := DB.C("user")
-	user := User{}
-	err := c.Find(bson.M{"phone": phone}).One(&user)
+	user = User{}
+	err = c.Find(bson.M{"phone": phone}).One(&user)
 	if err == nil {
-		return errors.New("手机" + phone + "已经注册")
+		return user, errors.New("手机" + phone + "已经注册")
+	}
+	user = User{
+		Id:       bson.NewObjectId(),
+		Phone:    phone,
+		Name:     name,
+		Password: password,
+		Ca:       time.Now(),
 	}
 	AddLog("register", name)
-	return c.Insert(
-		&User{Phone: phone, Name: name, Password: password, Ca: time.Now()},
-	)
+	err = c.Insert(&user)
+	return
+}
+
+// 根据ID查找用户
+func UserFindById(id string) (u User, err error) {
+	c := DB.C("user")
+	u = User{}
+	err = c.FindId(bson.ObjectIdHex(id)).One(&u)
+	return
 }
 
 // 用户查找

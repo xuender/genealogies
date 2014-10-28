@@ -13,7 +13,7 @@ func TestRegister(t *testing.T) {
 	DB.DropDatabase()
 	c := DB.C("user")
 	c.Remove(bson.M{"phone": "110"})
-	err := Register("110", "ender", "123")
+	_, err := Register("110", "ender", "123")
 	if err != nil {
 		log.Error(err)
 	}
@@ -24,6 +24,20 @@ func TestRegister(t *testing.T) {
 	}
 }
 
+func TestUserFindById(t *testing.T) {
+	s := Connect()
+	defer s.Close()
+	DB = GetTestDb(s)
+	DB.DropDatabase()
+	u, _ := Register("110", "ender", "123")
+	user, err := UserFindById(u.Id.Hex())
+	if err != nil {
+		t.Errorf("用户查找失败")
+	}
+	if user.Phone != "110" {
+		t.Errorf("用户手机错误")
+	}
+}
 func TestUserFind(t *testing.T) {
 	s := Connect()
 	defer s.Close()
@@ -31,7 +45,7 @@ func TestUserFind(t *testing.T) {
 	DB.DropDatabase()
 	c := DB.C("user")
 	c.Remove(bson.M{"phone": "110"})
-	err := Register("110", "ender", "123")
+	_, err := Register("110", "ender", "123")
 	if err != nil {
 		t.Errorf("用户创建失败")
 	}

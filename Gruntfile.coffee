@@ -230,6 +230,7 @@ module.exports = (grunt)->
         files:
           'src/public/js/web.min.js': [
             'src/js/web.coffee'
+            'src/js/login.coffee'
           ]
           'src/public/js/app.min.js': [
             'src/js/app.coffee'

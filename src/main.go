@@ -3,7 +3,7 @@ package main
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/go-martini/martini"
-	"github.com/martini-contrib/gzip"
+	//"github.com/martini-contrib/gzip"
 	"github.com/martini-contrib/render"
 	//"gopkg.in/mgo.v2"
 	//"gopkg.in/mgo.v2/bson"
@@ -14,6 +14,7 @@ import (
 
 func main() {
 	log.Info("连接数据库")
+	log.SetLevel(log.DebugLevel)
 	s := web.Connect()
 	defer s.Close()
 	log.Info("记录日志")
@@ -27,9 +28,11 @@ func main() {
 	log.Info("启动服务")
 	m := martini.Classic()
 	// gzip支持
-	m.Use(gzip.All())
+	//m.Use(gzip.All())
 	// 模板支持
 	m.Use(render.Renderer())
+	m.Post("/login", web.LoginHandle)
+	m.Get("/session/:id", web.SessionHandle)
 	//m.Get("/", func(r render.Render) {
 	//  r.HTML(200, "index", {"title":"title index"})
 	//})
