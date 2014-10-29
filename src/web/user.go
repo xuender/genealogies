@@ -3,7 +3,7 @@ package web
 import (
 	"gopkg.in/mgo.v2/bson"
 	"time"
-	//log "github.com/Sirupsen/logrus"
+	//	log "github.com/Sirupsen/logrus"
 	"errors"
 )
 
@@ -15,6 +15,34 @@ type User struct {
 	Name     string
 	Password string `json:"-"`
 	Ca       time.Time
+	Node     bson.ObjectId
+	Info     bson.ObjectId
+}
+
+// 创建用户信息
+func (u *User) Create() {
+	node := Node{
+		Id: bson.NewObjectId(),
+		N:  u.Name,
+		L:  true,
+		Ca: time.Now(),
+		Cb: u.Id,
+		Ua: time.Now(),
+		Ub: u.Id,
+	}
+	u.Node = node.Id
+	info := Info{
+		Id: bson.NewObjectId(),
+		N:  u.Name,
+		O:  node.Id,
+		L:  true,
+	}
+	u.Info = info.Id
+	DB.C("node").Insert(&node)
+	//log.WithFields(log.Fields{
+	//	"error": err,
+	//}).Info("node")
+	DB.C("info").Insert(&info)
 }
 
 // 注册
@@ -33,6 +61,7 @@ func Register(phone, name, password string) (user User, err error) {
 		Ca:       time.Now(),
 	}
 	AddLog("register", name)
+	user.Create()
 	err = c.Insert(&user)
 	return
 }

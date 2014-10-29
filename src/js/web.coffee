@@ -13,16 +13,23 @@ angular.module('web', [
 WebCtrl = ($scope, $log, $http, $modal, lss)->
   ### 网页制器 ###
   $scope.isLogin = false
+  $scope.info = {}
   lss.bind($scope, "id", '')
+  $scope.readUser = (data)->
+    ### 读取用户信息 ###
+    $log.debug(data)
+    $scope.isLogin = data.ok
+    if data.ok
+      $scope.user = data.user
+      $scope.id = data.id
+      $http.get('/info/'+$scope.id).success((data)->
+        $scope.info = data
+        $log.debug data
+      )
+    else
+      alert(data.err)
   if $scope.id
-    $http.get('/login/'+$scope.id).success((data)->
-      $log.debug(data)
-      $scope.isLogin = data.ok
-      if data.ok
-        $scope.user = data.user
-      else
-        alert(data.err)
-    )
+    $http.get('/login/'+$scope.id).success($scope.readUser)
   $scope.logout = ->
     ### 登出 ###
     if $scope.id
@@ -43,15 +50,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
       size: 'sm'
     )
     i.result.then((user)->
-      $http.post('/login', user).success((data)->
-        $log.debug(data)
-        $scope.isLogin = data.ok
-        if data.ok
-          $scope.id = data.id
-          $scope.user = data.user
-        else
-          alert(data.err)
-      )
+      $http.post('/login', user).success($scope.readUser)
     ,->
       $log.info '取消'
     )

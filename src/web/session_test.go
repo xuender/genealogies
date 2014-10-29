@@ -63,7 +63,7 @@ func TestLogout(t *testing.T) {
 	session.Logout()
 	log.Info(session.Id)
 	s2, err := SessionFind(session.Id.Hex())
-	if err != nil {
+	if err == nil {
 		log.Error(err)
 		t.Errorf("Session未找到")
 	}

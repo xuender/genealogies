@@ -23,6 +23,19 @@ type Session struct {
 	En bool
 }
 
+// 获取用户信息
+func (s *Session) Info() string {
+	user, err := UserFindById(s.Uid)
+	if err == nil {
+		info := Info{}
+		c := DB.C("info")
+		if c.FindId(user.Info).One(&info) == nil {
+			return info.Json()
+		}
+	}
+	return "{}"
+}
+
 // 登出
 func (s *Session) Logout() {
 	s.En = false
