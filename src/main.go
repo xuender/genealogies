@@ -32,7 +32,8 @@ func main() {
 	// 模板支持
 	m.Use(render.Renderer())
 	m.Post("/login", web.LoginHandle)
-	m.Get("/session/:id", web.SessionHandle)
+	m.Get("/login/:id", web.SessionHandle)
+	m.Get("/logout/:id", web.LogoutHandle)
 	//m.Get("/", func(r render.Render) {
 	//  r.HTML(200, "index", {"title":"title index"})
 	//})

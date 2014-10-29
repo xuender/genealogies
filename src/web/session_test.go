@@ -15,7 +15,7 @@ func TestSessionFind(t *testing.T) {
 	c := DB.C("session")
 	session := Session{
 		Id:  bson.NewObjectId(),
-		Uid: "123",
+		Uid: bson.NewObjectId(),
 		Ca:  time.Now(),
 		Ua:  time.Now(),
 		En:  true,

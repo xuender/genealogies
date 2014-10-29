@@ -24,6 +24,9 @@
           </ul>
           <ul ng-hide="isLogin" class="nav navbar-nav navbar-right">
             <li>
+              <a href ng-click="showLogin()">注册</a>
+            </li>
+            <li>
               <a href ng-click="showLogin()">登录</a>
             </li>
           </ul>
@@ -34,9 +37,9 @@
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu" role="menu">
-                <li><a ng-click="edit()">修改用户信息</a></li>
+                <li><a>修改用户信息</a></li>
                 <li class="divider"></li>
-                <li><a ng-click="edit()">更换用户</a></li>
+                <li><a ng-click="showLogin()">更换用户</a></li>
                 <li><a ng-click="logout()">退出</a></li>
               </ul>
             </li>

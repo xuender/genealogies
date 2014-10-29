@@ -36,6 +36,9 @@ func SessionFind(id string) (Session, error) {
 	s := Session{}
 	c := DB.C("session")
 	err := c.FindId(bson.ObjectIdHex(id)).One(&s)
+	if !s.En {
+		err = errors.New("用户已经退出")
+	}
 	return s, err
 }
 
@@ -80,13 +83,10 @@ func SessionHandle(params martini.Params) string {
 
 // 登录
 func LoginHandle(w http.ResponseWriter, r *http.Request) (int, string) {
-	log.Info("login....")
-	// read request body
+	log.Debug("login....")
 	body, _ := ioutil.ReadAll(r.Body)
-	// credentials of current user
 	var vs map[string]string
 	ret := make(map[string]interface{})
-	// decode json
 	json.Unmarshal(body, &vs)
 	s, u, err := Login(vs["phone"], vs["password"])
 	if err != nil {
@@ -95,12 +95,18 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) (int, string) {
 		res, _ := json.Marshal(ret)
 		return 200, string(res)
 	}
-	log.Debug(vs)
-	log.Debug(s)
-	log.Debug(u)
 	ret["id"] = s.Id.Hex()
 	ret["user"] = u
 	ret["ok"] = true
 	res, _ := json.Marshal(ret)
 	return 200, string(res)
+}
+
+// 登出
+func LogoutHandle(params martini.Params) string {
+	s, err := SessionFind(params["id"])
+	if err == nil {
+		s.Logout()
+	}
+	return "ok"
 }

@@ -15,7 +15,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
   $scope.isLogin = false
   lss.bind($scope, "id", '')
   if $scope.id
-    $http.get('/session/'+$scope.id).success((data)->
+    $http.get('/login/'+$scope.id).success((data)->
       $log.debug(data)
       $scope.isLogin = data.ok
       if data.ok
@@ -23,6 +23,16 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
       else
         alert(data.err)
     )
+  $scope.logout = ->
+    ### 登出 ###
+    if $scope.id
+      $http.get('/logout/'+$scope.id).success((data)->
+        $log.debug(data)
+        $scope.id = ''
+        $scope.isLogin = false
+        $scope.user = {}
+      )
+
   $scope.showLogin = ->
     ### 显示登录窗口 ###
     i = $modal.open(
