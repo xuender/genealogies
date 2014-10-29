@@ -38,10 +38,10 @@ func Register(phone, name, password string) (user User, err error) {
 }
 
 // 根据ID查找用户
-func UserFindById(id string) (u User, err error) {
+func UserFindById(id bson.ObjectId) (u User, err error) {
 	c := DB.C("user")
 	u = User{}
-	err = c.FindId(bson.ObjectIdHex(id)).One(&u)
+	err = c.FindId(id).One(&u)
 	return
 }
 

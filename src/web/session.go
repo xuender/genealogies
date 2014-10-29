@@ -14,7 +14,7 @@ import (
 type Session struct {
 	Id bson.ObjectId `bson:"_id,omitempty"`
 	// 当前用户
-	Uid string
+	Uid bson.ObjectId
 	// 创建时间
 	Ca time.Time
 	// 修改时间
@@ -54,7 +54,7 @@ func Login(phone, password string) (session Session, user User, err error) {
 	c := DB.C("session")
 	session = Session{
 		Id:  bson.NewObjectId(),
-		Uid: user.Id.Hex(),
+		Uid: user.Id,
 		Ca:  time.Now(),
 		Ua:  time.Now(),
 		En:  true,

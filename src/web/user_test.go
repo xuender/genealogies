@@ -30,7 +30,7 @@ func TestUserFindById(t *testing.T) {
 	DB = GetTestDb(s)
 	DB.DropDatabase()
 	u, _ := Register("110", "ender", "123")
-	user, err := UserFindById(u.Id.Hex())
+	user, err := UserFindById(u.Id)
 	if err != nil {
 		t.Errorf("用户查找失败")
 	}
