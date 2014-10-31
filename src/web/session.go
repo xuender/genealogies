@@ -23,19 +23,6 @@ type Session struct {
 	En bool
 }
 
-// 获取用户信息
-func (s *Session) Info() string {
-	user, err := UserFindById(s.Uid)
-	if err == nil {
-		info := Info{}
-		c := DB.C("info")
-		if c.FindId(user.Info).One(&info) == nil {
-			return info.Json()
-		}
-	}
-	return "{}"
-}
-
 // 登出
 func (s *Session) Logout() {
 	s.En = false
@@ -49,8 +36,15 @@ func SessionFind(id string) (Session, error) {
 	s := Session{}
 	c := DB.C("session")
 	err := c.FindId(bson.ObjectIdHex(id)).One(&s)
-	if !s.En {
-		err = errors.New("用户已经退出")
+	log.WithFields(log.Fields{
+		"id":      id,
+		"session": s,
+		"err":     err,
+	}).Debug("SessionHandle")
+	if err == nil {
+		if !s.En {
+			err = errors.New("用户已经退出")
+		}
 	}
 	return s, err
 }
@@ -87,6 +81,7 @@ func SessionHandle(params martini.Params) string {
 	if err == nil {
 		u, _ := UserFindById(s.Uid)
 		ret["user"] = u
+		ret["id"] = s.Id.Hex()
 	} else {
 		ret["err"] = err.Error()
 	}

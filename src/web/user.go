@@ -1,6 +1,7 @@
 package web
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	//	log "github.com/Sirupsen/logrus"
@@ -19,12 +20,30 @@ type User struct {
 	Info     bson.ObjectId
 }
 
+// 获取用户信息
+func (u *User) ToInfo() string {
+	info := Info{}
+	c := DB.C("info")
+	err := c.FindId(u.Info).One(&info)
+	if err == nil {
+		return info.Json()
+	}
+	log.WithFields(log.Fields{
+		"user": u,
+		"info": info,
+		"err":  err,
+	}).Debug("ToInfo")
+	return "{}"
+}
+
 // 创建用户信息
 func (u *User) Create() {
 	node := Node{
 		Id: bson.NewObjectId(),
-		N:  u.Name,
-		L:  true,
+		Data: Data{
+			N: u.Name,
+			L: true,
+		},
 		Ca: time.Now(),
 		Cb: u.Id,
 		Ua: time.Now(),
@@ -33,11 +52,10 @@ func (u *User) Create() {
 	u.Node = node.Id
 	info := Info{
 		Id: bson.NewObjectId(),
-		N:  u.Name,
 		O:  node.Id,
-		L:  true,
 	}
 	u.Info = info.Id
+	info.Data = node.Data
 	DB.C("node").Insert(&node)
 	//log.WithFields(log.Fields{
 	//	"error": err,

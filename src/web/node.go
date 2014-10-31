@@ -7,31 +7,21 @@ import (
 
 // 节点
 type Node struct {
+	// 基本信息
+	Data
 	Id bson.ObjectId `bson:"_id,omitempty"`
-	// 姓名
-	N string
-	// 性别 true男 false女
-	G bool
-	// 生日
-	B time.Time
-	// 在世
-	L bool
-	// 忌日
-	D time.Time
-	// 电话
-	T string
 	// 父亲
 	F bson.ObjectId `bson:"f,omitempty"`
 	// 母亲
 	M bson.ObjectId `bson:"m,omitempty"`
 	// 伴侣
 	P bson.ObjectId `bson:"p,omitempty"`
-	// 其他父亲
-	Fs []bson.ObjectId `bson:"fs,omitempty"`
-	// 其他母亲
-	Ms []bson.ObjectId `bson:"ms,omitempty"`
-	// 其他伴侣
-	ps []bson.ObjectId `bson:"ps,omitempty"`
+	//// 其他父亲
+	//Fs []bson.ObjectId `bson:"fs,omitempty"`
+	//// 其他母亲
+	//Ms []bson.ObjectId `bson:"ms,omitempty"`
+	//// 其他伴侣
+	//ps []bson.ObjectId `bson:"ps,omitempty"`
 	// 有效标记
 	E bool
 	// 创建时间

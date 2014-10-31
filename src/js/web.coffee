@@ -22,11 +22,13 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
     if data.ok
       $scope.user = data.user
       $scope.id = data.id
-      $http.get('/info/'+$scope.id).success((data)->
+      $log.debug('user id:%s', data.user.Id)
+      $http.get('/info/'+$scope.user.Id).success((data)->
         $scope.info = data
         $log.debug data
       )
     else
+      $scope.id = ''
       alert(data.err)
   if $scope.id
     $http.get('/login/'+$scope.id).success($scope.readUser)

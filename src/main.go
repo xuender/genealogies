@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	log.SetLevel(log.DebugLevel)
 	log.Info("连接数据库")
 	log.SetLevel(log.DebugLevel)
 	s := web.Connect()
