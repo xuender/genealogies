@@ -228,12 +228,16 @@ module.exports = (grunt)->
         bare: true
       main:
         files:
-          'src/public/js/web.min.js': [
-            'src/js/web.coffee'
-            'src/js/login.coffee'
+          'src/public/js/index.min.js': [
+            'src/js/index.coffee'
+            'src/js/webCtrl.coffee'
+            'src/js/loginCtrl.coffee'
           ]
           'src/public/js/app.min.js': [
             'src/js/app.coffee'
+            'src/js/genealogyCtrl.coffee'
+            'src/js/webCtrl.coffee'
+            'src/js/loginCtrl.coffee'
           ]
     uglify:
       main:
@@ -259,12 +263,12 @@ module.exports = (grunt)->
         tasks: ['copy:css']
       html:
         files: [
-          'src/**/*.html'
+          'src/html/**/*.html'
         ]
         tasks: ['copy:root']
       coffee:
         files: [
-          'src/**/*.coffee'
+          'src/js/*.coffee'
         ]
         tasks: ['coffee']
     karma:

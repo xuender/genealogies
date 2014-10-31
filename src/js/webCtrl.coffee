@@ -4,16 +4,9 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-angular.module('web', [
-  'ui.bootstrap'
-  'hotkey'
-  'LocalStorageModule'
-])
-
 WebCtrl = ($scope, $log, $http, $modal, lss)->
   ### 网页制器 ###
   $scope.isLogin = false
-  $scope.info = {}
   lss.bind($scope, "id", '')
   $scope.readUser = (data)->
     ### 读取用户信息 ###
@@ -23,10 +16,10 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
       $scope.user = data.user
       $scope.id = data.id
       $log.debug('user id:%s', data.user.Id)
-      $http.get('/info/'+$scope.user.Id).success((data)->
-        $scope.info = data
-        $log.debug data
-      )
+      #$http.get('/info/'+$scope.user.Id).success((data)->
+      #  $scope.info = data
+      #  $log.debug data
+      #)
     else
       $scope.id = ''
       alert(data.err)
