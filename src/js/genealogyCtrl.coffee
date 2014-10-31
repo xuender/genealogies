@@ -11,6 +11,27 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $scope.info = data
     $log.debug data
   )
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        type: 'areaspline'
+      },
+      plotOptions: {
+        series: {
+          stacking: ''
+        }
+      }
+    },
+    series: []
+    title: {
+      text: 'Hello'
+    },
+    credits: {
+      enabled: true
+    },
+    loading: false,
+    size: {}
+  }
 GenealogyCtrl.$inject = [
   '$scope'
   '$routeParams'

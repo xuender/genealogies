@@ -33,6 +33,8 @@
     "blueimp-md5": "~1.1.0",
     "angular-route": "~1.2.*",
     "ng-table": "~0.3.3",
-    "angular-i18n": "~1.2.*"
+    "angular-i18n": "~1.2.*",
+    "highcharts-ng": "~0.0.7",
+    "highcharts": "~4.0.4"
   }
 }
