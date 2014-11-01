@@ -2,6 +2,8 @@ package web
 
 import (
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+	"time"
 )
 
 // 连接
@@ -22,4 +24,17 @@ func GetDb(s *mgo.Session) *mgo.Database {
 // 获取测试数据库
 func GetTestDb(s *mgo.Session) *mgo.Database {
 	return s.DB("test")
+}
+
+type Base struct {
+	// 有效标记
+	En bool `bson:"en,omitempty"`
+	// 创建时间
+	Ca time.Time `bson:"ca,omitempty"`
+	// 创建人
+	Cb bson.ObjectId `bson:"cb,omitempty"`
+	// 修改时间
+	Ua time.Time `bson:"ua,omitempty"`
+	// 修改人
+	Ub bson.ObjectId `bson:"ub,omitempty"`
 }

@@ -6,7 +6,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/go-martini/martini"
 	"gopkg.in/mgo.v2/bson"
-	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -92,11 +91,9 @@ func SessionHandle(params martini.Params) string {
 // 登录
 func LoginHandle(w http.ResponseWriter, r *http.Request) (int, string) {
 	log.Debug("login....")
-	body, _ := ioutil.ReadAll(r.Body)
-	var vs map[string]string
 	ret := make(map[string]interface{})
-	json.Unmarshal(body, &vs)
-	s, u, err := Login(vs["phone"], vs["password"])
+	m := ReadJson(r)
+	s, u, err := Login(m["phone"], m["password"])
 	if err != nil {
 		ret["ok"] = false
 		ret["err"] = err.Error()

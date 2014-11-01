@@ -61,7 +61,7 @@ func TestLogout(t *testing.T) {
 	Register("110", "ender", "123")
 	session, _, _ := Login("110", "123")
 	session.Logout()
-	log.Info(session.Id)
+	log.Debug(session.Id)
 	s2, err := SessionFind(session.Id.Hex())
 	if err == nil {
 		log.Error(err)

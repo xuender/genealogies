@@ -26,6 +26,7 @@ func (u *User) ToInfo() string {
 	c := DB.C("info")
 	err := c.FindId(u.Info).One(&info)
 	if err == nil {
+		info.Rest()
 		return info.Json()
 	}
 	log.WithFields(log.Fields{
@@ -38,29 +39,17 @@ func (u *User) ToInfo() string {
 
 // 创建用户信息
 func (u *User) Create() {
-	node := Node{
-		Id: bson.NewObjectId(),
-		Data: Data{
-			N: u.Name,
-			L: true,
-		},
-		Ca: time.Now(),
-		Cb: u.Id,
-		Ua: time.Now(),
-		Ub: u.Id,
+	data := Data{
+		N: u.Name,
+		L: true,
 	}
-	u.Node = node.Id
-	info := Info{
-		Id: bson.NewObjectId(),
-		O:  node.Id,
-	}
+	node := NodeNew(data)
+	info := InfoNew(data)
 	u.Info = info.Id
-	info.Data = node.Data
-	DB.C("node").Insert(&node)
-	//log.WithFields(log.Fields{
-	//	"error": err,
-	//}).Info("node")
-	DB.C("info").Insert(&info)
+	node.Save(u.Id)
+	info.Save(u.Id, node.Id)
+	u.Node = node.Id
+	u.Info = info.Id
 }
 
 // 注册

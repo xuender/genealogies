@@ -27,6 +27,7 @@ type Data struct {
 // 用户信息
 type Info struct {
 	// 基本信息
+	Base
 	Data
 	Id bson.ObjectId `bson:"_id,omitempty"`
 	// 节点ID
@@ -47,6 +48,30 @@ type Info struct {
 	//ps []interface{}
 }
 
+// 新建节点
+func InfoNew(data Data) Info {
+	return Info{
+		Base: Base{En: true},
+		Data: data,
+		Id:   bson.NewObjectId(),
+	}
+}
+
+// 保存
+func (n *Info) Save(uid bson.ObjectId, nodeId bson.ObjectId) error {
+	c := DB.C("info")
+	if n.Ca.IsZero() {
+		n.Ca = time.Now()
+		n.Cb = uid
+		n.O = nodeId
+		return c.Insert(n)
+	}
+	n.Ua = time.Now()
+	n.Ub = uid
+	n.O = nodeId
+	return c.UpdateId(n.Id, n)
+}
+
 // 转换JSON格式
 func (i *Info) Json() string {
 	res, _ := json.Marshal(i)
@@ -55,7 +80,11 @@ func (i *Info) Json() string {
 
 // 重新读取用户信息
 func (i *Info) Rest() {
-	//TODO 递归读取node重新生成info
+	n, err := NodeFind(i.O)
+	if err == nil {
+		i.Data = n.Data
+		i.Save(i.Cb, n.Id)
+	}
 }
 
 // 获取用户信息

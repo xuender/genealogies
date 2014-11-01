@@ -36,6 +36,7 @@ func main() {
 	m.Get("/login/:id", web.SessionHandle)
 	m.Get("/logout/:id", web.LogoutHandle)
 	m.Get("/info/:id", web.InfoHandle)
+	m.Post("/node/:id", web.NodeUpdateHandle)
 	//m.Get("/", func(r render.Render) {
 	//  r.HTML(200, "index", {"title":"title index"})
 	//})
