@@ -1,0 +1,46 @@
+<div class="modal-header">
+  <h4 class="modal-title">编辑</h4>
+</div><!-- modal-header -->
+<div class="modal-body">
+  <form name="form">
+    <div class="row">
+      <div class="form-group col-xs-6" 
+      ng-class="{'has-error': form.n.$error.required}">
+        <label class="control-label col-xs-3" for="i_n">姓名</label>
+        <div class="col-xs-6">
+          <input ng-model="node.N" enter required name="n"
+          type="text" class="form-control" id="i_n" placeholder="输入姓名"/>
+        </div><!-- 6 -->
+        <span class="help-block col-xs-3" ng-show="form.n.$error.required">不能为空</span>
+      </div><!-- form-group -->
+      <div class="form-group col-xs-6">
+        <label class="control-label col-xs-3" for="i_g">性别</label>
+        <div class="col-xs-6">
+          <input ng-model="node.G" enter required name="g"
+          type="text" class="form-control" id="i_g" placeholder="输入性别"/>
+        </div><!-- 6 -->
+        <span class="help-block col-xs-3" ng-show="form.g.$error.required">不能为空</span>
+      </div><!-- form-group -->
+    </div><!-- row -->
+    <div class="row">
+    <div class="form-group col-xs-6">
+        <label class="control-label col-xs-3" for="i_b">出生日期</label>
+        <div class="col-xs-6">
+          <p class="input-group">
+            <input type="text" class="form-control" name="b"
+            datepicker-popup="yyyy-MM-dd" ng-model="node.B" is-open="opened"
+            datepicker-options="dateOptions" date-disabled="disabled(date, mode)"
+            close-text="关闭" current-text="今天" clear-text="清除"/>
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="openDate($event)"><i class="fa fa-calendar"></i></button>
+            </span>
+          </p>
+        </div><!-- 6 -->
+    </div><!-- row -->
+  </form>
+</div><!-- modal-body -->
+<div class="modal-footer">
+  <button ng-click="ok(form.$valid)" ng-disabled="!form.$valid"
+  class="btn btn-primary">确定</button>
+  <button class="btn btn-warning" ng-click="cancel()">取消</button>
+</div><!-- modal-footer -->

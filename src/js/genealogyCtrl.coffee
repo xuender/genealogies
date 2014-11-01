@@ -28,8 +28,14 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       ).on('click', (e)->
         # TODO 增加弹出窗口编辑信息、增加节点
         $log.debug e
-        $log.debug 'click'
+        $scope.edit()
       ).add().shadow(true)
+    #$scope.ren.path(['M', 120, 40, 'L', 120, 330])
+    # .attr(
+    #   'stroke-width': 2
+    #   stroke: 'silver'
+    #   dashstyle: 'dash'
+    # ).add()
   $scope.show = ->
     ### 显示族谱 ###
     $scope.add($scope.info, 20, 40)
@@ -47,16 +53,28 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       G: true
       T: '父亲'
     , 140, 180)
+  $scope.edit = ->
+    # 节点编辑
+    i = $modal.open(
+      templateUrl: '/partials/node.html'
+      controller: 'NodeCtrl'
+      backdrop: 'static'
+      keyboard: true
+      size: 'lg'
+      resolve:
+        node: ->
+          $scope.info
+    )
+    i.result.then((node)->
+      $log.info '修改'
+      $log.info node
+    ,->
+      $log.info '取消'
+    )
   $http.get('/info/'+$scope.user.Id).success((data)->
     $scope.info = data
     $log.debug data
     $scope.show()
-    $scope.ren.path(['M', 120, 40, 'L', 120, 330])
-     .attr(
-       'stroke-width': 2
-       stroke: 'silver'
-       dashstyle: 'dash'
-     ).add()
   )
   $scope.chartConfig = {
     title:
