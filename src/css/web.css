@@ -27,3 +27,13 @@ body {
   color: black;
 }
 
+.female {
+  background: rgb(250, 230, 227);
+}
+.male {
+  background: rgb(227, 243, 250);
+}
+.death{
+  border-style: solid;
+}
+
