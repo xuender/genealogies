@@ -10,6 +10,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $scope.nodes = {}
   $scope.addNode = (node, x, y)->
     ### 增加节点 ###
+    $scope.chartConfig.size.width = x + 250
     # 亡者增加黑色边框
     l = if node.L then 'white' else 'black'
     b = if node.L then "生辰: #{node.B.substr(0, 10)}" else "忌日: #{node.D.substr(0, 10)}"
@@ -112,10 +113,13 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $scope.chartConfig = {
     title:
       text: ""
+    #scrollbar:
+    #  enabled: true
     size:
-      width: 2000
+      width: 1000
       height: 700
     loading: false
+    #useHighStocks: true
     func: (chart)->
       $log.debug 'chartConfig'
       #rightArrow = ['M', 0, 0, 'L', 100, 0, 'L', 95, 5, 'M', 100, 0, 'L', 95, -5]
