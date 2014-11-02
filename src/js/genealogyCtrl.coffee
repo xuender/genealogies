@@ -8,22 +8,21 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   ### 族谱 ###
   $scope.info = {}
   $scope.nodes = {}
-  $scope.add= (node, x, y)->
+  $scope.addNode = (node, x, y)->
     ### 增加节点 ###
     # 亡者增加黑色边框
-    $scope.nodes[node.O] = node
     l = if node.L then 'white' else 'black'
-    b = if node.L then "生辰: #{node.B.substr(5,5)}" else "忌日: #{node.D.substr(5,5)}"
+    b = if node.L then "生辰: #{node.B.substr(0, 10)}" else "忌日: #{node.D.substr(0, 10)}"
     # 不同性别颜色不同
     g = if node.G then $scope.colors[0] else $scope.colors[8]
-    $scope.ren.label("#{node.S}: #{node.N}<br>#{b}", x, y)
+    label = $scope.ren.label("#{node.N}<br>#{b}", x, y)
       .attr(
         fill: g
         stroke: l
         'stroke-width': 2
         padding: 5
         r: 5
-        'data-id': node.O
+        'data-id': node.Id
       ).css(
         fontWeight: 'bold'
         color: 'white'
@@ -31,39 +30,47 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       ).on('click', (e)->
         # TODO 增加弹出窗口编辑信息、增加节点
         $log.debug this.getAttribute('data-id')
-        $scope.edit $scope.nodes[this.getAttribute('data-id')]
+        $scope.edit $scope.nodes[this.getAttribute('data-id')].node
       ).add().shadow(true)
+    $scope.nodes[node.Id]=
+      node:node
+      label:label
+      x: x
+      y: y
     #$scope.ren.path(['M', 120, 40, 'L', 120, 330])
     # .attr(
     #   'stroke-width': 2
     #   stroke: 'silver'
     #   dashstyle: 'dash'
     # ).add()
-  $scope.show = ->
+  $scope.show = (node=$scope.info, x=0, y=0) ->
     ### 显示族谱 ###
-    $scope.add($scope.info, 20, 40)
-    #$scope.add(
-    #  Id: '123'
-    #  N: '测试'
-    #  L: true
-    #  G: false
-    #  B: '2011-01-01'
-    #  S: '我'
-    #  T: '110'
-    #, 40, 80)
-    #$scope.add(
-    #  Id: '333'
-    #  N: '爱新觉罗.溥仪'
-    #  L: false
-    #  D: '2011-01-01'
-    #  G: true
-    #  S: '皇帝'
-    #  T: '119'
-    #, 140, 180)
+    $scope.addNode(node, x*250, y*80)
+    if node.P
+      $scope.addNode(node.P, (x*250) + 110, y*80)
+    r = 0
+    if node.C
+      y++
+      r = node.C.length
+      for c in node.C
+        $log.debug '%s -> %s:%d',node.N, c.N, x
+        b = $scope.show(c, x, y)
+        x = if b > 0 then x+b else x+1
+    r
+
+  $scope.add = (id, type)->
+    ### 增加 ###
+    $http.put("/node/#{id}/#{type}").success((data)->
+      $log.debug 'put node'
+      $log.debug data
+      if data.ok
+        $scope.addNode(data.node, 100, 200)
+        $scope.edit(data.node)
+    )
   $scope.edit = (node)->
     # 节点编辑
     i = $modal.open(
-      templateUrl: '/partials/node.html'
+      templateUrl: '/partials/node.html?v=2'
       controller: 'NodeCtrl'
       backdrop: 'static'
       keyboard: true
@@ -71,34 +78,51 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       resolve:
         node: ->
           angular.copy node
+        genealogy: ->
+          $scope
+
     )
     i.result.then((node)->
-      $log.info '修改'
+      $log.debug '修改'
       $log.info node
-      $http.post("/node/#{node.O}", node).success((data)->
+      $http.post("/node/#{node.Id}", node).success((data)->
         $log.debug data
+        $log.debug $scope.nodes[node.Id]
+        n = $scope.nodes[node.Id].node
+        n.N = node.N
+        n.G = node.G
+        n.B = node.B
+        n.L = node.L
+        n.D = node.D
+        n.T = node.T
+        $scope.nodes[node.Id].label.destroy()
+        x = $scope.nodes[node.Id].x
+        y = $scope.nodes[node.Id].y
+        $scope.addNode(n, x, y)
       )
     ,->
       $log.info '取消'
     )
   $http.get('/info/'+$scope.user.Id).success((data)->
-    $scope.info = data
-    $log.debug data
+    $log.debug 'get info'
+    $scope.info = data.T
+    $log.debug data.T
     $scope.show()
   )
   $scope.chartConfig = {
     title:
-      text: '族谱'
+      text: ""
     size:
-      width: 400
+      width: 2000
       height: 700
     loading: false
     func: (chart)->
-      $scope.colors = Highcharts.getOptions().colors
+      $log.debug 'chartConfig'
       #rightArrow = ['M', 0, 0, 'L', 100, 0, 'L', 95, 5, 'M', 100, 0, 'L', 95, -5]
       #leftArrow = ['M', 100, 0, 'L', 0, 0, 'L', 5, 5, 'M', 0, 0, 'L', 5, -5]
       $scope.ren = chart.renderer
-  }
+    }
+  $scope.colors = Highcharts.getOptions().colors
 GenealogyCtrl.$inject = [
   '$scope'
   '$routeParams'

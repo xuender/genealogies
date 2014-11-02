@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title">编辑 {{ node.S }}: {{ node.N }}</h4>
+  <h4 class="modal-title">编辑 {{ node.N }}</h4>
 </div><!-- modal-header -->
 <div class="modal-body" ng-class="{'male':node.G, 'female':!node.G, 'death':!node.L}">
   <form name="form">
@@ -72,6 +72,15 @@
       </div><!-- form-group -->
     </div><!-- row -->
   </form>
+</div><!-- modal-body -->
+<div class="modal-body">
+  <button class="btn male" ng-click="add('f')">编辑父亲</button>
+  <button class="btn male" ng-click="add('p')" ng-hide="node.G">编辑丈夫</button>
+  <button class="btn female" ng-click="add('p')" ng-show="node.G">编辑妻子</button>
+  <button class="btn btn-default" ng-click="add('c')" ng-show="node.G">增加子女</button>
+  <div class="modal-body" ng-repeat="c in node.C">
+    <button class="btn" ng-class="{'male': c.G, 'female': !c.G}">编辑{{ c.N }}</button>
+  </div><!-- modal-body -->
 </div><!-- modal-body -->
 <div class="modal-footer">
   <button ng-click="ok(form.$valid)" ng-disabled="!form.$valid"

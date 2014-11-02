@@ -28,47 +28,34 @@ type Data struct {
 type Info struct {
 	// 基本信息
 	Base
-	Data
+	//Data
 	Id bson.ObjectId `bson:"_id,omitempty"`
-	// 节点ID
-	O bson.ObjectId
-	// 称呼 默认是我
-	S string
-	// 父亲
-	F interface{}
-	// 母亲
-	M interface{}
-	// 伴侣
-	P interface{}
-	//// 其他父亲
-	//Fs []interface{}
-	//// 其他母亲
-	//Ms []interface{}
-	//// 其他伴侣
-	//ps []interface{}
+	// 树状信息
+	T Tree
 }
 
 // 新建节点
-func InfoNew(data Data) Info {
+func InfoNew(data Data, nodeId bson.ObjectId) Info {
 	return Info{
 		Base: Base{En: true},
-		Data: data,
-		Id:   bson.NewObjectId(),
+		T: Tree{
+			Data: data,
+			Id:   nodeId,
+		},
+		Id: bson.NewObjectId(),
 	}
 }
 
 // 保存
-func (n *Info) Save(uid bson.ObjectId, nodeId bson.ObjectId) error {
+func (n *Info) Save(uid bson.ObjectId) error {
 	c := DB.C("info")
 	if n.Ca.IsZero() {
 		n.Ca = time.Now()
 		n.Cb = uid
-		n.O = nodeId
 		return c.Insert(n)
 	}
 	n.Ua = time.Now()
 	n.Ub = uid
-	n.O = nodeId
 	return c.UpdateId(n.Id, n)
 }
 
@@ -80,10 +67,14 @@ func (i *Info) Json() string {
 
 // 重新读取用户信息
 func (i *Info) Rest() {
-	n, err := NodeFind(i.O)
+	n, err := NodeFind(i.T.Id)
 	if err == nil {
-		i.Data = n.Data
-		i.Save(i.Cb, n.Id)
+		//i.S = "本人"
+		root := n.Root(4)
+		tree := TreeNew(*root)
+		tree.Create(*root, 9)
+		i.T = tree
+		i.Save(i.Cb)
 	}
 }
 

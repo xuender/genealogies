@@ -44,10 +44,10 @@ func (u *User) Create() {
 		L: true,
 	}
 	node := NodeNew(data)
-	info := InfoNew(data)
+	info := InfoNew(data, node.Id)
 	u.Info = info.Id
 	node.Save(u.Id)
-	info.Save(u.Id, node.Id)
+	info.Save(u.Id)
 	u.Node = node.Id
 	u.Info = info.Id
 }

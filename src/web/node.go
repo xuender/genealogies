@@ -31,7 +31,7 @@ type Node struct {
 	//ps []bson.ObjectId `bson:"ps,omitempty"`
 }
 
-// 新建节点
+// 新建节点 T
 func NodeNew(data Data) Node {
 	return Node{
 		Base: Base{En: true},
@@ -40,7 +40,7 @@ func NodeNew(data Data) Node {
 	}
 }
 
-// 查找节点
+// 查找节点 T
 func NodeFind(id bson.ObjectId) (Node, error) {
 	n := Node{}
 	err := DB.C("node").FindId(id).One(&n)
@@ -55,7 +55,7 @@ func NodeFind(id bson.ObjectId) (Node, error) {
 	return n, err
 }
 
-// 保存
+// 保存 T
 func (n *Node) Save(uid bson.ObjectId) error {
 	c := DB.C("node")
 	if n.Ca.IsZero() {
@@ -68,24 +68,94 @@ func (n *Node) Save(uid bson.ObjectId) error {
 	return c.UpdateId(n.Id, n)
 }
 
-// 设置父亲
-func (i *Node) SetF(n string) Node {
-	return Node{}
+// 查找根节点 T
+func (i *Node) Root(n rune) *Node {
+	//log.WithFields(log.Fields{
+	//  "id":  i.Id,
+	//  "n":   n,
+	//}).Info("Root")
+	if n < 1 {
+		return i
+	}
+	if i.F.Valid() {
+		f, err := NodeFind(i.F)
+		if err == nil {
+			return f.Root(n - 1)
+		}
+	}
+	return i
 }
 
-// 设置母亲
-func (i *Node) SetM(n string) Node {
-	return Node{}
+// 查找伴侣 T
+func (i *Node) Partner() (*Node, error) {
+	n := Node{}
+	if i.P.Valid() {
+		err := DB.C("node").FindId(i.P).One(&n)
+		return &n, err
+	}
+	return &n, errors.New("未找到")
 }
 
-// 设置伴侣
-func (i *Node) SetP(n string) Node {
-	return Node{}
+// 查找子女
+func (i *Node) Children() (node []Node, err error) {
+	err = DB.C("node").Find(bson.M{"f": i.Id}).All(&node)
+	return
 }
 
-// 增加子女
-func (i *Node) AddC(n string) Node {
-	return Node{}
+// 设置父亲、伴侣、母亲 T
+func (i *Node) Add(t string) Node {
+	g := false
+	n := "姓名"
+	id := bson.NewObjectId()
+	if t == "f" {
+		if i.F.Valid() {
+			r, _ := NodeFind(i.F)
+			return r
+		}
+		g = true
+		n = "父亲的姓名"
+		i.F = id
+	}
+	if t == "m" {
+		if i.M.Valid() {
+			r, _ := NodeFind(i.M)
+			return r
+		}
+		g = false
+		n = "母亲的姓名"
+		i.M = id
+	}
+	if t == "p" {
+		if i.P.Valid() {
+			r, _ := NodeFind(i.P)
+			return r
+		}
+		g = !i.G
+		if g {
+			n = "丈夫的姓名"
+		} else {
+			n = "妻子的姓名"
+		}
+		i.P = id
+	}
+	c := false
+	if t == "c" {
+		g = true
+		n = "孩子的姓名"
+		c = true
+	}
+	d := Data{
+		G: g,
+		N: n,
+	}
+	i.Save(i.Cb)
+	node := NodeNew(d)
+	node.Id = id
+	if c {
+		node.F = i.Id
+	}
+	node.Save(i.Cb)
+	return node
 }
 
 // 修改节点信息
@@ -105,6 +175,21 @@ func NodeUpdateHandle(params martini.Params, r *http.Request) (int, string) {
 		} else {
 			log.Error(err)
 		}
+	} else {
+		log.Error(err)
+	}
+	res, _ := json.Marshal(ret)
+	return 200, string(res)
+}
+
+// 增加节点信息
+func NodeAddHandle(params martini.Params, r *http.Request) (int, string) {
+	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
+	ret := make(map[string]interface{})
+	ret["ok"] = false
+	if err == nil {
+		ret["ok"] = true
+		ret["node"] = node.Add(params["type"])
 	} else {
 		log.Error(err)
 	}

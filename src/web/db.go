@@ -25,6 +25,9 @@ func GetDb(s *mgo.Session) *mgo.Database {
 func GetTestDb(s *mgo.Session) *mgo.Database {
 	return s.DB("test")
 }
+func GetTest2Db(s *mgo.Session) *mgo.Database {
+	return s.DB("test2")
+}
 
 type Base struct {
 	// 有效标记
