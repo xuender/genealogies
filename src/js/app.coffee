@@ -9,7 +9,6 @@ angular.module('web', [
   'ui.bootstrap'
   'hotkey'
   'LocalStorageModule'
-  'highcharts-ng'
 ]).config(['$routeProvider', ($routeProvider)->
   $routeProvider.
     when('/genealogy',

@@ -1,0 +1,18 @@
+<table>
+  <tr colspan="{{ t.C.length }}">
+    <td>
+      <span class="node label"
+      ng-class="{'death':!t.L, 'label-info':t.G, 'label-danger':!t.G}"
+      >
+        {{ t.N }}<br>
+        {{ t.B }}<br>
+          <button class="btn btn-default btn-xs"
+          ng-click="edit(t)"
+          >编辑</button>
+      </span>
+    </td>
+  </tr>
+  <tr>
+      <td ng-repeat="t in t.C" ng-include="'partials/tree.html?v=2'"></td>
+  </tr>
+</table>
