@@ -38,13 +38,30 @@ body {
 }
 .node {
   float: left;
-  margin: 20px;
+  margin: 20px 10px 0px 10px;
   box-shadow: 5px 5px 5px black ;
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+  width: 120px;
   /*
-  width: 150px;
   position: relative;
   min-height: 1px;
   padding-right: 15px;
   padding-left: 15px;
+  */
+}
+
+td {
+  vertical-align: top;
+  /*
+  border:solid 1px #add9c0;
   */
 }

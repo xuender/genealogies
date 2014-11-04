@@ -1,15 +1,53 @@
 <table>
   <tr colspan="{{ t.C.length }}">
     <td>
-      <span class="node label"
-      ng-class="{'death':!t.L, 'label-info':t.G, 'label-danger':!t.G}"
-      >
-        {{ t.N }}<br>
-        {{ t.B }}<br>
-          <button class="btn btn-default btn-xs"
-          ng-click="edit(t)"
-          >编辑</button>
-      </span>
+      <div style="width:290px;">
+        <span class="node"
+        ng-class="{'death':!t.L, 'label-info':t.G, 'label-danger':!t.G}">
+          {{ t.N }}<br>
+            <div ng-show="t.L">
+              生辰: {{ t.B | date:"yyyy-MM-dd"}}
+            </div>
+            <div ng-hide="t.L">
+              忌日: {{ t.D | date:"yyyy-MM-dd"}}
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-default btn-xs"
+              ng-click="edit(t)">
+                <i class="fa fa-pencil-square-o"></i>
+              </button>
+              <button class="btn btn-default btn-xs" title="设置父亲"
+              ng-click="addF(t)" ng-show="t.R">
+                <i class="fa fa-arrow-up"></i>
+              </button>
+              <button class="btn btn-default btn-xs" title="增加子女"
+              ng-click="addC(t)">
+                <i class="fa fa-arrow-down"></i>
+              </button>
+              <button class="btn btn-default btn-xs"
+              ng-click="addP(t)" ng-hide="t.P" title="设置伴侣">
+                <i class="fa fa-arrow-right"></i>
+              </button>
+            </div><!-- btn-group -->
+        </span>
+        <span class="node"
+        ng-class="{'death':!t.P.L, 'label-info':t.P.G, 'label-danger':!t.P.G}"
+        ng-show="t.P">
+          {{ t.P.N }}
+            <div ng-show="t.P.L">
+              生辰: {{ t.P.B | date:"yyyy-MM-dd"}}
+            </div>
+            <div ng-hide="t.P.L">
+              忌日: {{ t.P.D | date:"yyyy-MM-dd"}}
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-default btn-xs"
+              ng-click="edit(t.P)">
+                <i class="fa fa-pencil-square-o"></i>
+              </button>
+            </div><!-- btn-group -->
+        </span>
+      </div>
     </td>
   </tr>
   <tr>

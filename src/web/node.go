@@ -107,6 +107,7 @@ func (i *Node) Add(t string) Node {
 	g := false
 	n := "姓名"
 	id := bson.NewObjectId()
+	l := false
 	if t == "f" {
 		if i.F.Valid() {
 			r, _ := NodeFind(i.F)
@@ -131,6 +132,7 @@ func (i *Node) Add(t string) Node {
 			return r
 		}
 		g = !i.G
+		l = true
 		if g {
 			n = "丈夫的姓名"
 		} else {
@@ -143,10 +145,12 @@ func (i *Node) Add(t string) Node {
 		g = true
 		n = "孩子的姓名"
 		c = true
+		l = true
 	}
 	d := Data{
 		G: g,
 		N: n,
+		L: l,
 	}
 	i.Save(i.Cb)
 	node := NodeNew(d)

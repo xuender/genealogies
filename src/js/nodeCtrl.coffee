@@ -5,9 +5,8 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 Distributed under terms of the MIT license.
 ###
 
-NodeCtrl= ($scope, $log, $modalInstance, node, genealogy)->
+NodeCtrl= ($scope, $log, $modalInstance, node)->
   $scope.node = node
-  $scope.genealogy = genealogy
   $scope.ok = ->
     $log.debug 'ok'
     $modalInstance.close(
@@ -25,14 +24,10 @@ NodeCtrl= ($scope, $log, $modalInstance, node, genealogy)->
     $event.preventDefault()
     $event.stopPropagation()
     $scope.opened = true
-  $scope.add = (t)->
-    ### 增加父亲，母亲，伴侣 ###
-    $scope.genealogy.add($scope.node.Id, t)
 NodeCtrl.$inject = [
   '$scope'
   '$log'
   '$modalInstance'
   'node'
-  'genealogy'
 ]
 
