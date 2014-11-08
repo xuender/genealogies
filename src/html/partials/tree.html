@@ -1,7 +1,7 @@
 <table>
-  <tr colspan="{{ t.C.length }}">
-    <td>
-      <div style="width:290px;">
+  <tr>
+    <td colspan="{{ t.C.length }}" align="center">
+      <div style="width:{{ 160 + (t.P?140:0) }}px;">
         <span class="node"
         ng-class="{'death':!t.L, 'label-info':t.G, 'label-danger':!t.G}">
           {{ t.N }}<br>
@@ -51,6 +51,6 @@
     </td>
   </tr>
   <tr>
-      <td ng-repeat="t in t.C" ng-include="'partials/tree.html?v=2'"></td>
+      <td ng-repeat="t in t.C" ng-include="'partials/tree.html?v=3'"></td>
   </tr>
 </table>

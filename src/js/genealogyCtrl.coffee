@@ -28,6 +28,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $http.put("/node/#{t.Id}/p").success((data)->
       if data.ok
         t.P = data.node
+        $scope.edit(data.node)
     )
   $scope.addC = (t)->
     ### 增加子女 ###
@@ -38,6 +39,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           t.C.push(data.node)
         else
           t.C = [data.node]
+        $scope.edit(data.node)
     )
   $scope.addF = (t)->
     ### 增加父亲 ###
@@ -47,6 +49,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         l = $scope.t
         $scope.t = data.node
         $scope.t.C = [l]
+        $scope.edit(data.node)
     )
   $scope.edit = (node)->
     # 节点编辑

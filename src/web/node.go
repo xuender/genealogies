@@ -114,17 +114,8 @@ func (i *Node) Add(t string) Node {
 			return r
 		}
 		g = true
-		n = "父亲的姓名"
+		n = i.N + "的父亲"
 		i.F = id
-	}
-	if t == "m" {
-		if i.M.Valid() {
-			r, _ := NodeFind(i.M)
-			return r
-		}
-		g = false
-		n = "母亲的姓名"
-		i.M = id
 	}
 	if t == "p" {
 		if i.P.Valid() {
@@ -134,23 +125,25 @@ func (i *Node) Add(t string) Node {
 		g = !i.G
 		l = true
 		if g {
-			n = "丈夫的姓名"
+			n = i.N + "的丈夫"
 		} else {
-			n = "妻子的姓名"
+			n = i.N + "的妻子"
 		}
 		i.P = id
 	}
 	c := false
 	if t == "c" {
 		g = true
-		n = "孩子的姓名"
+		n = i.N + "的儿子"
 		c = true
 		l = true
 	}
+	bt, _ := time.Parse("2006-01-02", "2000-01-01")
 	d := Data{
 		G: g,
 		N: n,
 		L: l,
+		B: bt,
 	}
 	i.Save(i.Cb)
 	node := NodeNew(d)
