@@ -15,7 +15,7 @@ ng\:form {
   display: block;
 }
 
-.nav, .pagination, .carousel, .panel-title a {
+.nav, .pagination, .carousel, .panel-title a{
 cursor: pointer;
 }
 
