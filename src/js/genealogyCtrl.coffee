@@ -6,7 +6,35 @@ Distributed under terms of the MIT license.
 ###
 GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   ### 族谱 ###
-  $scope.t = {}
+  $scope.t =
+    x: 0
+    y: 0
+    P:
+      x:0
+      y:0
+  $scope.svgw = 1000
+  $scope.svgh = 500
+  $scope.sort = (t=$scope.t)->
+    ### 排序 ###
+    $scope.svgw = if t.x + 200 > $scope.svgw then t.x + 200 else $scope.svgw
+    $scope.svgh = if t.y + 160 > $scope.svgh then t.y + 160 else $scope.svgh
+    $log.debug '%d,%d', t.x, t.y
+    t.mx = t.x
+    if t.C
+      $log.debug '排序 [ %s ] 的子女', t.N
+      t.C.sort((a,b)->
+        at = if a.G then new Date(a.B).getTime() - 162135596800000 else new Date(a.B).getTime()
+        bt = if b.G then new Date(b.B).getTime() - 162135596800000 else new Date(b.B).getTime()
+        at - bt
+      )
+      for c in t.C
+        c.f = t
+        c.x = t.mx
+        c.y = t.y + 100
+        t.mx = if c.P then t.mx += 300 else t.mx += 160
+        $scope.sort(c)
+        if c.mx > t.mx
+          t.mx = c.mx
   $scope.update = (t, n)->
     ### 修改 ###
     if t.Id == n.Id
@@ -28,6 +56,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $http.put("/node/#{t.Id}/p").success((data)->
       if data.ok
         t.P = data.node
+        $scope.sort()
         $scope.edit(data.node)
     )
   $scope.addC = (t)->
@@ -39,6 +68,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           t.C.push(data.node)
         else
           t.C = [data.node]
+        $scope.sort()
         $scope.edit(data.node)
     )
   $scope.addF = (t)->
@@ -49,6 +79,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         l = $scope.t
         $scope.t = data.node
         $scope.t.C = [l]
+        $scope.sort()
         $scope.edit(data.node)
     )
   $scope.edit = (node)->
@@ -80,8 +111,11 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $http.get('/info/'+$scope.user.Id).success((data)->
     $log.debug 'get info'
     $scope.t = data.T
+    $scope.t.x = 0
+    $scope.t.y = 0
+    $scope.sort()
     $scope.t.R = true
-    $log.debug data.T
+    $log.debug $scope.t
   )
 GenealogyCtrl.$inject = [
   '$scope'
