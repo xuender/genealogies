@@ -17,6 +17,23 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     ]
   $scope.svgw = 1000
   $scope.svgh = 500
+  $scope.reset = (t=$scope.t)->
+    # 重置展开关闭
+    if t.c and t.C
+      t.cC = t.C
+      delete t.C
+    if !t.c and t.cC
+      t.C = t.cC
+      delete t.cC
+    if t.c and t.P
+      t.cP = t.P
+      delete t.P
+    if !t.c and t.cP
+      t.P = t.cP
+      delete t.cP
+    if t.C
+      for c in t.C
+        $scope.reset(c)
   $scope.sort = (t=$scope.t)->
     ### 排序 ###
     if t == $scope.t
@@ -43,17 +60,17 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         if c.mx > t.mx
           t.mx = c.mx
     if t.P
-      x = t.x
-      for p in t.P
-        x += $scope.nw + 10
-        p.x = x
-        p.y = t.y
       w = (($scope.nw + 10) * (t.P.length + 1)) + 50
       if t.mx > t.x + w
         $log.debug 'pppp'
         t.x += (t.mx - t.x - w) / 2
       else
         t.mx = t.x + w
+      x = t.x
+      for p in t.P
+        x += $scope.nw + 10
+        p.x = x
+        p.y = t.y
     else
       if t.mx > t.x + $scope.nw + 40
         $log.debug '!pppp'
@@ -69,7 +86,8 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       t.T = n.T
     else
       if t.P
-        $scope.update(t.P, n)
+        for p in t.P
+          $scope.update(p, n)
       if t.C
         for c in t.C
           $scope.update(c, n)
@@ -78,7 +96,10 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $log.debug 'addC'
     $http.put("/node/#{t.Id}/p").success((data)->
       if data.ok
-        t.P = data.node
+        if t.P
+          t.P.push(data.node)
+        else
+          t.P =[data.node]
         $scope.sort()
         $scope.edit(data.node)
     )
@@ -105,6 +126,18 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         $scope.sort()
         $scope.edit(data.node)
     )
+  $scope.open = (n)->
+    # 打开
+    $log.debug $scope.t
+    n.c = true
+    $scope.reset()
+    $scope.sort()
+  $scope.close = (n)->
+    # 收起
+    $log.debug $scope.t
+    n.c = false
+    $scope.reset()
+    $scope.sort()
   $scope.edit = (node)->
     # 节点编辑
     i = $modal.open(

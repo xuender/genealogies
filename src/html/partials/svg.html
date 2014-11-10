@@ -23,6 +23,12 @@
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf063</tspan>
     <tspan ng-click="addP(t)" title="设置伴侣"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf061</tspan>
+    <tspan ng-hide="t.c || !t.C" ng-click="open(t)"
+    title="打开" cursor="pointer"
+    font-family="FontAwesome" font-weight="normal" font-size="16">&#xf068</tspan>
+    <tspan ng-show="t.c" ng-click="close(t)"
+    title="关闭" cursor="pointer"
+    font-family="FontAwesome" font-weight="normal" font-size="16">&#xf067</tspan>
   </text>
 </g>
 <g ng-repeat="p in t.P" ng-attr-transform="translate({{ p.x }},{{ p.y }})">
@@ -33,7 +39,7 @@
   <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
   x="0" y="0" strokeWidth="2" fill="none" stroke="black" stroke-width="1" rx="5" ry="5" isShadow="true" stroke-opacity="0.15" transform="translate(1, 1)"></rect>
   <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
-  x="0" y="0" strokeWidth="2" ng-attr-fill="{{ t.P.G?'#7cb5ec':'#ffb58c' }}" stroke="white" stroke-width="2" rx="5" ry="5"></rect>
+  x="0" y="0" strokeWidth="2" ng-attr-fill="{{ p.G?'#7cb5ec':'#ffb58c' }}" stroke="white" stroke-width="2" rx="5" ry="5"></rect>
   <text x="5" zIndex="1" ng-attr-style="{{ p.L?'color:white;fill:white;':'' }}" y="18">
     <tspan>父亲: {{ p.N }}</tspan>
     <tspan x="5" dy="16">生辰: {{ p.B | date:"yyyy-MM-dd"}}</tspan>
@@ -41,7 +47,7 @@
     x="5" dy="16" cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf007</tspan>
   </text>
 </g>
-<g ng-repeat="t in t.C" ng-include="'partials/svg.html?v=3'"></g>
+<g ng-repeat="t in t.C" ng-include="'partials/svg.html?v=4'"/>
 <path ng-repeat="c in t.C" ng-attr-transform="translate({{ c.f.x + (nw/2) }},{{ c.f.y + nh + 3 }})" 
 ng-attr-d="M 0 0 {{ c.x == c.f.x + 20 ? 'L 0 44' : 'C 0 39 ' + (c.x - c.f.x - 25) + ' 5 ' + (c.x - c.f.x - 20) + ' 44'}}"
 fill="none" stroke="#87a35c" stroke-width="2"/>

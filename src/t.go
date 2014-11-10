@@ -13,6 +13,5 @@ func main() {
 	n, _ := web.NodeFind(u.Node)
 	n.Add("f")
 	n.Add("p")
-	n.Add("p")
 	u.ToInfo()
 }
