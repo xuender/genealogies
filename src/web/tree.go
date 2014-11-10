@@ -10,7 +10,7 @@ type Tree struct {
 	// 节点ID
 	Id bson.ObjectId `bson:"_id,omitempty"`
 	// 伴侣
-	P interface{}
+	P []interface{}
 	// 子女
 	C []interface{}
 }
@@ -28,9 +28,13 @@ func (t *Tree) Create(n Node, i rune) {
 	if i < 1 {
 		return
 	}
-	p, err := n.Partner()
+	ps, err := n.Partner()
 	if err == nil {
-		t.P = TreeNew(*p)
+		for _, p := range ps {
+			nt := TreeNew(p)
+			nt.Create(p, i-1)
+			t.P = append(t.P, nt)
+		}
 	}
 	cs, err := n.Children()
 	if err == nil {

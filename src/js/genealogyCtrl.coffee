@@ -11,9 +11,10 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $scope.t =
     x: 0
     y: 0
-    P:
+    P: [
       x:0
       y:0
+    ]
   $scope.svgw = 1000
   $scope.svgh = 500
   $scope.sort = (t=$scope.t)->
@@ -25,6 +26,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $scope.svgh = if t.y + 160 > $scope.svgh then t.y + 160 else $scope.svgh
     $log.debug '%d,%d', t.x, t.y
     t.mx = t.x
+
     if t.C
       $log.debug '排序 [ %s ] 的子女', t.N
       t.C.sort((a,b)->
@@ -41,9 +43,17 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         if c.mx > t.mx
           t.mx = c.mx
     if t.P
-      if t.mx > t.x + ($scope.nw * 2) + 60
+      x = t.x
+      for p in t.P
+        x += $scope.nw + 10
+        p.x = x
+        p.y = t.y
+      w = (($scope.nw + 10) * (t.P.length + 1)) + 50
+      if t.mx > t.x + w
         $log.debug 'pppp'
-        t.x += (t.mx - t.x - ($scope.nw * 2) - 60) / 2
+        t.x += (t.mx - t.x - w) / 2
+      else
+        t.mx = t.x + w
     else
       if t.mx > t.x + $scope.nw + 40
         $log.debug '!pppp'

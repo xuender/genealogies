@@ -21,8 +21,8 @@ type Node struct {
 	F bson.ObjectId `bson:"f,omitempty"`
 	// 母亲
 	M bson.ObjectId `bson:"m,omitempty"`
-	// 伴侣
-	P bson.ObjectId `bson:"p,omitempty"`
+	// 伴侣们
+	P []bson.ObjectId `bson:"p,omitempty"`
 	//// 其他父亲
 	//Fs []bson.ObjectId `bson:"fs,omitempty"`
 	//// 其他母亲
@@ -87,13 +87,11 @@ func (i *Node) Root(n rune) *Node {
 }
 
 // 查找伴侣 T
-func (i *Node) Partner() (*Node, error) {
-	n := Node{}
-	if i.P.Valid() {
-		err := DB.C("node").FindId(i.P).One(&n)
-		return &n, err
+func (i *Node) Partner() (node []Node, err error) {
+	if len(i.P) > 0 {
+		err = DB.C("node").Find(bson.M{"_id": bson.M{"$in": i.P}}).All(&node)
 	}
-	return &n, errors.New("未找到")
+	return
 }
 
 // 查找子女
@@ -102,7 +100,7 @@ func (i *Node) Children() (node []Node, err error) {
 	return
 }
 
-// 设置父亲、伴侣、母亲 T
+// 设置父亲、伴侣、孩子 T
 func (i *Node) Add(t string) Node {
 	g := false
 	n := "姓名"
@@ -118,10 +116,6 @@ func (i *Node) Add(t string) Node {
 		i.F = id
 	}
 	if t == "p" {
-		if i.P.Valid() {
-			r, _ := NodeFind(i.P)
-			return r
-		}
 		g = !i.G
 		l = true
 		if g {
@@ -129,7 +123,7 @@ func (i *Node) Add(t string) Node {
 		} else {
 			n = i.N + "的妻子"
 		}
-		i.P = id
+		i.P = append(i.P, id)
 	}
 	c := false
 	if t == "c" {

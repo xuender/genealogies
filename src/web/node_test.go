@@ -56,28 +56,23 @@ func TestNodeAdd(t *testing.T) {
 		t.Errorf("新建保存失败")
 	}
 	f := n.Add("f")
-	if f.Ca.IsZero() || f.N != "父亲的姓名" {
+	if f.Ca.IsZero() || f.N != "test的父亲" {
 		t.Errorf("增加父亲失败")
 	}
 	nf := n.Add("f")
-	if f.N != "父亲的姓名" || f.Id != nf.Id {
+	if f.N != "test的父亲" || f.Id != nf.Id {
 		t.Errorf("增加父亲失败")
 	}
-	m := n.Add("m")
-	if m.Ca.IsZero() || m.N != "母亲的姓名" {
-		t.Errorf("增加母亲失败")
-	}
-	nm := n.Add("m")
-	if m.N != "母亲的姓名" || m.Id != nm.Id {
-		t.Errorf("增加母亲失败")
-	}
 	p := n.Add("p")
-	if p.Ca.IsZero() || p.N != "丈夫的姓名" {
+	if p.Ca.IsZero() || p.N != "test的丈夫" {
 		t.Errorf("增加丈夫失败")
 	}
-	np := n.Add("p")
-	if p.N != "丈夫的姓名" || p.Id != np.Id {
-		t.Errorf("增加丈夫失败")
+	if len(n.P) != 1 {
+		t.Errorf("丈夫数量应该=1")
+	}
+	n.Add("p")
+	if len(n.P) != 2 {
+		t.Errorf("丈夫数量应该=2")
 	}
 }
 func TestNodeRoot(t *testing.T) {
@@ -103,7 +98,7 @@ func TestNodePartner(t *testing.T) {
 	n.Save(bson.NewObjectId())
 	p := n.Add("p")
 	fp, err := n.Partner()
-	if err != nil || p.Id != fp.Id {
+	if err != nil || p.Id != fp[0].Id {
 		t.Errorf("伴侣查找错误")
 	}
 }
