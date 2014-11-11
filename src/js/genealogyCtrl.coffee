@@ -3,9 +3,27 @@ genealogyCtrl.coffee
 Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
+Node {
+  N:  名称
+  F:  父亲
+  P:  伴侣们
+  C:  子女
+  G:  性别
+  B:  生日
+  L:  是否在世
+  D:  祭日
+  T:  电话
+  x:  横轴
+  y:  纵轴
+  mx: 包括后代的最大横轴
+  c:  是否收起
+  cC: 收起后的子女
+  cP: 收起后的伴侣们
+}
 ###
 GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   ### 族谱 ###
+  lss.bind($scope, "cids", [])
   $scope.nw = 120
   $scope.nh = 56
   $scope.t =
@@ -126,16 +144,15 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         $scope.sort()
         $scope.edit(data.node)
     )
-  $scope.open = (n)->
-    # 打开
-    $log.debug $scope.t
-    n.c = true
-    $scope.reset()
-    $scope.sort()
-  $scope.close = (n)->
+  $scope.close = (n, c=true)->
     # 收起
+    if c
+      $scope.cids.push(n.Id)
+    else
+      $scope.cids.splice($scope.cids.indexOf(n.Id), 1)
     $log.debug $scope.t
-    n.c = false
+    $log.debug c
+    n.c = c
     $scope.reset()
     $scope.sort()
   $scope.edit = (node)->
@@ -167,10 +184,18 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $http.get('/info/'+$scope.user.Id).success((data)->
     $log.debug 'get info'
     $scope.t = data.T
+    $scope.readCids()
+    $scope.reset()
     $scope.sort()
     $scope.t.R = true
     $log.debug $scope.t
   )
+  $scope.readCids = (t=$scope.t)->
+    # 读取收起标记
+    t.c = $scope.cids.indexOf(t.Id) >= 0
+    if t.C
+      for i in t.C
+        $scope.readCids(i)
 GenealogyCtrl.$inject = [
   '$scope'
   '$routeParams'

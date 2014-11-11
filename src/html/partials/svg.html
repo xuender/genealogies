@@ -17,18 +17,18 @@
     x="5" dy="16">忌日: {{ t.D | date:"yyyy-MM-dd"}}</tspan>
     <tspan ng-click="edit(t)"
     x="5" dy="16" cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf007</tspan>
-    <tspan ng-click="addF(t)" ng-show="t.R" title="设置父亲"
-    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf062</tspan>
     <tspan ng-click="addC(t)" title="增加子女"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf063</tspan>
     <tspan ng-click="addP(t)" title="设置伴侣"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf061</tspan>
-    <tspan ng-hide="t.c || !t.C" ng-click="open(t)"
+    <tspan ng-hide="t.c || !t.C" ng-click="close(t)"
     title="打开" cursor="pointer"
     font-family="FontAwesome" font-weight="normal" font-size="16">&#xf068</tspan>
-    <tspan ng-show="t.c" ng-click="close(t)"
+    <tspan ng-show="t.c" ng-click="close(t, false)"
     title="关闭" cursor="pointer"
     font-family="FontAwesome" font-weight="normal" font-size="16">&#xf067</tspan>
+    <tspan ng-click="addF(t)" ng-show="t.R" title="设置父亲"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf062</tspan>
   </text>
 </g>
 <g ng-repeat="p in t.P" ng-attr-transform="translate({{ p.x }},{{ p.y }})">
@@ -47,7 +47,7 @@
     x="5" dy="16" cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf007</tspan>
   </text>
 </g>
-<g ng-repeat="t in t.C" ng-include="'partials/svg.html?v=4'"/>
+<g ng-repeat="t in t.C" ng-include="'partials/svg.html?v=6'"/>
 <path ng-repeat="c in t.C" ng-attr-transform="translate({{ c.f.x + (nw/2) }},{{ c.f.y + nh + 3 }})" 
 ng-attr-d="M 0 0 {{ c.x == c.f.x + 20 ? 'L 0 44' : 'C 0 39 ' + (c.x - c.f.x - 25) + ' 5 ' + (c.x - c.f.x - 20) + ' 44'}}"
 fill="none" stroke="#87a35c" stroke-width="2"/>
