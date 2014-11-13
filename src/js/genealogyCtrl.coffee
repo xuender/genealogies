@@ -93,6 +93,15 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       if t.mx > t.x + $scope.nw + 40
         $log.debug '!pppp'
         t.x += (t.mx - t.x - $scope.nw - 40) / 2
+  $scope.delete = (n, t=$scope.t)->
+    ### 删除 ###
+    if t.C
+      if t.C.indexOf(n) >= 0
+        t.C.shift(t.C.indexOf(n), 1)
+      else
+        for c in t.C
+          $scope.delete(n, c)
+
   $scope.update = (t, n)->
     ### 修改 ###
     if t.Id == n.Id
@@ -208,6 +217,15 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         if data.ok
           $scope.update($scope.t, n)
       )
+    )
+  $scope.del = (n)->
+    # 节点删除
+    $http.delete("/node/#{n.Id}").success((data)->
+      $log.debug data
+      if data.ok
+        $scope.delete(n)
+      else
+        alert data.error
     )
   $http.get('/info/'+$scope.user.Id).success((data)->
     $log.debug 'get info'

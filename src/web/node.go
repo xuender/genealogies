@@ -101,52 +101,47 @@ func (i *Node) Children() (node []Node, err error) {
 }
 
 // 设置父亲、伴侣、孩子 T
-func (i *Node) Add(t string) Node {
-	g := false
-	n := "姓名"
+func (i *Node) Add(t string, d Data) Node {
 	id := bson.NewObjectId()
-	l := false
 	if t == "f" {
 		if i.F.Valid() {
 			r, _ := NodeFind(i.F)
 			return r
 		}
-		g = true
-		n = i.N + "的父亲"
 		i.F = id
 	}
 	if t == "p" {
-		g = !i.G
-		l = true
-		if g {
-			n = i.N + "的丈夫"
-		} else {
-			n = i.N + "的妻子"
-		}
 		i.P = append(i.P, id)
-	}
-	c := false
-	if t == "c" {
-		g = true
-		n = i.N + "的儿子"
-		c = true
-		l = true
-	}
-	bt, _ := time.Parse("2006-01-02", "2000-01-01")
-	d := Data{
-		G: g,
-		N: n,
-		L: l,
-		B: bt,
 	}
 	i.Save(i.Cb)
 	node := NodeNew(d)
 	node.Id = id
-	if c {
+	if t == "c" {
 		node.F = i.Id
 	}
 	node.Save(i.Cb)
 	return node
+}
+
+// 删除节点
+func (i *Node) Del() error {
+	if len(i.P) > 0 {
+		return errors.New("删除前请先删除伴侣")
+	}
+	cs, err := i.Children()
+	if err != nil {
+		return err
+	}
+	if !i.F.Valid() && len(cs) < 2 {
+		if len(cs) == 1 {
+			nn := Node{}
+			cs[0].F = nn.Id
+			cs[0].Save(cs[0].Cb)
+		}
+	} else if len(cs) > 0 {
+		return errors.New("删除前请先删除子女")
+	}
+	return DB.C("node").RemoveId(i.Id)
 }
 
 // 修改节点信息
@@ -184,8 +179,7 @@ func NodeAddHandle(params martini.Params, r *http.Request) (int, string) {
 		if err == nil {
 			json.Unmarshal(body, &data)
 			log.Debug(data)
-			c := node.Add(params["type"])
-			c.Data = data
+			c := node.Add(params["type"], data)
 			c.Save(node.Cb)
 			ret["node"] = c
 			ret["ok"] = true
@@ -195,6 +189,25 @@ func NodeAddHandle(params martini.Params, r *http.Request) (int, string) {
 	} else {
 		log.Error(err)
 	}
+	res, _ := json.Marshal(ret)
+	return 200, string(res)
+}
+
+// 删除节点
+func NodeDelHandle(params martini.Params, r *http.Request) (int, string) {
+	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
+	ret := make(map[string]interface{})
+	ok := false
+	if err == nil {
+		err = node.Del()
+		ok = err == nil
+	} else {
+		log.Error(err)
+	}
+	if !ok {
+		ret["error"] = err.Error()
+	}
+	ret["ok"] = ok
 	res, _ := json.Marshal(ret)
 	return 200, string(res)
 }

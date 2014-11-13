@@ -41,6 +41,8 @@ func main() {
 	m.Get("/info/:id", web.InfoHandle)
 	// 修改节点
 	m.Post("/node/:id", web.NodeUpdateHandle)
+	// 删除节点
+	m.Delete("/node/:id", web.NodeDelHandle)
 	// 增加节点
 	m.Put("/node/:id/:type", web.NodeAddHandle)
 	//m.Get("/", func(r render.Render) {

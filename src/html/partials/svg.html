@@ -29,6 +29,8 @@
     font-family="FontAwesome" font-weight="normal" font-size="16">&#xf067</tspan>
     <tspan ng-click="addF(t)" ng-show="t.R" title="设置父亲"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf062</tspan>
+    <tspan ng-click="del(t)" title="删除"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf00d</tspan>
   </text>
 </g>
 <g ng-repeat="p in t.P" ng-attr-transform="translate({{ p.x }},{{ p.y }})">
