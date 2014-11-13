@@ -111,38 +111,81 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           $scope.update(c, n)
   $scope.addP = (t)->
     ### 增加伴侣 ###
-    $log.debug 'addC'
-    $http.put("/node/#{t.Id}/p").success((data)->
-      if data.ok
-        if t.P
-          t.P.push(data.node)
-        else
-          t.P =[data.node]
-        $scope.sort()
-        $scope.edit(data.node)
+    $log.debug 'addP'
+    $scope.editor(
+      N: if t.G then "#{t.N}的妻子" else "#{t.N}的丈夫"
+      G: !t.G
+      L: t.L
+    , (n)->
+      $log.debug 'addP ok'
+      $log.debug n
+      $http.put("/node/#{t.Id}/p", n).success((data)->
+        if data.ok
+          if t.P
+            t.P.push(data.node)
+          else
+            t.P =[data.node]
+          $scope.sort()
+      )
+    )
+  $scope.editor= (n, func)->
+    # 编辑用户信息
+    i = $modal.open(
+      templateUrl: '/partials/node.html?v=2'
+      controller: 'NodeCtrl'
+      backdrop: 'static'
+      keyboard: true
+      size: 'lg'
+      resolve:
+        node: ->
+          n
+        genealogy: ->
+          $scope
+
+    )
+    i.result.then((node)->
+      $log.debug '增加'
+      $log.info node
+      func(node)
+    ,->
+      $log.info '取消'
     )
   $scope.addC = (t)->
     ### 增加子女 ###
     $log.debug 'addC'
-    $http.put("/node/#{t.Id}/c").success((data)->
-      if data.ok
-        if t.C
-          t.C.push(data.node)
-        else
-          t.C = [data.node]
-        $scope.sort()
-        $scope.edit(data.node)
+    $scope.editor(
+      N: "#{t.N}的儿子"
+      G: true
+      L: true
+    , (n)->
+      $log.debug 'addC ok'
+      $log.debug n
+      $http.put("/node/#{t.Id}/c", n).success((data)->
+        if data.ok
+          if t.C
+            t.C.push(data.node)
+          else
+            t.C = [data.node]
+          $scope.sort()
+      )
     )
   $scope.addF = (t)->
     ### 增加父亲 ###
     $log.debug 'addF'
-    $http.put("/node/#{t.Id}/f").success((data)->
-      if data.ok
-        l = $scope.t
-        $scope.t = data.node
-        $scope.t.C = [l]
-        $scope.sort()
-        $scope.edit(data.node)
+    $scope.editor(
+      N: "#{t.N}的父亲"
+      G: true
+      L: t.L
+    , (n)->
+      $log.debug 'addF ok'
+      $log.debug n
+      $http.put("/node/#{t.Id}/f", n).success((data)->
+        if data.ok
+          l = $scope.t
+          $scope.t = data.node
+          $scope.t.C = [l]
+          $scope.sort()
+      )
     )
   $scope.close = (n, c=true)->
     # 收起
@@ -157,29 +200,14 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $scope.sort()
   $scope.edit = (node)->
     # 节点编辑
-    i = $modal.open(
-      templateUrl: '/partials/node.html?v=2'
-      controller: 'NodeCtrl'
-      backdrop: 'static'
-      keyboard: true
-      size: 'lg'
-      resolve:
-        node: ->
-          angular.copy node
-        genealogy: ->
-          $scope
-
-    )
-    i.result.then((node)->
+    $scope.editor(angular.copy(node), (n)->
       $log.debug '修改'
-      $log.info node
-      $http.post("/node/#{node.Id}", node).success((data)->
+      $log.info n
+      $http.post("/node/#{n.Id}", n).success((data)->
         $log.debug data
         if data.ok
-          $scope.update($scope.t, node)
+          $scope.update($scope.t, n)
       )
-    ,->
-      $log.info '取消'
     )
   $http.get('/info/'+$scope.user.Id).success((data)->
     $log.debug 'get info'

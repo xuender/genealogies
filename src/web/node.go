@@ -179,8 +179,19 @@ func NodeAddHandle(params martini.Params, r *http.Request) (int, string) {
 	ret := make(map[string]interface{})
 	ret["ok"] = false
 	if err == nil {
-		ret["ok"] = true
-		ret["node"] = node.Add(params["type"])
+		data := Data{}
+		body, err := ioutil.ReadAll(r.Body)
+		if err == nil {
+			json.Unmarshal(body, &data)
+			log.Debug(data)
+			c := node.Add(params["type"])
+			c.Data = data
+			c.Save(node.Cb)
+			ret["node"] = c
+			ret["ok"] = true
+		} else {
+			log.Error(err)
+		}
 	} else {
 		log.Error(err)
 	}
