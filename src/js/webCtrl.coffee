@@ -49,6 +49,36 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
     ,->
       $log.info '取消'
     )
+  $scope.alerts = []
+  $scope.alert = (msg)->
+    # 提示信息
+    $scope.alerts.push(
+      msg: msg
+      type: 'success'
+    )
+  $scope.closeAlert = (index)->
+    # 关闭
+    $scope.alerts.splice(index, 1)
+  $scope.confirm = (msg, oFunc, cFunc=null)->
+    # 询问
+    i = $modal.open(
+      templateUrl: '/partials/confirm.html?v=2'
+      controller: 'ConfirmCtrl'
+      backdrop: 'static'
+      keyboard: true
+      size: 'sm'
+      resolve:
+        msg: ->
+          msg
+    )
+    i.result.then((ok)->
+      $log.debug '增加'
+      $log.info ok
+      oFunc()
+    ,->
+      if cFunc != null
+        cFunc()
+    )
 
 WebCtrl.$inject = [
   '$scope'

@@ -43,6 +43,8 @@ func main() {
 	m.Post("/node/:id", web.NodeUpdateHandle)
 	// 删除节点
 	m.Delete("/node/:id", web.NodeDelHandle)
+	// 删除伴侣节点
+	m.Delete("/node/:id/:pid", web.NodePDelHandle)
 	// 增加节点
 	m.Put("/node/:id/:type", web.NodeAddHandle)
 	//m.Get("/", func(r render.Render) {

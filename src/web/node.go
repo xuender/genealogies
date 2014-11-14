@@ -123,7 +123,7 @@ func (i *Node) Add(t string, d Data) Node {
 	return node
 }
 
-// 删除节点
+// 删除节点 T
 func (i *Node) Del() error {
 	if len(i.P) > 0 {
 		return errors.New("删除前请先删除伴侣")
@@ -142,6 +142,20 @@ func (i *Node) Del() error {
 		return errors.New("删除前请先删除子女")
 	}
 	return DB.C("node").RemoveId(i.Id)
+}
+
+// 删除节点
+func (i *Node) DelP(p Node) error {
+	cs, err := p.Children()
+	if err != nil {
+		return err
+	}
+	if len(cs) > 0 {
+		return errors.New("删除伴侣前先删除伴侣的子女")
+	}
+	i.P = IdsDel(i.P, p.Id)
+	i.Save(i.Cb)
+	return DB.C("node").RemoveId(p.Id)
 }
 
 // 修改节点信息
@@ -206,6 +220,31 @@ func NodeDelHandle(params martini.Params, r *http.Request) (int, string) {
 	}
 	if !ok {
 		ret["error"] = err.Error()
+	}
+	ret["ok"] = ok
+	res, _ := json.Marshal(ret)
+	return 200, string(res)
+}
+
+// 删除伴侣节点
+func NodePDelHandle(params martini.Params, r *http.Request) (int, string) {
+	ret := make(map[string]interface{})
+	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
+	p, err2 := NodeFind(bson.ObjectIdHex(params["pid"]))
+	ok := false
+	if err == nil && err2 == nil {
+		err = node.DelP(p)
+		ok = err == nil
+	} else {
+		log.Error(err)
+	}
+	if !ok {
+		if err != nil {
+			ret["error"] = err.Error()
+		}
+		if err2 != nil {
+			ret["error"] = err2.Error()
+		}
 	}
 	ret["ok"] = ok
 	res, _ := json.Marshal(ret)

@@ -95,9 +95,13 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         t.x += (t.mx - t.x - $scope.nw - 40) / 2
   $scope.delete = (n, t=$scope.t)->
     ### 删除 ###
+    if t.P
+      if t.P.indexOf(n) >= 0
+        t.P.splice(t.P.indexOf(n), 1)
+        return
     if t.C
       if t.C.indexOf(n) >= 0
-        t.C.shift(t.C.indexOf(n), 1)
+        t.C.splice(t.C.indexOf(n), 1)
       else
         for c in t.C
           $scope.delete(n, c)
@@ -220,12 +224,27 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     )
   $scope.del = (n)->
     # 节点删除
-    $http.delete("/node/#{n.Id}").success((data)->
-      $log.debug data
-      if data.ok
-        $scope.delete(n)
-      else
-        alert data.error
+    $scope.confirm("是否删除 [ #{n.N} ] ?",->
+      $http.delete("/node/#{n.Id}").success((data)->
+        $log.debug data
+        if data.ok
+          $scope.delete(n)
+          $scope.sort()
+        else
+          $scope.alert data.error
+      )
+    )
+  $scope.delP = (n, p)->
+    # 节点删除
+    $scope.confirm("是否删除 [ #{n.N} ] 的伴侣 [ #{p.N} ] ?",->
+      $http.delete("/node/#{n.Id}/#{p.Id}").success((data)->
+        $log.debug data
+        if data.ok
+          $scope.delete(p)
+          $scope.sort()
+        else
+          $scope.alert data.error
+      )
     )
   $http.get('/info/'+$scope.user.Id).success((data)->
     $log.debug 'get info'

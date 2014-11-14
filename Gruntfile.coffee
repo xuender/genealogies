@@ -235,6 +235,7 @@ module.exports = (grunt)->
           ]
           'src/public/js/app.min.js': [
             'src/js/app.coffee'
+            'src/js/confirmCtrl.coffee'
             'src/js/genealogyCtrl.coffee'
             'src/js/nodeCtrl.coffee'
             'src/js/webCtrl.coffee'

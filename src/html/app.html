@@ -50,6 +50,10 @@
       </div><!-- container-fluid -->
     </nav>
     <div class="container-fluid">
+      <alert ng-repeat="a in alerts" close="closeAlert($index)"
+      type="{{ a.type }}">
+        {{ a.msg }}
+      </alert>
       <div ng-view></div>
     </div><!-- container-fluid -->
     <script src="js/jquery.min.js"></script>
