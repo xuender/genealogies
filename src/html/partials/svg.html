@@ -29,7 +29,7 @@
     font-family="FontAwesome" font-weight="normal" font-size="16">&#xf067</tspan>
     <tspan ng-click="addF(t)" ng-show="t.R" title="设置父亲"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf062</tspan>
-    <tspan ng-click="del(t)" title="删除"
+    <tspan ng-hide="t.C || t.P || t.c" ng-click="del(t)" title="删除"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf00d</tspan>
   </text>
 </g>
@@ -47,7 +47,7 @@
     <tspan x="5" dy="16">生辰: {{ p.B | date:"yyyy-MM-dd"}}</tspan>
     <tspan ng-click="edit(p)"
     x="5" dy="16" cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf007</tspan>
-    <tspan ng-click="delP(t, p)" title="删除"
+    <tspan ng-hide="p.C" ng-click="delP(t, p)" title="删除"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf00d</tspan>
   </text>
 </g>
