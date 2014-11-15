@@ -27,9 +27,11 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $scope.nw = 120
   $scope.nh = 56
   $scope.t =
+    Id: ''
     x: 0
     y: 0
     P: [
+      Id: ''
       x:0
       y:0
     ]
@@ -248,6 +250,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     )
   $http.get('/info/'+$scope.user.Id).success((data)->
     $log.debug 'get info'
+    $log.debug data
     $scope.t = data.T
     $scope.readCids()
     $scope.reset()

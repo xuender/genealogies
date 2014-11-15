@@ -79,7 +79,7 @@ func (i *Info) Rest() {
 }
 
 // 获取用户信息
-func InfoHandle(params martini.Params) string {
+func InfoHandle(session Session, params martini.Params) string {
 	u, err := UserFindById(bson.ObjectIdHex(params["id"]))
 	log.WithFields(log.Fields{
 		"id":  params["id"],

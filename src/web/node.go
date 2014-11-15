@@ -6,8 +6,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/go-martini/martini"
 	"gopkg.in/mgo.v2/bson"
-	"io/ioutil"
-	"net/http"
 	"time"
 )
 
@@ -124,7 +122,7 @@ func (i *Node) Add(t string, d Data) Node {
 }
 
 // 删除节点 T
-func (i *Node) Del() error {
+func (i *Node) Del(uid bson.ObjectId) error {
 	if len(i.P) > 0 {
 		return errors.New("删除前请先删除伴侣")
 	}
@@ -136,7 +134,7 @@ func (i *Node) Del() error {
 		if len(cs) == 1 {
 			nn := Node{}
 			cs[0].F = nn.Id
-			cs[0].Save(cs[0].Cb)
+			cs[0].Save(uid)
 		}
 	} else if len(cs) > 0 {
 		return errors.New("删除前请先删除子女")
@@ -159,22 +157,15 @@ func (i *Node) DelP(p Node) error {
 }
 
 // 修改节点信息
-func NodeUpdateHandle(params martini.Params, r *http.Request) (int, string) {
+func NodeUpdateHandle(session Session, data Data, params martini.Params) (int, string) {
 	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
 	ret := make(map[string]interface{})
 	ret["ok"] = false
 	if err == nil {
-		data := Data{}
-		body, err := ioutil.ReadAll(r.Body)
-		if err == nil {
-			json.Unmarshal(body, &data)
-			log.Debug(data)
-			node.Data = data
-			node.Save(node.Cb)
-			ret["ok"] = true
-		} else {
-			log.Error(err)
-		}
+		log.Debug(data)
+		node.Data = data
+		node.Save(session.Uid)
+		ret["ok"] = true
 	} else {
 		log.Error(err)
 	}
@@ -183,23 +174,15 @@ func NodeUpdateHandle(params martini.Params, r *http.Request) (int, string) {
 }
 
 // 增加节点信息
-func NodeAddHandle(params martini.Params, r *http.Request) (int, string) {
+func NodeAddHandle(session Session, data Data, params martini.Params) (int, string) {
 	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
 	ret := make(map[string]interface{})
 	ret["ok"] = false
 	if err == nil {
-		data := Data{}
-		body, err := ioutil.ReadAll(r.Body)
-		if err == nil {
-			json.Unmarshal(body, &data)
-			log.Debug(data)
-			c := node.Add(params["type"], data)
-			c.Save(node.Cb)
-			ret["node"] = c
-			ret["ok"] = true
-		} else {
-			log.Error(err)
-		}
+		log.Debug(data)
+		c := node.Add(params["type"], data)
+		ret["node"] = c
+		ret["ok"] = true
 	} else {
 		log.Error(err)
 	}
@@ -208,12 +191,12 @@ func NodeAddHandle(params martini.Params, r *http.Request) (int, string) {
 }
 
 // 删除节点
-func NodeDelHandle(params martini.Params, r *http.Request) (int, string) {
+func NodeDelHandle(session Session, params martini.Params) (int, string) {
 	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
 	ret := make(map[string]interface{})
 	ok := false
 	if err == nil {
-		err = node.Del()
+		err = node.Del(session.Uid)
 		ok = err == nil
 	} else {
 		log.Error(err)
@@ -227,7 +210,7 @@ func NodeDelHandle(params martini.Params, r *http.Request) (int, string) {
 }
 
 // 删除伴侣节点
-func NodePDelHandle(params martini.Params, r *http.Request) (int, string) {
+func NodePDelHandle(session Session, params martini.Params) (int, string) {
 	ret := make(map[string]interface{})
 	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
 	p, err2 := NodeFind(bson.ObjectIdHex(params["pid"]))
