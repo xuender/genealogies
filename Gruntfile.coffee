@@ -41,6 +41,15 @@ module.exports = (grunt)->
           filter: 'isFile'
           expand: true
         ]
+      img:
+        files: [
+          cwd: 'src'
+          src: [
+            'img/*'
+          ]
+          dest: 'src/public'
+          expand: true
+        ]
       bootstrap:
         files: [
           cwd: 'bower_components/bootstrap/dist'
