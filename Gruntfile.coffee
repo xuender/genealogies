@@ -247,6 +247,7 @@ module.exports = (grunt)->
             'src/js/confirmCtrl.coffee'
             'src/js/genealogyCtrl.coffee'
             'src/js/nodeCtrl.coffee'
+            'src/js/children.coffee'
             'src/js/webCtrl.coffee'
             'src/js/loginCtrl.coffee'
           ]

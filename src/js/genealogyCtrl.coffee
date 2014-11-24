@@ -165,6 +165,28 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     ,->
       $log.info '取消'
     )
+  $scope.children= (t, p)->
+    # 选择子女
+    i = $modal.open(
+      templateUrl: '/partials/children.html?v=2'
+      controller: 'ChildrenCtrl'
+      backdrop: 'static'
+      keyboard: true
+      size: 'sm'
+      resolve:
+        p: ->
+          p.N
+        t: ->
+          t.N
+        c: ->
+          angular.copy t.C
+
+    )
+    i.result.then((node)->
+      $log.debug '增加'
+    ,->
+      $log.info '取消'
+    )
   $scope.addC = (t)->
     ### 增加子女 ###
     $log.debug 'addC'

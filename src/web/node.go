@@ -103,6 +103,18 @@ func (i *Node) Children() (node []Node, err error) {
 	return
 }
 
+// 设置子女
+func (i *Node) Child(ids string) error {
+	//TODO ids 切割成id
+	node, err := NodeFind(bson.ObjectIdHex(id))
+	if err != nil {
+		return err
+	}
+	i.C = append(i.C, id)
+	node.Save(i.Cb)
+	return nil
+}
+
 // 设置父亲、伴侣、孩子 T
 func (i *Node) Add(t string, d Data) Node {
 	id := bson.NewObjectId()
@@ -241,6 +253,16 @@ func NodePDelHandle(session Session, params martini.Params) (int, string) {
 		}
 	}
 	ret["ok"] = ok
+	res, _ := json.Marshal(ret)
+	return 200, string(res)
+}
+
+// 设置子女
+func NodeChildHandle(session Session, params martini.Params) (int, string) {
+	ret := make(map[string]interface{})
+	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
+	node.Child(params["cids"])
+	ret["ok"] = (err == nil)
 	res, _ := json.Marshal(ret)
 	return 200, string(res)
 }

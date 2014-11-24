@@ -17,7 +17,8 @@
     x="5" dy="16">忌日: {{ t.D | date:"yyyy-MM-dd"}}</tspan>
     <tspan ng-click="edit(t)"
     x="5" dy="16" cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf007</tspan>
-    <tspan ng-click="addC(t)" title="增加子女"
+    <tspan ng-click="addC(t)"
+    title="增加子女"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf063</tspan>
     <tspan ng-click="addP(t)" title="设置伴侣"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf061</tspan>
@@ -49,6 +50,9 @@
     x="5" dy="16" cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf007</tspan>
     <tspan ng-hide="p.C" ng-click="delP(t, p)" title="删除"
     cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf00d</tspan>
+    <tspan ng-show="t.C" ng-click="children(t, p)"
+    title="增加子女"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf063</tspan>
   </text>
 </g>
 <g ng-repeat="t in t.C" ng-include="'partials/svg.html?v=6'"/>
