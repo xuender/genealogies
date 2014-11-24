@@ -25,8 +25,8 @@ PicsCtrl = ($scope, $log)->
     }
     {
       src: "http://www.baidu.com/img/bd_logo1.png"
-      h: "成长日记"
-      p: "子女人生进步的阶梯"
+      h: "通讯录"
+      p: "联系方式等"
       d: "日日新"
     }
     {
