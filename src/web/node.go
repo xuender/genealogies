@@ -21,6 +21,8 @@ type Node struct {
 	M bson.ObjectId `bson:"m,omitempty"`
 	// 伴侣们
 	P []bson.ObjectId `bson:"p,omitempty"`
+	// 子女们
+	C []bson.ObjectId `bson:"c,omitempty"`
 	//// 其他父亲
 	//Fs []bson.ObjectId `bson:"fs,omitempty"`
 	//// 其他母亲
@@ -94,7 +96,10 @@ func (i *Node) Partner() (node []Node, err error) {
 
 // 查找子女
 func (i *Node) Children() (node []Node, err error) {
-	err = DB.C("node").Find(bson.M{"f": i.Id}).All(&node)
+	if len(i.C) > 0 {
+		err = DB.C("node").Find(bson.M{"_id": bson.M{"$in": i.C}}).All(&node)
+	}
+	//err = DB.C("node").Find(bson.M{"f": i.Id}).All(&node)
 	return
 }
 
@@ -107,15 +112,21 @@ func (i *Node) Add(t string, d Data) Node {
 			return r
 		}
 		i.F = id
+		i.Save(i.Cb)
 	}
 	if t == "p" {
 		i.P = append(i.P, id)
+		i.Save(i.Cb)
 	}
-	i.Save(i.Cb)
 	node := NodeNew(d)
 	node.Id = id
+	if t == "f" {
+		node.C = append(node.C, i.Id)
+	}
 	if t == "c" {
 		node.F = i.Id
+		i.C = append(i.C, id)
+		i.Save(i.Cb)
 	}
 	node.Save(i.Cb)
 	return node

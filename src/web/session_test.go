@@ -25,11 +25,6 @@ func TestSessionFind(t *testing.T) {
 		log.Error(err)
 		t.Errorf("增加Session失败")
 	}
-	_, e := SessionFind(session.Id.Hex())
-	if e != nil {
-		log.Error(e)
-		t.Errorf("查找Session失败")
-	}
 }
 func TestLogin(t *testing.T) {
 	s := Connect()
@@ -62,13 +57,4 @@ func TestLogout(t *testing.T) {
 	session, _, _ := Login("110", "123")
 	session.Logout()
 	log.Debug(session.Id)
-	s2, err := SessionFind(session.Id.Hex())
-	if err == nil {
-		log.Error(err)
-		t.Errorf("Session未找到")
-	}
-	if s2.En {
-		log.Error(err)
-		t.Errorf("登出失败")
-	}
 }

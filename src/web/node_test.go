@@ -110,8 +110,7 @@ func TestNodeChildren(t *testing.T) {
 	n := NodeNew(Data{N: "test"})
 	n.Save(bson.NewObjectId())
 	f := n.Add("f", Data{N: "test的丈夫"})
-	n2 := NodeNew(Data{N: "test"})
-	n2.F = f.Id
+	n2 := f.Add("c", Data{N: "儿子"})
 	n2.Save(bson.NewObjectId())
 	ns, err := f.Children()
 	if err != nil || len(ns) != 2 {
@@ -140,11 +139,11 @@ func TestNodeDel(t *testing.T) {
 	n := NodeNew(Data{N: "test"})
 	n.Save(bson.NewObjectId())
 	f := n.Add("p", Data{N: "test的丈夫"})
-	err := n.Del()
+	err := n.Del(bson.NewObjectId())
 	if err == nil {
 		t.Errorf("有伴侣不能删除")
 	}
-	err = f.Del()
+	err = f.Del(bson.NewObjectId())
 	if err != nil {
 		t.Errorf("删除失败")
 	}
@@ -159,7 +158,7 @@ func TestNodeDel(t *testing.T) {
 		t.Errorf("增加爷爷失败")
 	}
 	ff.Save(bson.NewObjectId())
-	err = ff.Del()
+	err = ff.Del(bson.NewObjectId())
 	if err != nil {
 		t.Errorf("删除根节点失败")
 	}
