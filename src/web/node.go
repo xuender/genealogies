@@ -23,12 +23,6 @@ type Node struct {
 	P []bson.ObjectId `bson:"p,omitempty"`
 	// 子女们
 	C []bson.ObjectId `bson:"c,omitempty"`
-	//// 其他父亲
-	//Fs []bson.ObjectId `bson:"fs,omitempty"`
-	//// 其他母亲
-	//Ms []bson.ObjectId `bson:"ms,omitempty"`
-	//// 其他伴侣
-	//ps []bson.ObjectId `bson:"ps,omitempty"`
 }
 
 // 新建节点 T
@@ -104,14 +98,15 @@ func (i *Node) Children() (node []Node, err error) {
 }
 
 // 设置子女
-func (i *Node) Child(ids string) error {
-	//TODO ids 切割成id
-	node, err := NodeFind(bson.ObjectIdHex(id))
-	if err != nil {
-		return err
+func (i *Node) Child(ids []string) error {
+	for _, id := range ids {
+		node, err := NodeFind(bson.ObjectIdHex(id))
+		if err != nil {
+			return err
+		}
+		i.C = append(i.C, node.Id)
 	}
-	i.C = append(i.C, id)
-	node.Save(i.Cb)
+	i.Save(i.Cb)
 	return nil
 }
 
@@ -258,10 +253,12 @@ func NodePDelHandle(session Session, params martini.Params) (int, string) {
 }
 
 // 设置子女
-func NodeChildHandle(session Session, params martini.Params) (int, string) {
+func NodeChildHandle(session Session, ids []string, params martini.Params) (int, string) {
 	ret := make(map[string]interface{})
 	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
-	node.Child(params["cids"])
+	if err == nil {
+		err = node.Child(ids)
+	}
 	ret["ok"] = (err == nil)
 	res, _ := json.Marshal(ret)
 	return 200, string(res)

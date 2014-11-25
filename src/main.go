@@ -53,7 +53,7 @@ func main() {
 	// 增加节点
 	m.Put("/node/:id/:type", web.Authorize, bind.Bind(web.Data{}), web.NodeAddHandle)
 	// 设置子女
-	m.Post("/node/:id/:cids", web.Authorize, web.NodeChildHandle)
+	m.Post("/node/:id", web.Authorize, bind.Bind([]string{}), web.NodeChildHandle)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

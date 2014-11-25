@@ -167,3 +167,26 @@ func TestNodeDel(t *testing.T) {
 		t.Errorf("删除根节点，后父节点清空")
 	}
 }
+func TestNodeChild(t *testing.T) {
+	s := Connect()
+	defer s.Close()
+	DB = GetTestDb(s)
+	DB.DropDatabase()
+	n := NodeNew(Data{N: "test"})
+	n.Save(bson.NewObjectId())
+	c1 := NodeNew(Data{N: "test"})
+	c1.Save(bson.NewObjectId())
+	c2 := NodeNew(Data{N: "test"})
+	c2.Save(bson.NewObjectId())
+	ids := []string{
+		c1.Id.Hex(),
+		c2.Id.Hex(),
+	}
+	err := n.Child(ids)
+	if err != nil {
+		t.Errorf("设置子女错误:%s", err)
+	}
+	if len(n.C) != 2 {
+		t.Errorf("子女数量错误:%d", len(n.C))
+	}
+}
