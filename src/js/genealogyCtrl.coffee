@@ -64,7 +64,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $log.debug '%d,%d', t.x, t.y
     t.mx = t.x
 
-    if t.C
+    if t.C # 有子女
       $log.debug '排序 [ %s ] 的子女', t.N
       t.C.sort((a,b)->
         at = if a.G then new Date(a.B).getTime() - 162135596800000 else new Date(a.B).getTime()
@@ -79,7 +79,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         $scope.sort(c)
         if c.mx > t.mx
           t.mx = c.mx
-    if t.P
+    if t.P # 有伴侣
       w = (($scope.nw + 10) * (t.P.length + 1)) + 50
       if t.mx > t.x + w
         $log.debug 'pppp'
@@ -91,6 +91,18 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         x += $scope.nw + 10
         p.x = x
         p.y = t.y
+        if p.bc
+          p.C = angular.copy p.bc
+        else
+          p.bc = angular.copy p.C
+        if p.C # 伴侣有子女
+          for c in p.C
+            c.u = false # 显示线条
+            if t.C
+              for tc in t.C
+                if tc.Id == c.Id
+                  tc.u = true
+                  p.C.push tc
     else
       if t.mx > t.x + $scope.nw + 40
         $log.debug '!pppp'
@@ -179,11 +191,24 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         t: ->
           t.N
         c: ->
-          angular.copy t.C
+          ret = angular.copy t.C
+          if p.C
+            for c in p.C
+              for r in ret
+                if c.Id == r.Id
+                  r.s = true
+          $log.debug ret
+          ret
 
     )
-    i.result.then((node)->
-      $log.debug '增加'
+    i.result.then((ids)->
+      $log.debug '修改子女'
+      $http.post("/children/#{p.Id}", ids).success((data)->
+        if data.ok
+          p.bc = false
+          p.C = data.cs
+          $scope.sort()
+      )
     ,->
       $log.info '取消'
     )

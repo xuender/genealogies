@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+// ID
+type Id struct {
+	Id string
+}
+
 // 人员基本信息
 type Data struct {
 	// 姓名

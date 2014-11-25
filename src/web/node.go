@@ -99,6 +99,7 @@ func (i *Node) Children() (node []Node, err error) {
 
 // 设置子女
 func (i *Node) Child(ids []string) error {
+	i.C = []bson.ObjectId{}
 	for _, id := range ids {
 		node, err := NodeFind(bson.ObjectIdHex(id))
 		if err != nil {
@@ -253,11 +254,17 @@ func NodePDelHandle(session Session, params martini.Params) (int, string) {
 }
 
 // 设置子女
-func NodeChildHandle(session Session, ids []string, params martini.Params) (int, string) {
+func NodeChildHandle(session Session, ids []Id, params martini.Params) (int, string) {
 	ret := make(map[string]interface{})
 	node, err := NodeFind(bson.ObjectIdHex(params["id"]))
+	var is []string
+	for _, i := range ids {
+		is = append(is, i.Id)
+	}
 	if err == nil {
-		err = node.Child(ids)
+		err = node.Child(is)
+		cs, _ := node.Children()
+		ret["cs"] = cs
 	}
 	ret["ok"] = (err == nil)
 	res, _ := json.Marshal(ret)

@@ -11,8 +11,13 @@ ChildrenCtrl= ($scope, $log, $modalInstance, t, p, c)->
   $scope.p = p
   $scope.ok = ->
     $log.debug 'ok'
-    $modalInstance.close([
-    ])
+    ret = []
+    for c in $scope.c
+      if c.s
+        ret.push(
+          Id: c.Id
+        )
+    $modalInstance.close(ret)
   $scope.cancel = ->
     $modalInstance.dismiss('cancel')
 

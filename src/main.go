@@ -52,8 +52,8 @@ func main() {
 	m.Delete("/node/:id/:pid", web.Authorize, web.NodePDelHandle)
 	// 增加节点
 	m.Put("/node/:id/:type", web.Authorize, bind.Bind(web.Data{}), web.NodeAddHandle)
-	// 设置子女
-	m.Post("/node/:id", web.Authorize, bind.Bind([]string{}), web.NodeChildHandle)
+	// 设置子
+	m.Post("/children/:id", web.Authorize, bind.Bind([]web.Id{}), web.NodeChildHandle)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})
