@@ -91,17 +91,14 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         x += $scope.nw + 10
         p.x = x
         p.y = t.y
-        if p.bc
-          p.C = angular.copy p.bc
-        else
+        if not p.bc
           p.bc = angular.copy p.C
-        if p.C # 伴侣有子女
-          for c in p.C
-            c.u = false # 显示线条
+        p.C = []
+        if p.bc
+          for c in p.bc
             if t.C
               for tc in t.C
                 if tc.Id == c.Id
-                  tc.u = true
                   p.C.push tc
     else
       if t.mx > t.x + $scope.nw + 40
