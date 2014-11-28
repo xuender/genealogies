@@ -56,26 +56,48 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     if t.C
       for c in t.C
         $scope.reset(c)
-  $scope.title = (t=$scope.t)->
-    # 设置称谓
+  $scope.findTitle = (e, t=$scope.t)->
     if t.E
+      if t.E == e
+        r = t
+    if r
+      return r
+    if t.C
+      for c in t.C
+        b = $scope.findTitle(e, c)
+        if b
+          return b
+    false
+  $scope.title = (t)->
+    # 设置称谓
+    if t.E and TITLE[t.E]
+      e = TITLE[t.E]
       $log.debug 'title:%s', t.N
       if t.f and not t.f.E
-        t.f.E = TITLE[t.E].f
+        t.f.E = e.f
         $scope.title(t.f)
       if t.P
         for p in t.P
           if not p.E
-            p.E = if p.G then TITLE[t.E].pt else TITLE[t.E].pf
+            p.E = if p.G then e.pt else e.pf
       if t.C
+        if e.b
+          b = $scope.findTitle(e.b)
         for c in t.C
           if not c.E
-            c.E = if c.G then TITLE[t.E].ct else TITLE[t.E].cf
-    if t.C
-      for c in t.C
-        $scope.title(c)
+            if e.b
+              if new Date(b.B).getTime() > new Date(c.B).getTime()
+                c.E = if c.G then e.cta else e.cfa
+              else
+                c.E = if c.G then e.ctb else e.cfb
+            else
+              if e.ct
+                c.E = if c.G then e.ct else e.cf
+          $scope.title(c)
+
   $scope.sort = (t=$scope.t)->
     ### 排序 ###
+    $scope.title(t)
     if t == $scope.t
       t.x = 0
       t.y = 0
@@ -286,6 +308,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         $log.debug data
         if data.ok
           $scope.update($scope.t, n)
+          $scope.sort()
       )
     )
   $scope.del = (n)->
@@ -321,7 +344,6 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $scope.sort()
     $scope.t.R = true
     $log.debug $scope.t
-    $scope.title()
   )
   $scope.readCids = (t=$scope.t)->
     # 读取收起标记
