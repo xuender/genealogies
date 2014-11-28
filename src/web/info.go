@@ -27,6 +27,8 @@ type Data struct {
 	D time.Time
 	// 电话
 	T string
+	// 称谓
+	E string `bson:"E,omitempty"`
 }
 
 // 用户信息
@@ -47,7 +49,7 @@ func InfoNew(data Data, nodeId bson.ObjectId) Info {
 			Data: data,
 			Id:   nodeId,
 		},
-		Id: bson.NewObjectId(),
+		Id: nodeId,
 	}
 }
 
@@ -72,12 +74,14 @@ func (i *Info) Json() string {
 
 // 重新读取用户信息
 func (i *Info) Rest() {
+	log.WithFields(log.Fields{
+		"i.id": i.Id.Hex(),
+	}).Debug("Rest")
 	n, err := NodeFind(i.T.Id)
 	if err == nil {
-		//i.S = "本人"
 		root := n.Root(4)
 		tree := TreeNew(*root)
-		tree.Create(*root, 9)
+		tree.Create(*root, i.Id, 9)
 		i.T = tree
 		i.Save(i.Cb)
 	}

@@ -13,6 +13,7 @@ Node {
   L:  是否在世
   D:  祭日
   T:  电话
+  E:  称谓
   x:  横轴
   y:  纵轴
   mx: 包括后代的最大横轴
@@ -21,6 +22,7 @@ Node {
   cP: 收起后的伴侣们
 }
 ###
+
 GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   ### 族谱 ###
   lss.bind($scope, "cids", [])
@@ -54,6 +56,24 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     if t.C
       for c in t.C
         $scope.reset(c)
+  $scope.title = (t=$scope.t)->
+    # 设置称谓
+    if t.E
+      $log.debug 'title:%s', t.N
+      if t.f and not t.f.E
+        t.f.E = TITLE[t.E].f
+        $scope.title(t.f)
+      if t.P
+        for p in t.P
+          if not p.E
+            p.E = if p.G then TITLE[t.E].pt else TITLE[t.E].pf
+      if t.C
+        for c in t.C
+          if not c.E
+            c.E = if c.G then TITLE[t.E].ct else TITLE[t.E].cf
+    if t.C
+      for c in t.C
+        $scope.title(c)
   $scope.sort = (t=$scope.t)->
     ### 排序 ###
     if t == $scope.t
@@ -301,6 +321,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $scope.sort()
     $scope.t.R = true
     $log.debug $scope.t
+    $scope.title()
   )
   $scope.readCids = (t=$scope.t)->
     # 读取收起标记
