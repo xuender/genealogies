@@ -42,6 +42,7 @@ func (u *User) Create() {
 	data := Data{
 		N: u.Name,
 		L: true,
+		E: "自身",
 	}
 	node := NodeNew(data)
 	info := InfoNew(data, node.Id)

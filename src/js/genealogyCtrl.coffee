@@ -68,7 +68,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         if b
           return b
     false
-  $scope.title = (t)->
+  $scope.title = (t=$scope.t)->
     # 设置称谓
     if t.E and TITLE[t.E]
       e = TITLE[t.E]
@@ -93,11 +93,13 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
             else
               if e.ct
                 c.E = if c.G then e.ct else e.cf
+
+    if t.C
+      for c in t.C
           $scope.title(c)
 
   $scope.sort = (t=$scope.t)->
     ### 排序 ###
-    $scope.title(t)
     if t == $scope.t
       t.x = 0
       t.y = 0
@@ -140,12 +142,14 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           for c in p.bc
             if t.C
               for tc in t.C
-                if tc.Id == c.Id
+                if tc.Id == c
                   p.C.push tc
     else
       if t.mx > t.x + $scope.nw + 40
         $log.debug '!pppp'
         t.x += (t.mx - t.x - $scope.nw - 40) / 2
+    if t == $scope.t
+      $scope.title()
   $scope.delete = (n, t=$scope.t)->
     ### 删除 ###
     if t.P
@@ -244,8 +248,10 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       $log.debug '修改子女'
       $http.post("/children/#{p.Id}", ids).success((data)->
         if data.ok
-          p.bc = false
-          p.C = data.cs
+          ids = []
+          for c in data.cs
+            ids.push(c.Id)
+          p.bc = ids
           $scope.sort()
       )
     ,->
@@ -337,7 +343,7 @@ GenealogyCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     )
   $http.get('/info/'+$scope.user.Id).success((data)->
     $log.debug 'get info'
-    $log.debug data
+    $log.debug angular.copy data
     $scope.t = data.T
     $scope.readCids()
     $scope.reset()

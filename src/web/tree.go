@@ -36,8 +36,20 @@ func (t *Tree) Create(n Node, nodeId bson.ObjectId, i rune) {
 	if err == nil {
 		for _, p := range ps {
 			nt := TreeNew(p)
-			// TODO 伴侣不递归子女 nt.Create(p, i-1)
+			cs, err := p.Children()
+			if err == nil {
+				for _, c := range cs {
+					//nt.Create(c, nodeId, i-1)
+					nt.C = append(nt.C, c.Id)
+					log.WithFields(log.Fields{
+						"c.id": c.Id.Hex(),
+					}).Debug("Append c.ID")
+				}
+			}
 			t.P = append(t.P, nt)
+			log.WithFields(log.Fields{
+				"t.p": t.P,
+			}).Debug("t.pppppppp")
 		}
 	}
 	cs, err := n.Children()
