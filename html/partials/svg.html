@@ -1,0 +1,66 @@
+<g ng-attr-transform="translate({{ t.x }},{{ t.y }})">
+  <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
+  x="0" y="0" strokeWidth="2" fill="none" stroke="black" stroke-width="5" rx="5" ry="5" isShadow="true" stroke-opacity="0.049999999999999996" transform="translate(1, 1)"></rect>
+  <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
+  x="0" y="0" strokeWidth="2" fill="none" stroke="black" stroke-width="3" rx="5" ry="5" isShadow="true" stroke-opacity="0.09999999999999999" transform="translate(1, 1)"></rect>
+  <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
+  x="0" y="0" strokeWidth="2" fill="none" stroke="black" stroke-width="1" rx="5" ry="5" isShadow="true" stroke-opacity="0.15" transform="translate(1, 1)"></rect>
+  <rect ng-attr-fill="{{ t.G?'#7cb5ec':'#ffb58c' }}"
+  ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
+  x="0" y="0" strokeWidth="2" stroke="white" stroke-width="2" rx="5" ry="5"></rect>
+  <text ng-attr-style="{{ t.L?'color:white;fill:white;':'' }}"
+  x="5" zIndex="1" y="18">
+    <tspan>{{ t.E }}: {{ t.N }}</tspan>
+    <tspan ng-show="t.L"
+    x="5" dy="16">生辰: {{ t.B | date:"yyyy-MM-dd"}}</tspan>
+    <tspan ng-hide="t.L"
+    x="5" dy="16">忌日: {{ t.D | date:"yyyy-MM-dd"}}</tspan>
+    <tspan ng-click="edit(t)"
+    x="5" dy="16" cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf007</tspan>
+    <tspan ng-click="addC(t)"
+    title="增加子女"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf063</tspan>
+    <tspan ng-click="addP(t)" title="设置伴侣"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf061</tspan>
+    <tspan ng-hide="t.c || !t.C" ng-click="close(t)"
+    title="打开" cursor="pointer"
+    font-family="FontAwesome" font-weight="normal" font-size="16">&#xf068</tspan>
+    <tspan ng-show="t.c" ng-click="close(t, false)"
+    title="关闭" cursor="pointer"
+    font-family="FontAwesome" font-weight="normal" font-size="16">&#xf067</tspan>
+    <tspan ng-click="addF(t)" ng-show="t.R" title="设置父亲"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf062</tspan>
+    <tspan ng-hide="t.C || t.P || t.c" ng-click="del(t)" title="删除"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf00d</tspan>
+  </text>
+</g>
+<g ng-repeat="p in t.P" ng-attr-transform="translate({{ p.x }},{{ p.y }})">
+  <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
+  x="0" y="0" strokeWidth="2" fill="none" stroke="black" stroke-width="5" rx="5" ry="5" isShadow="true" stroke-opacity="0.049999999999999996" transform="translate(1, 1)"></rect>
+  <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
+  x="0" y="0" strokeWidth="2" fill="none" stroke="black" stroke-width="3" rx="5" ry="5" isShadow="true" stroke-opacity="0.09999999999999999" transform="translate(1, 1)"></rect>
+  <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
+  x="0" y="0" strokeWidth="2" fill="none" stroke="black" stroke-width="1" rx="5" ry="5" isShadow="true" stroke-opacity="0.15" transform="translate(1, 1)"></rect>
+  <rect ng-attr-width="{{ nw }}" ng-attr-height="{{ nh }}"
+  x="0" y="0" strokeWidth="2" ng-attr-fill="{{ p.G?'#7cb5ec':'#ffb58c' }}" stroke="white" stroke-width="2" rx="5" ry="5"></rect>
+  <text x="5" zIndex="1" ng-attr-style="{{ p.L?'color:white;fill:white;':'' }}" y="18">
+    <tspan>{{ p.E }}: {{ p.N }}</tspan>
+    <tspan x="5" dy="16">生辰: {{ p.B | date:"yyyy-MM-dd"}}</tspan>
+    <tspan ng-click="edit(p)"
+    x="5" dy="16" cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf007</tspan>
+    <tspan ng-hide="p.C" ng-click="delP(t, p)" title="删除"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf00d</tspan>
+    <tspan ng-show="t.C" ng-click="children(t, p)"
+    title="增加子女"
+    cursor="pointer" font-family="FontAwesome" font-weight="normal" font-size="16">&#xf063</tspan>
+  </text>
+  <path ng-repeat="c in p.C"
+  ng-attr-transform="translate({{ (nw/2) }},{{ nh + 3 }})"
+  ng-attr-d="M 0 0 {{ c.x == p.x + 20 ? 'L 0 44' : 'C 0 39 ' + (c.x - p.x + 25) + ' 5 ' + (c.x - p.x + 20) + ' 44'}}"
+  fill="none" stroke="#a3875c" stroke-width="2"/>
+</g>
+<g ng-repeat="t in t.C" ng-include="'partials/svg.html?v=9'"/>
+<path ng-repeat="c in t.C" ng-attr-transform="translate({{ c.f.x + (nw/2) }},{{ c.f.y + nh + 3 }})" 
+ng-attr-d="M 0 0 {{ c.x == c.f.x + 20 ? 'L 0 44' : 'C 0 39 ' + (c.x - c.f.x - 25) + ' 5 ' + (c.x - c.f.x - 20) + ' 44'}}"
+fill="none" stroke="#87a35c" stroke-width="2"/>
+

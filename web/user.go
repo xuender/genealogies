@@ -12,6 +12,8 @@ type User struct {
 	Phone string
 	// 姓名
 	Name string
+	// 密码
+	Password string
 	// 是否是管理员
 	IsManager bool
 	// 创建时间

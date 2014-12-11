@@ -15,7 +15,6 @@ module.exports = (grunt)->
     clean:
       dist: [
         'dist'
-        'src/public'
       ]
     bump:
       options:
@@ -25,29 +24,29 @@ module.exports = (grunt)->
       dist:
         files: [
           {
-            cwd: 'src/public'
+            cwd: 'public'
             src: '**'
-            dest: 'dist/public'
+            dest: 'public'
             expand: true
           }
         ]
       root:
         files: [
-          cwd: 'src/html'
+          cwd: 'html'
           src: [
             '**/*.html'
           ]
-          dest: 'src/public'
+          dest: 'public'
           filter: 'isFile'
           expand: true
         ]
       img:
         files: [
-          cwd: 'src'
+          cwd: 'img'
           src: [
-            'img/*'
+            '*'
           ]
-          dest: 'src/public'
+          dest: 'public/img'
           expand: true
         ]
       bootstrap:
@@ -60,7 +59,7 @@ module.exports = (grunt)->
             'js/*.min.js'
             'js/*.map'
           ]
-          dest: 'src/public'
+          dest: 'public'
           expand: true
         ]
       angular:
@@ -71,7 +70,7 @@ module.exports = (grunt)->
             'angular.min.js'
             'angular.min.js.map'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -81,7 +80,7 @@ module.exports = (grunt)->
           src: [
             'angular-locale_zh-cn.js'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -93,7 +92,7 @@ module.exports = (grunt)->
             'angular-route.min.js'
             'angular-route.min.js.map'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -105,7 +104,7 @@ module.exports = (grunt)->
             'ng-table.min.js'
             'ng-table.map'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -115,7 +114,7 @@ module.exports = (grunt)->
           src: [
             'ng-table.min.css'
           ]
-          dest: 'src/public/css'
+          dest: 'public/css'
           expand: true
           filter: 'isFile'
         ]
@@ -125,7 +124,7 @@ module.exports = (grunt)->
           src: [
             'angular-local-storage.min.js'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -135,7 +134,7 @@ module.exports = (grunt)->
           src: [
             'md5.min.js'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -146,7 +145,7 @@ module.exports = (grunt)->
             'jquery.min.js'
             'jquery.min.map'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -157,7 +156,7 @@ module.exports = (grunt)->
             'angular-file-upload-html5-shim.min.js'
             'angular-file-upload.min.js'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -167,7 +166,7 @@ module.exports = (grunt)->
           src: [
             'hotkey.min.js'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -177,7 +176,7 @@ module.exports = (grunt)->
           src: [
             'ngSocket.js'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -187,7 +186,7 @@ module.exports = (grunt)->
           src: [
             'ui-bootstrap-tpls.min.js'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
@@ -197,7 +196,7 @@ module.exports = (grunt)->
           src: [
             'font-awesome.min.css'
           ]
-          dest: 'src/public/css'
+          dest: 'public/css'
           expand: true
           filter: 'isFile'
         ]
@@ -207,7 +206,7 @@ module.exports = (grunt)->
           src: [
             '*'
           ]
-          dest: 'src/public/fonts'
+          dest: 'public/fonts'
           expand: true
           filter: 'isFile'
         ]
@@ -218,17 +217,17 @@ module.exports = (grunt)->
             'textAngular-sanitize.min.js'
             'textAngular.min.js'
           ]
-          dest: 'src/public/js'
+          dest: 'public/js'
           expand: true
           filter: 'isFile'
         ]
       css:
         files: [
-          cwd: 'src/css'
+          cwd: 'css'
           src: [
             '*.css'
           ]
-          dest: 'src/public/css'
+          dest: 'public/css'
           expand: true
           filter: 'isFile'
         ]
@@ -237,51 +236,51 @@ module.exports = (grunt)->
         bare: true
       main:
         files:
-          'src/public/js/index.min.js': [
-            'src/js/index.coffee'
-            'src/js/webCtrl.coffee'
-            'src/js/loginCtrl.coffee'
+          'public/js/index.min.js': [
+            'js/index.coffee'
+            'js/webCtrl.coffee'
+            'js/loginCtrl.coffee'
           ]
-          'src/public/js/app.min.js': [
-            'src/js/data.coffee'
-            'src/js/app.coffee'
-            'src/js/confirmCtrl.coffee'
-            'src/js/genealogyCtrl.coffee'
-            'src/js/nodeCtrl.coffee'
-            'src/js/children.coffee'
-            'src/js/webCtrl.coffee'
-            'src/js/loginCtrl.coffee'
+          'public/js/app.min.js': [
+            'js/data.coffee'
+            'js/app.coffee'
+            'js/confirmCtrl.coffee'
+            'js/genealogyCtrl.coffee'
+            'js/nodeCtrl.coffee'
+            'js/children.coffee'
+            'js/webCtrl.coffee'
+            'js/loginCtrl.coffee'
           ]
     uglify:
       main:
         files:
           'dist/js/web.min.js': [
-            'src/public/js/web.min.js'
+            'public/js/web.min.js'
           ]
           'dist/js/app.min.js': [
-            'src/public/js/app.min.js'
+            'public/js/app.min.js'
           ]
     cssmin:
       toolbox:
         expand: true
-        cwd: 'src/public/css/'
+        cwd: 'public/css/'
         src: ['*.css', '!*.min.css'],
         dest: 'dist/css/'
         #ext: '.min.css'
     watch:
       css:
         files: [
-          'src/css/*.css'
+          'css/*.css'
         ]
         tasks: ['copy:css']
       html:
         files: [
-          'src/html/**/*.html'
+          'html/**/*.html'
         ]
         tasks: ['copy:root']
       coffee:
         files: [
-          'src/js/*.coffee'
+          'js/*.coffee'
         ]
         tasks: ['coffee']
     karma:
