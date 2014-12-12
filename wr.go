@@ -24,8 +24,8 @@ func main() {
 	m.Use(render.Renderer())
 	store := sessions.NewCookieStore([]byte("xuender@gmail.com"))
 	m.Use(sessions.Sessions("f_session", store))
-	// 手机、密码登陆
-	m.Post("/login", bind.Bind(web.LoginForm{}), web.LoginHandle)
+	// 手机、密码登录
+	m.Post("/login", bind.Bind(web.User{}), web.UserLogin)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})
