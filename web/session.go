@@ -17,10 +17,14 @@ type Session struct {
 }
 
 // 会话查找
-func (s *Session) Find(sid string) (err error) {
-	err = DB.C("session").FindId(bson.ObjectIdHex(sid)).One(s)
-	if err == nil {
-		err = s.User.Find(s.Uid)
+func (s *Session) Find() (err error) {
+	c := DB.C("session")
+	if s.Id.Valid() {
+		err = c.FindId(s.Id).One(s)
+		if err == nil {
+			s.User.Id = s.Uid
+			err = s.User.Find()
+		}
 	}
 	return
 }

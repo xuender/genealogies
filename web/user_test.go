@@ -24,9 +24,9 @@ func TestUserFind(t *testing.T) {
 	}
 	u.Create()
 	user := User{
-		Phone: "110",
+		Id: u.Id,
 	}
-	err := user.Find(u.Id)
+	err := user.Find()
 	if err != nil {
 		t.Errorf("查找失败")
 	}
@@ -41,15 +41,20 @@ func TestUserFindByPhone(t *testing.T) {
 		Phone: "110",
 	}
 	c.Insert(&u)
-	user := User{}
-	err := user.FindByPhone("110")
+	user := User{
+		Phone: "110",
+	}
+	err := user.Find()
 	if err != nil {
 		t.Errorf("查找失败")
 	}
 	if user.Phone != "110" {
 		t.Errorf("手机错误")
 	}
-	err = user.FindByPhone("112")
+	u2 := User{
+		Phone: "112",
+	}
+	err = u2.Find()
 	if err == nil {
 		t.Errorf("未找到应提示错误")
 	}
@@ -71,8 +76,10 @@ func TestUserCreate(t *testing.T) {
 	if !u.En {
 		t.Errorf("新用户有效状态错误")
 	}
-	r := User{}
-	err = r.FindByPhone("110")
+	r := User{
+		Phone: "110",
+	}
+	err = r.Find()
 	if err != nil {
 		t.Errorf("创建用户未找到")
 	}

@@ -20,8 +20,10 @@ func TestSessionFind(t *testing.T) {
 		Uid: u.Id,
 	}
 	n.Create()
-	m := Session{}
-	e := m.Find(n.Id.Hex())
+	m := Session{
+		Id: n.Id,
+	}
+	e := m.Find()
 	if e != nil {
 		t.Errorf("查找会话失败")
 	}

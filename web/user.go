@@ -34,20 +34,22 @@ func (u *User) Disable() {
 	// TODO 保存
 }
 
-// 根据ID查找
-func (u *User) Find(uid bson.ObjectId) error {
-	return DB.C("user").FindId(uid).One(u)
-}
-
-// 用户根据手机号查找
-func (u *User) FindByPhone(phone string) error {
-	return DB.C("user").Find(bson.M{"phone": phone}).One(u)
+// 查找用户
+func (u *User) Find() error {
+	c := DB.C("user")
+	if u.Id.Valid() {
+		return c.FindId(u.Id).One(u)
+	}
+	if u.Phone != "" {
+		return c.Find(bson.M{"phone": u.Phone}).One(u)
+	}
+	return errors.New("条件不具足，无法查找.")
 }
 
 // 用户创建
 func (u *User) Create() (err error) {
 	c := DB.C("user")
-	err = u.FindByPhone(u.Phone)
+	err = u.Find()
 	if err == nil {
 		return errors.New("手机" + u.Phone + "已经注册")
 	}
@@ -64,8 +66,10 @@ func UserLogin(session sessions.Session, user User) string {
 	ret := make(map[string]interface{})
 	ret["ok"] = false
 	log.Printf("手机登陆:%s\n", user.Phone)
-	u := User{}
-	err := u.FindByPhone(user.Phone)
+	u := User{
+		Phone: user.Phone,
+	}
+	err := u.Find()
 	if err != nil {
 		err = errors.New("手机号" + user.Phone + "未找到，没有注册")
 		ret["err"] = "手机号" + user.Phone + "未找到，没有注册"
