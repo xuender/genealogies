@@ -1,6 +1,7 @@
 package web
 
 import (
+	"errors"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -24,9 +25,10 @@ func (s *Session) Find() (err error) {
 		if err == nil {
 			s.User.Id = s.Uid
 			err = s.User.Find()
+			return
 		}
 	}
-	return
+	return errors.New("Id无效，无法查找")
 }
 
 // 创建会话

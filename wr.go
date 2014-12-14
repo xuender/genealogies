@@ -4,7 +4,7 @@ import (
 	"./base"
 	"./web"
 	"github.com/go-martini/martini"
-	bind "github.com/martini-contrib/binding"
+	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 	"log"
@@ -25,7 +25,9 @@ func main() {
 	store := sessions.NewCookieStore([]byte("xuender@gmail.com"))
 	m.Use(sessions.Sessions("f_session", store))
 	// 手机、密码登录
-	m.Post("/login", bind.Bind(web.User{}), web.UserLogin)
+	m.Post("/login", binding.Bind(web.User{}), web.UserLogin)
+	// 用户注册
+	m.Post("/register", binding.Bind(web.User{}), web.UserRegister)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

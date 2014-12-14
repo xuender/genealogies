@@ -29,7 +29,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
         $scope.user = {}
       )
 
-  $scope.showLogin = ->
+  $scope.showLogin = (m='l')->
     ### 显示登录窗口 ###
     i = $modal.open(
       templateUrl: 'partials/login.html'
@@ -37,9 +37,15 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
       backdrop: 'static'
       keyboard: false
       size: 'sm'
+      resolve:
+        m: ->
+          m
     )
     i.result.then((user)->
-      $http.post('/login', user).success($scope.readUser)
+      if user.m == 'l'
+        $http.post('/login', user).success($scope.readUser)
+      else
+        $http.post('/register', user).success($scope.readUser)
     ,->
       $log.info '取消'
     )

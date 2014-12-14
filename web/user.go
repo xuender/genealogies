@@ -61,6 +61,29 @@ func (u *User) Create() (err error) {
 	return
 }
 
+// 用户注册
+func UserRegister(session sessions.Session, user User) string {
+	ret := make(map[string]interface{})
+	ret["ok"] = false
+	log.Printf("手机注册:%s\n", user.Phone)
+	u := User{
+		Phone: user.Phone,
+	}
+	err := u.Find()
+	if err == nil {
+		ret["err"] = "手机号" + user.Phone + "已经使用，不能注册"
+		res, _ := json.Marshal(ret)
+		return string(res)
+	}
+	err = user.Create()
+	if err != nil {
+		ret["err"] = err.Error()
+		res, _ := json.Marshal(ret)
+		return string(res)
+	}
+	return login(user, session)
+}
+
 // 用户登录
 func UserLogin(session sessions.Session, user User) string {
 	ret := make(map[string]interface{})
@@ -71,15 +94,26 @@ func UserLogin(session sessions.Session, user User) string {
 	}
 	err := u.Find()
 	if err != nil {
-		err = errors.New("手机号" + user.Phone + "未找到，没有注册")
 		ret["err"] = "手机号" + user.Phone + "未找到，没有注册"
 		res, _ := json.Marshal(ret)
 		return string(res)
 	}
-	s := Session{
-		Uid: u.Id,
+	if u.Password != user.Password {
+		ret["err"] = "密码错误"
+		res, _ := json.Marshal(ret)
+		return string(res)
 	}
-	err = s.Create()
+	return login(u, session)
+}
+
+// 登录
+func login(user User, session sessions.Session) string {
+	ret := make(map[string]interface{})
+	ret["ok"] = false
+	s := Session{
+		Uid: user.Id,
+	}
+	err := s.Create()
 	if err != nil {
 		ret["err"] = err.Error()
 		res, _ := json.Marshal(ret)
@@ -88,8 +122,8 @@ func UserLogin(session sessions.Session, user User) string {
 	ret["ok"] = true
 	session.Set("id", s.Id.Hex())
 	ret["id"] = s.Id.Hex()
-	ret["user"] = u
+	ret["user"] = user
 	res, _ := json.Marshal(ret)
-	log.Printf("用户 [ %s ] 登录成功\n", u.Name)
+	log.Printf("用户 [ %s ] 登录成功\n", user.Name)
 	return string(res)
 }
