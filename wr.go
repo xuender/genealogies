@@ -28,6 +28,10 @@ func main() {
 	m.Post("/login", binding.Bind(web.User{}), web.UserLogin)
 	// 用户注册
 	m.Post("/register", binding.Bind(web.User{}), web.UserRegister)
+	// 获取用户信息
+	m.Get("/login", web.UserGet)
+	// 用户登出
+	m.Get("/logout", web.UserLogout)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

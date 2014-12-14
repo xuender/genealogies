@@ -106,6 +106,21 @@ func UserLogin(session sessions.Session, user User) string {
 	return login(u, session)
 }
 
+// 用户登出
+func UserLogout(session sessions.Session) string {
+	id := session.Get("id").(string)
+	log.Printf("读取Session:%s\n", id)
+	s := Session{
+		Id: bson.ObjectIdHex(id),
+	}
+	err := s.Find()
+	if err == nil {
+		s.Logout()
+		session.Delete("id")
+	}
+	return "ok"
+}
+
 // 登录
 func login(user User, session sessions.Session) string {
 	ret := make(map[string]interface{})
@@ -125,5 +140,30 @@ func login(user User, session sessions.Session) string {
 	ret["user"] = user
 	res, _ := json.Marshal(ret)
 	log.Printf("用户 [ %s ] 登录成功\n", user.Name)
+	return string(res)
+}
+
+// 获取用户信息
+func UserGet(session sessions.Session) string {
+	ret := make(map[string]interface{})
+	ret["ok"] = false
+	if session.Get("id") == nil {
+		ret["err"] = "尚未登录"
+		res, _ := json.Marshal(ret)
+		return string(res)
+	}
+	id := session.Get("id").(string)
+	log.Printf("读取Session:%s\n", id)
+	s := Session{
+		Id: bson.ObjectIdHex(id),
+	}
+	err := s.Find()
+	ret["ok"] = (err == nil)
+	if err == nil {
+		ret["user"] = s.User
+	} else {
+		ret["err"] = err.Error()
+	}
+	res, _ := json.Marshal(ret)
 	return string(res)
 }

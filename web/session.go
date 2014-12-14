@@ -15,6 +15,13 @@ type Session struct {
 	User User `bson:",omitempty"`
 	// 创建时间
 	Ca time.Time `bson:"ca,omitempty"`
+	// 修改时间
+	Ua time.Time `bson:"ua,omitempty"`
+}
+
+// 登出
+func (s *Session) Logout() error {
+	return DB.C("session").RemoveId(s.Id)
 }
 
 // 会话查找
