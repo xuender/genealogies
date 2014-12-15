@@ -21,9 +21,9 @@ type User struct {
 	// 是否是管理员
 	IsManager bool
 	// 创建时间
-	Ca time.Time
+	Ca time.Time `bson:"ca,omitempty"`
 	// 修改时间
-	Ua time.Time
+	Ua time.Time `bson:"ua,omitempty"`
 	// 有效标记
 	En bool
 }
@@ -115,6 +115,11 @@ func UserLogout(session sessions.Session) string {
 	}
 	err := s.Find()
 	if err == nil {
+		l := Log{
+			Uid:  s.Uid,
+			Work: "登出",
+		}
+		l.Create()
 		s.Logout()
 		session.Delete("id")
 	}
@@ -140,6 +145,11 @@ func login(user User, session sessions.Session) string {
 	ret["user"] = user
 	res, _ := json.Marshal(ret)
 	log.Printf("用户 [ %s ] 登录成功\n", user.Name)
+	l := Log{
+		Uid:  user.Id,
+		Work: "登录",
+	}
+	l.Create()
 	return string(res)
 }
 

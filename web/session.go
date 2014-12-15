@@ -2,6 +2,9 @@ package web
 
 import (
 	"errors"
+	"github.com/go-martini/martini"
+	"github.com/martini-contrib/render"
+	"github.com/martini-contrib/sessions"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -44,4 +47,19 @@ func (s *Session) Create() error {
 	s.Id = bson.NewObjectId()
 	s.Ca = time.Now()
 	return c.Insert(s)
+}
+
+// 身份认证
+func Authorize(context martini.Context, session sessions.Session, rd render.Render) {
+	if session.Get("id") != nil {
+		s := Session{
+			Id: bson.ObjectIdHex(session.Get("id").(string)),
+		}
+		err := s.Find()
+		if err == nil {
+			context.Map(s)
+			return
+		}
+	}
+	rd.Redirect("/")
 }

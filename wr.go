@@ -32,6 +32,8 @@ func main() {
 	m.Get("/login", web.UserGet)
 	// 用户登出
 	m.Get("/logout", web.UserLogout)
+	// 日志查询
+	m.Get("/logs", web.Authorize, web.LogQuery)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})
