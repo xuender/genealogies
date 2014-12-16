@@ -25,6 +25,9 @@
             <li>
               <a href="#about">关于</a>
             </li>
+            <li ng-show="isLogin">
+              <a href="#about">日志</a>
+            </li>
           </ul>
           <ul ng-hide="isLogin" class="nav navbar-nav navbar-right">
             <li>
@@ -41,10 +44,11 @@
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu" role="menu">
+                <li><a href ng-click="showLog()">操作日志</a></li>
                 <li><a>修改用户信息</a></li>
                 <li class="divider"></li>
-                <li><a ng-click="showLogin()">更换用户</a></li>
-                <li><a ng-click="logout()">退出</a></li>
+                <li><a href ng-click="showLogin()">更换用户</a></li>
+                <li><a href ng-click="logout()">退出</a></li>
               </ul>
             </li>
           </ul>
@@ -79,6 +83,7 @@
     <script src="js/angular.min.js"></script>
     <script src="js/angular-locale_zh-cn.js"></script>
     <script src="js/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/ng-table.min.js"></script>
     <script src="js/angular-local-storage.min.js"></script>
     <script src="js/hotkey.min.js"></script>
     <script src="js/index.min.js"></script>

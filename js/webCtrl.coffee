@@ -29,6 +29,14 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
         $scope.user = {}
       )
 
+  $scope.showLog = ->
+    ### 显示日志 ###
+    $modal.open(
+      templateUrl: 'partials/log.html'
+      controller: LogCtrl
+      backdrop: 'static'
+      size: 'lg'
+    )
   $scope.showLogin = (m='l')->
     ### 显示登录窗口 ###
     i = $modal.open(

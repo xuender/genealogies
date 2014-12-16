@@ -52,12 +52,12 @@ func (l *Log) Query(skip, limit int) (logs []Log, count int, err error) {
 }
 
 // 查询日志
-func LogQuery(session Session) string {
+func LogQuery(session Session, params Params) string {
 	ret := make(map[string]interface{})
 	l := Log{
 		Uid: session.Uid,
 	}
-	ls, count, err := l.Query(0, 100)
+	ls, count, err := l.Query((params.Page-1)*params.Count, params.Count)
 	ret["ok"] = err == nil
 	if err == nil {
 		ret["count"] = count

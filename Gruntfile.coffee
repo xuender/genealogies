@@ -240,6 +240,7 @@ module.exports = (grunt)->
             'js/index.coffee'
             'js/webCtrl.coffee'
             'js/loginCtrl.coffee'
+            'js/logCtrl.coffee'
           ]
           'public/js/app.min.js': [
             'js/data.coffee'
@@ -250,6 +251,7 @@ module.exports = (grunt)->
             'js/children.coffee'
             'js/webCtrl.coffee'
             'js/loginCtrl.coffee'
+            'js/logCtrl.coffee'
           ]
     uglify:
       main:
