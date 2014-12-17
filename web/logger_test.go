@@ -24,12 +24,16 @@ func TestLogQuery(t *testing.T) {
 	}
 	n.Create()
 	l := Log{}
-	ls, count, err := l.Query(0, 100)
+	p := Params{
+		Page:  1,
+		Count: 100,
+	}
+	ls, count, err := l.Query(p)
 	if err == nil {
 		t.Errorf("缺失条件")
 	}
 	l.Uid = uid
-	ls, count, err = l.Query(0, 100)
+	ls, count, err = l.Query(p)
 	if err != nil {
 		t.Errorf("查询成功")
 	}
@@ -39,14 +43,18 @@ func TestLogQuery(t *testing.T) {
 	if count != 2 {
 		t.Errorf("count错误:%d", count)
 	}
-	ls, count, err = l.Query(1, 100)
+	p.Page = 2
+	p.Count = 1
+	ls, count, err = l.Query(p)
 	if count != 2 {
 		t.Errorf("count错误:%d", count)
 	}
 	if len(ls) != 1 {
 		t.Errorf("查询数量错误:%d", len(ls))
 	}
-	ls, count, err = l.Query(0, 1)
+	p.Page = 1
+	p.Count = 1
+	ls, count, err = l.Query(p)
 	if count != 2 {
 		t.Errorf("count错误:%d", count)
 	}

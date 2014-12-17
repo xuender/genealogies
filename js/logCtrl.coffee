@@ -10,16 +10,18 @@ LogCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter)->
   $scope.tableParams = new ngTableParams(
     page: 1
     count: 10
-    total: 1
+    sorting:
+      ca: 'desc'
   ,
     getData: ($defer, params)->
       # 过滤
+      $log.debug params.filter()
       $http.post('/logs',
-        OrderBy: 'ca'
         Page: params.page()
         Count: params.count()
+        Sorting: params.orderBy()
+        Filter: params.filter()
       ).success((data)->
-        $log.debug data
         params.total(data.count)
         $defer.resolve(data.data)
       )

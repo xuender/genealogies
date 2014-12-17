@@ -11,13 +11,13 @@ import (
 type Log struct {
 	Id bson.ObjectId `bson:"_id,omitempty" json:"-"`
 	// 姓名
-	Work string `bson:"work,omitempty"`
+	Work string `bson:"work,omitempty" json:"work"`
 	// 用户ID
 	Uid bson.ObjectId `bson:"uid,omitempty" json:"-"`
 	// 用户
 	User User `bson:",omitempty" json:"-"`
 	// 创建时间
-	Ca time.Time `bson:"ca,omitempty"`
+	Ca time.Time `bson:"ca,omitempty" json:"ca"`
 }
 
 // 创建日志
@@ -38,15 +38,17 @@ func (l *Log) Create() error {
 }
 
 // 查询
-func (l *Log) Query(skip, limit int) (logs []Log, count int, err error) {
+func (l *Log) Query(p Params) (logs []Log, count int, err error) {
 	if !l.Uid.Valid() {
 		err = errors.New("用户不能为空")
 		return
 	}
-	q := DB.C("log").Find(bson.M{"uid": l.Uid})
+	m := bson.M{"uid": l.Uid}
+	p.Find(m)
+	q := DB.C("log").Find(m)
 	count, err = q.Count()
 	if err == nil && count > 0 {
-		err = q.Sort("-ca").Skip(skip).Limit(limit).All(&logs)
+		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&logs)
 	}
 	return
 }
@@ -57,7 +59,7 @@ func LogQuery(session Session, params Params) string {
 	l := Log{
 		Uid: session.Uid,
 	}
-	ls, count, err := l.Query((params.Page-1)*params.Count, params.Count)
+	ls, count, err := l.Query(params)
 	ret["ok"] = err == nil
 	if err == nil {
 		ret["count"] = count

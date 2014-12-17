@@ -32,7 +32,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
   $scope.showLog = ->
     ### 显示日志 ###
     $modal.open(
-      templateUrl: 'partials/log.html'
+      templateUrl: 'partials/log.html?v=1.html'
       controller: LogCtrl
       backdrop: 'static'
       size: 'lg'

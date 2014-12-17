@@ -4,11 +4,11 @@
 <div class="modal-body">
   <table ng-table="tableParams" show-filter="true" class="table">
     <tr ng-repeat="d in $data">
-      <td data-title="'行为'" sortable="'Work'" filter="{'Work': 'text'}">
-        {{ d.Work }}
+      <td data-title="'行为'" sortable="'work'" filter="{'work': 'text'}">
+        {{ d.work }}
       </td>
-      <td data-title="'时间'" sortable="'Ca'">
-        {{ d.Ca | date:"yyyy-MM-dd HH:mm:ss" }}
+      <td data-title="'时间'" sortable="'ca'">
+        {{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}
       </td>
     </tr>
   </table>
