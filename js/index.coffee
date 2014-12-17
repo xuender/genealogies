@@ -8,4 +8,5 @@ angular.module('web', [
   'ui.bootstrap'
   'hotkey'
   'LocalStorageModule'
+  'ngTable'
 ])
