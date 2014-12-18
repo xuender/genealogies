@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"errors"
+	"github.com/go-martini/martini"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -51,6 +52,17 @@ func (l *Log) Query(p Params) (logs []Log, count int, err error) {
 		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&logs)
 	}
 	return
+}
+
+// 创建日志
+func LogCreate(work string) martini.Handler {
+	return func(s Session) {
+		l := Log{
+			Uid:  s.Uid,
+			Work: work,
+		}
+		l.Create()
+	}
 }
 
 // 查询日志

@@ -7,19 +7,6 @@ Distributed under terms of the MIT license.
 WebCtrl = ($scope, $log, $http, $modal, lss)->
   ### 网页制器 ###
   lss.bind($scope, "isLogin", false)
-  $scope.readUser = (data)->
-    ### 读取用户信息 ###
-    $log.debug(data)
-    $scope.isLogin = data.ok
-    if data.ok
-      $scope.user = data.user
-      $log.debug('user id:%s', data.user.Id)
-      #$http.get('/info/'+$scope.user.Id).success((data)->
-      #  $scope.info = data
-      #  $log.debug data
-      #)
-    else
-      alert(data.err)
   $scope.logout = ->
     ### 登出 ###
     if $scope.isLogin
@@ -37,10 +24,19 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
       backdrop: 'static'
       size: 'lg'
     )
+  $scope.password = ->
+    # 更改密码
+    i = $modal.open(
+      templateUrl: 'partials/password.html?1.html'
+      controller: PasswordCtrl
+      backdrop: 'static'
+      keyboard: false
+      size: 'sm'
+    )
   $scope.showLogin = (m='l')->
     ### 显示登录窗口 ###
     i = $modal.open(
-      templateUrl: 'partials/login.html'
+      templateUrl: 'partials/login.html?1.html'
       controller: LoginCtrl
       backdrop: 'static'
       keyboard: false
@@ -50,10 +46,8 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
           m
     )
     i.result.then((user)->
-      if user.m == 'l'
-        $http.post('/login', user).success($scope.readUser)
-      else
-        $http.post('/register', user).success($scope.readUser)
+      $scope.isLogin = true
+      $scope.user = user
     ,->
       $log.info '取消'
     )
@@ -90,7 +84,13 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
   if 'false' == $scope.isLogin
     $scope.isLogin = false
   if $scope.isLogin
-    $http.get('/login').success($scope.readUser)
+    $http.get('/login').success((data)->
+      $log.debug(data)
+      $scope.isLogin = data.ok
+      if data.ok
+        $scope.user = data.user
+        $log.debug('user id:%s', data.user.Id)
+    )
 
 WebCtrl.$inject = [
   '$scope'

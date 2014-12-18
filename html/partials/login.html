@@ -1,6 +1,16 @@
 <div class="modal-header">
-  <h4 class="modal-title" ng-show="user.m == 'l'">用户登录</h4>
-  <h4 class="modal-title" ng-show="user.m == 'r'">用户注册</h4>
+  <h4 class="modal-title">
+    <span ng-show="user.m == 'l'">
+      用户登录
+    </span>
+    <span ng-show="user.m == 'r'">
+      用户注册
+    </span>
+    <div class="btn-group">
+      <label class="btn btn-info" ng-model="user.m" btn-radio="'l'">登录</label>
+      <label class="btn btn-info" ng-model="user.m" btn-radio="'r'">注册</label>
+    </div><!-- btn-group -->
+  </h4>
 </div><!-- modal-header -->
 <div class="modal-body">
   <form name="loginForm" class="login" ng-show="user.m == 'l'">
@@ -52,10 +62,6 @@
   </form>
 </div><!-- modal-body -->
 <div class="modal-footer">
-  <div class="btn-group">
-    <label class="btn btn-info" ng-model="user.m" btn-radio="'l'">登录</label>
-    <label class="btn btn-info" ng-model="user.m" btn-radio="'r'">注册</label>
-  </div><!-- btn-group -->
   <button ng-show="user.m == 'l'" ng-click="ok(loginForm.$valid)" ng-disabled="old && !loginForm.$valid"
   class="btn btn-primary">登录</button>
   <button ng-show="user.m == 'r'" ng-click="ok(registerForm.$valid)" ng-disabled="old && !registerForm.$valid"

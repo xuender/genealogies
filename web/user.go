@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+// 修改密码
+type Password struct {
+	Password string `form:"password" binding:"required"`
+	Old      string `form:"old" binding:"required"`
+}
+
 // 用户
 type User struct {
 	Id bson.ObjectId `bson:"_id,omitempty"`
@@ -31,7 +37,18 @@ type User struct {
 // 用户禁用
 func (u *User) Disable() {
 	u.En = false
-	// TODO 保存
+	u.Save()
+}
+
+// 保存
+func (u *User) Save() error {
+	c := DB.C("user")
+	if u.Ca.IsZero() {
+		u.Ca = time.Now()
+		return c.Insert(u)
+	}
+	u.Ua = time.Now()
+	return c.UpdateId(u.Id, u)
 }
 
 // 查找用户
@@ -81,6 +98,11 @@ func UserRegister(session sessions.Session, user User) string {
 		res, _ := json.Marshal(ret)
 		return string(res)
 	}
+	l := Log{
+		Uid:  user.Id,
+		Work: "注册",
+	}
+	l.Create()
 	return login(user, session)
 }
 
@@ -115,11 +137,6 @@ func UserLogout(session sessions.Session) string {
 	}
 	err := s.Find()
 	if err == nil {
-		l := Log{
-			Uid:  s.Uid,
-			Work: "登出",
-		}
-		l.Create()
 		s.Logout()
 		session.Delete("id")
 	}
@@ -154,25 +171,24 @@ func login(user User, session sessions.Session) string {
 }
 
 // 获取用户信息
-func UserGet(session sessions.Session) string {
+func UserGet(s Session) string {
 	ret := make(map[string]interface{})
-	ret["ok"] = false
-	if session.Get("id") == nil {
-		ret["err"] = "尚未登录"
-		res, _ := json.Marshal(ret)
-		return string(res)
-	}
-	id := session.Get("id").(string)
-	log.Printf("读取Session:%s\n", id)
-	s := Session{
-		Id: bson.ObjectIdHex(id),
-	}
-	err := s.Find()
-	ret["ok"] = (err == nil)
-	if err == nil {
-		ret["user"] = s.User
+	ret["ok"] = true
+	ret["user"] = s.User
+	res, _ := json.Marshal(ret)
+	return string(res)
+}
+
+// 修改密码
+func UserPassword(p Password, s Session) string {
+	ret := make(map[string]interface{})
+	ok := p.Old == s.User.Password
+	ret["ok"] = ok
+	if ok {
+		s.User.Password = p.Password
+		s.User.Save()
 	} else {
-		ret["err"] = err.Error()
+		ret["err"] = "旧密码错误"
 	}
 	res, _ := json.Marshal(ret)
 	return string(res)

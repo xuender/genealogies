@@ -29,9 +29,11 @@ func main() {
 	// 用户注册
 	m.Post("/register", binding.Bind(web.User{}), web.UserRegister)
 	// 获取用户信息
-	m.Get("/login", web.UserGet)
+	m.Get("/login", web.Authorize, web.UserGet)
 	// 用户登出
-	m.Get("/logout", web.UserLogout)
+	m.Get("/logout", web.Authorize, web.LogCreate("登出"), web.UserLogout)
+	// 修改密码
+	m.Post("/password", web.Authorize, web.LogCreate("修改密码"), binding.Bind(web.Password{}), web.UserPassword)
 	// 日志查询
 	m.Post("/logs", web.Authorize, binding.Bind(web.Params{}), web.LogQuery)
 	m.NotFound(func(r render.Render) {

@@ -7,6 +7,10 @@ import (
 
 // 用户禁用
 func TestUserDisable(t *testing.T) {
+	s := base.Connect("127.0.0.1")
+	defer s.Close()
+	DB = s.DB("test")
+	DB.DropDatabase()
 	var u User
 	u.En = true
 	u.Disable()
@@ -86,5 +90,29 @@ func TestUserCreate(t *testing.T) {
 	err = r.Create()
 	if err == nil {
 		t.Errorf("重复手机未找到")
+	}
+}
+
+// 用户保存
+func TestUserSave(t *testing.T) {
+	s := base.Connect("127.0.0.1")
+	defer s.Close()
+	DB = s.DB("test")
+	DB.DropDatabase()
+	u := User{
+		Phone: "110",
+	}
+	u.Create()
+	u.Phone = "123"
+	err := u.Save()
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	o := User{
+		Id: u.Id,
+	}
+	o.Find()
+	if o.Phone != "123" {
+		t.Errorf("修改错误:%s", o.Phone)
 	}
 }

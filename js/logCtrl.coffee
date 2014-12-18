@@ -25,13 +25,6 @@ LogCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter)->
         params.total(data.count)
         $defer.resolve(data.data)
       )
-      #nData = if params.filter() then $filter('filter')($scope.ds, params.filter()) else $scope.ds
-      ## 排序
-      #nData = if params.sorting() then $filter('orderBy')(nData, params.orderBy()) else nData
-      ## 设置过滤后条数
-      #params.total(nData.length)
-      ## 分页
-      #$defer.resolve(nData.slice((params.page() - 1) * params.count(), params.page() * params.count()))
   )
   $scope.cancel = ->
     $modalInstance.dismiss('cancel')
