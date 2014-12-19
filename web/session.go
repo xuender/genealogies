@@ -50,7 +50,7 @@ func (s *Session) Create() error {
 }
 
 // 身份认证
-func Authorize(context martini.Context, session sessions.Session, rd render.Render) {
+func Authorize(context martini.Context, session sessions.Session, r render.Render) {
 	if session.Get("id") != nil {
 		s := Session{
 			Id: bson.ObjectIdHex(session.Get("id").(string)),
@@ -61,5 +61,20 @@ func Authorize(context martini.Context, session sessions.Session, rd render.Rend
 			return
 		}
 	}
-	rd.Redirect("/")
+	r.Redirect("/")
+}
+
+// json身份认证
+func AuthJson(context martini.Context, session sessions.Session, r render.Render) {
+	if session.Get("id") != nil {
+		s := Session{
+			Id: bson.ObjectIdHex(session.Get("id").(string)),
+		}
+		err := s.Find()
+		if err == nil {
+			context.Map(s)
+			return
+		}
+	}
+	r.JSON(200, map[string]interface{}{"ok": false, "err": "身份认证错误"})
 }

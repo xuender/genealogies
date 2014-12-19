@@ -1,8 +1,8 @@
 package web
 
 import (
-	"encoding/json"
 	"errors"
+	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 	"gopkg.in/mgo.v2/bson"
 	"log"
@@ -79,7 +79,7 @@ func (u *User) Create() (err error) {
 }
 
 // 用户注册
-func UserRegister(session sessions.Session, user User) string {
+func UserRegister(session sessions.Session, user User, r render.Render) {
 	ret := make(map[string]interface{})
 	ret["ok"] = false
 	log.Printf("手机注册:%s\n", user.Phone)
@@ -89,25 +89,25 @@ func UserRegister(session sessions.Session, user User) string {
 	err := u.Find()
 	if err == nil {
 		ret["err"] = "手机号" + user.Phone + "已经使用，不能注册"
-		res, _ := json.Marshal(ret)
-		return string(res)
+		r.JSON(200, ret)
+		return
 	}
 	err = user.Create()
 	if err != nil {
 		ret["err"] = err.Error()
-		res, _ := json.Marshal(ret)
-		return string(res)
+		r.JSON(200, ret)
+		return
 	}
 	l := Log{
 		Uid:  user.Id,
 		Work: "注册",
 	}
 	l.Create()
-	return login(user, session)
+	login(user, session, r)
 }
 
 // 用户登录
-func UserLogin(session sessions.Session, user User) string {
+func UserLogin(session sessions.Session, user User, r render.Render) {
 	ret := make(map[string]interface{})
 	ret["ok"] = false
 	log.Printf("手机登陆:%s\n", user.Phone)
@@ -117,19 +117,19 @@ func UserLogin(session sessions.Session, user User) string {
 	err := u.Find()
 	if err != nil {
 		ret["err"] = "手机号" + user.Phone + "未找到，没有注册"
-		res, _ := json.Marshal(ret)
-		return string(res)
+		r.JSON(200, ret)
+		return
 	}
 	if u.Password != user.Password {
 		ret["err"] = "密码错误"
-		res, _ := json.Marshal(ret)
-		return string(res)
+		r.JSON(200, ret)
+		return
 	}
-	return login(u, session)
+	login(u, session, r)
 }
 
 // 用户登出
-func UserLogout(session sessions.Session) string {
+func UserLogout(session sessions.Session, r render.Render) {
 	id := session.Get("id").(string)
 	log.Printf("读取Session:%s\n", id)
 	s := Session{
@@ -140,11 +140,11 @@ func UserLogout(session sessions.Session) string {
 		s.Logout()
 		session.Delete("id")
 	}
-	return "ok"
+	r.JSON(200, "ok")
 }
 
 // 登录
-func login(user User, session sessions.Session) string {
+func login(user User, session sessions.Session, r render.Render) {
 	ret := make(map[string]interface{})
 	ret["ok"] = false
 	s := Session{
@@ -153,34 +153,32 @@ func login(user User, session sessions.Session) string {
 	err := s.Create()
 	if err != nil {
 		ret["err"] = err.Error()
-		res, _ := json.Marshal(ret)
-		return string(res)
+		r.JSON(200, ret)
+		return
 	}
 	ret["ok"] = true
 	session.Set("id", s.Id.Hex())
 	ret["id"] = s.Id.Hex()
 	ret["user"] = user
-	res, _ := json.Marshal(ret)
+	r.JSON(200, ret)
 	log.Printf("用户 [ %s ] 登录成功\n", user.Name)
 	l := Log{
 		Uid:  user.Id,
 		Work: "登录",
 	}
 	l.Create()
-	return string(res)
 }
 
 // 获取用户信息
-func UserGet(s Session) string {
+func UserGet(s Session, r render.Render) {
 	ret := make(map[string]interface{})
 	ret["ok"] = true
 	ret["user"] = s.User
-	res, _ := json.Marshal(ret)
-	return string(res)
+	r.JSON(200, ret)
 }
 
 // 修改密码
-func UserPassword(p Password, s Session) string {
+func UserPassword(p Password, s Session, r render.Render) {
 	ret := make(map[string]interface{})
 	ok := p.Old == s.User.Password
 	ret["ok"] = ok
@@ -190,6 +188,5 @@ func UserPassword(p Password, s Session) string {
 	} else {
 		ret["err"] = "旧密码错误"
 	}
-	res, _ := json.Marshal(ret)
-	return string(res)
+	r.JSON(200, ret)
 }

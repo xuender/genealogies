@@ -29,13 +29,13 @@ func main() {
 	// 用户注册
 	m.Post("/register", binding.Bind(web.User{}), web.UserRegister)
 	// 获取用户信息
-	m.Get("/login", web.Authorize, web.UserGet)
+	m.Get("/login", web.AuthJson, web.UserGet)
 	// 用户登出
-	m.Get("/logout", web.Authorize, web.LogCreate("登出"), web.UserLogout)
+	m.Get("/logout", web.AuthJson, web.LogCreate("登出"), web.UserLogout)
 	// 修改密码
-	m.Post("/password", web.Authorize, web.LogCreate("修改密码"), binding.Bind(web.Password{}), web.UserPassword)
+	m.Post("/password", web.AuthJson, web.LogCreate("修改密码"), binding.Bind(web.Password{}), web.UserPassword)
 	// 日志查询
-	m.Post("/logs", web.Authorize, binding.Bind(web.Params{}), web.LogQuery)
+	m.Post("/logs", web.AuthJson, binding.Bind(web.Params{}), web.LogQuery)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

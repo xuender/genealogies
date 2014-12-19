@@ -1,9 +1,9 @@
 package web
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/go-martini/martini"
+	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -66,7 +66,7 @@ func LogCreate(work string) martini.Handler {
 }
 
 // 查询日志
-func LogQuery(session Session, params Params) string {
+func LogQuery(session Session, params Params, r render.Render) {
 	ret := make(map[string]interface{})
 	l := Log{
 		Uid: session.Uid,
@@ -79,6 +79,5 @@ func LogQuery(session Session, params Params) string {
 	} else {
 		ret["err"] = err.Error()
 	}
-	res, _ := json.Marshal(ret)
-	return string(res)
+	r.JSON(200, ret)
 }
