@@ -21,9 +21,16 @@ func main() {
 	web.DB = s.DB("family")
 	log.Println("启动WEB服务.")
 	m := martini.Classic()
-	m.Use(render.Renderer())
+	m.Use(render.Renderer(render.Options{
+		Layout: "layout",
+		Delims: render.Delims{"{[{", "}]}"},
+	}))
 	store := sessions.NewCookieStore([]byte("xuender@gmail.com"))
 	m.Use(sessions.Sessions("f_session", store))
+	// 首页
+	m.Get("/", func(r render.Render) {
+		r.HTML(200, "index", map[string]interface{}{"title": "测试", "body": "test...!!"})
+	})
 	// 手机、密码登录
 	m.Post("/login", binding.Bind(web.User{}), web.UserLogin)
 	// 用户注册

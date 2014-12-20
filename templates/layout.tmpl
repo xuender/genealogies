@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="renderer" content="webkit">
-    <title>index</title>
+    <title>{[{ .title }]}</title>
   </head>
   <body ng-controller="WebCtrl"
   data-spy="scroll" data-target=".navbar-collapse">
@@ -20,7 +20,7 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li>
-              <a href="#home">首页</a>
+              <a href="/">首页</a>
             </li>
             <li>
               <a href="#about">关于</a>
@@ -57,21 +57,7 @@
     </nav>
     <div class="header-placeholder" id="home"></div>
     <div class="container">
-      <div class="jumbotron">
-        <div class="row">
-          <img class="col-xs-5" height="360" src="http://www.baidu.com/img/bd_logo1.png"/>
-          <div class="col-xs-7">
-            <h1>族谱</h1>
-            <p>...</p>
-            <p>
-              <button ng-click="showLogin('r')"
-              class="btn btn-primary btn-lg">新用户注册</button>
-              <button ng-click="showLogin()"
-              class="btn btn-default btn-lg">老用户登录</button>
-            </p>
-          </div><!-- 7 -->
-        </div><!-- row -->
-      </div><!-- jumbotron -->
+      {[{ yield }]}
     </div><!-- container -->
     <footer>
       <div class="container">
