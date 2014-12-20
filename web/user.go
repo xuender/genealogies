@@ -2,6 +2,7 @@ package web
 
 import (
 	"errors"
+	"github.com/dchest/captcha"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 	"gopkg.in/mgo.v2/bson"
@@ -107,22 +108,26 @@ func UserRegister(session sessions.Session, user User, r render.Render) {
 }
 
 // 用户登录
-func UserLogin(session sessions.Session, user User, r render.Render) {
-	ret := make(map[string]interface{})
-	ret["ok"] = false
+func UserLogin(session sessions.Session, user Captcha, r render.Render) {
 	log.Printf("手机登陆:%s\n", user.Phone)
 	u := User{
 		Phone: user.Phone,
 	}
 	err := u.Find()
 	if err != nil {
-		ret["err"] = "手机号" + user.Phone + "未找到，没有注册"
-		r.JSON(200, ret)
+		r.JSON(200, Msg{
+			Ok:  false,
+			Cid: captcha.NewLen(4),
+			Err: "手机号" + user.Phone + "未找到，没有注册",
+		})
 		return
 	}
 	if u.Password != user.Password {
-		ret["err"] = "密码错误"
-		r.JSON(200, ret)
+		r.JSON(200, Msg{
+			Ok:  false,
+			Cid: captcha.NewLen(4),
+			Err: "密码错误",
+		})
 		return
 	}
 	login(u, session, r)
@@ -145,22 +150,24 @@ func UserLogout(session sessions.Session, r render.Render) {
 
 // 登录
 func login(user User, session sessions.Session, r render.Render) {
-	ret := make(map[string]interface{})
-	ret["ok"] = false
 	s := Session{
 		Uid: user.Id,
 	}
 	err := s.Create()
 	if err != nil {
-		ret["err"] = err.Error()
-		r.JSON(200, ret)
+		r.JSON(200, Msg{
+			Ok:  false,
+			Cid: captcha.NewLen(4),
+			Err: err.Error(),
+		})
 		return
 	}
-	ret["ok"] = true
 	session.Set("id", s.Id.Hex())
-	ret["id"] = s.Id.Hex()
-	ret["user"] = user
-	r.JSON(200, ret)
+	r.JSON(200, Msg{
+		Ok:   true,
+		Cid:  captcha.NewLen(4),
+		User: user,
+	})
 	log.Printf("用户 [ %s ] 登录成功\n", user.Name)
 	l := Log{
 		Uid:  user.Id,

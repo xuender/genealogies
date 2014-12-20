@@ -1,5 +1,11 @@
 package web
 
+import (
+	"errors"
+	"gopkg.in/mgo.v2/bson"
+	"time"
+)
+
 // 帖子
 type Post struct {
 	Id bson.ObjectId `bson:"_id,omitempty" json:"-"`
@@ -37,7 +43,7 @@ func (p *Post) Create() error {
 	c := DB.C("post")
 	p.Id = bson.NewObjectId()
 	p.Ca = time.Now()
-	return c.Insert(l)
+	return c.Insert(p)
 }
 
 // 最后几条

@@ -11,6 +11,13 @@ LoginCtrl = ($scope, $http, $log, $modalInstance, m)->
     phone: ''
     password: ''
     m: m
+    CaptchaId: CID
+    Solution: ''
+  $scope.img = "/captcha/img/#{ CID }"
+  count = 0
+  $scope.reload = ->
+    count++
+    $scope.img = "/captcha/reload/#{ CID }?#{ count }"
   $scope.ok= (valid)->
     # 登录
     $scope.old = true
@@ -25,6 +32,9 @@ LoginCtrl = ($scope, $http, $log, $modalInstance, m)->
     if data.ok
       $modalInstance.close(data.user)
     else
+      CID = data.cid
+      $scope.user.CaptchaId = CID
+      $scope.img = "/captcha/img/#{ CID }"
       alert(data.err)
   $scope.cancel = ->
     $modalInstance.dismiss('cancel')

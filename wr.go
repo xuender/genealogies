@@ -3,11 +3,13 @@ package main
 import (
 	"./base"
 	"./web"
+	"log"
+	//"net/http"
+	"github.com/dchest/captcha"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
-	"log"
 )
 
 func main() {
@@ -29,10 +31,16 @@ func main() {
 	m.Use(sessions.Sessions("f_session", store))
 	// 首页
 	m.Get("/", func(r render.Render) {
-		r.HTML(200, "index", map[string]interface{}{"title": "测试", "body": "test...!!"})
+		r.HTML(200, "index", map[string]interface{}{
+			"title": "测试",
+			"c": web.Captcha{
+				captcha.NewLen(4),
+				"", "", "",
+			},
+		})
 	})
 	// 手机、密码登录
-	m.Post("/login", binding.Bind(web.User{}), web.UserLogin)
+	m.Post("/login", binding.Bind(web.Captcha{}), web.CaptchaCheck, web.UserLogin)
 	// 用户注册
 	m.Post("/register", binding.Bind(web.User{}), web.UserRegister)
 	// 获取用户信息
@@ -43,10 +51,14 @@ func main() {
 	m.Post("/password", web.AuthJson, web.LogCreate("修改密码"), binding.Bind(web.Password{}), web.UserPassword)
 	// 日志查询
 	m.Post("/logs", web.AuthJson, binding.Bind(web.Params{}), web.LogQuery)
-	m.NotFound(func(r render.Render) {
-		r.HTML(404, "404", nil)
-	})
+	// 验证码
+	m.Get("/captcha/img/:id", web.CaptchaImage)
+	//
+	m.Get("/captcha/reload/:id", web.CaptchaReload)
+	//m.NotFound(func(r render.Render) {
+	//	r.HTML(404, "404", nil)
+	//})
 	// 端口号
-	//http.ListenAndServe(fmt.Sprintf(":%d", base.BaseConfig.Web.Port), m)
+	//http.ListenAndServe(":3000", m)
 	m.Run()
 }

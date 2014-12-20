@@ -24,8 +24,20 @@
     <div class="form-group" 
     ng-class="{'has-error': old && loginForm.password.$error.required}">
       <label class="control-label" for="i_password">密码</label>
-      <input ng-model="user.password" enter="ok(loginForm.$valid)" required name="password"
+      <input ng-model="user.password" enter required name="password"
       type="password" class="form-control" id="i_password" placeholder="输入您的密码"/>
+      <span class="help-block" ng-show="old && loginForm.password.$error.required">不能为空</span>
+    </div><!-- form-group -->
+    <input type="hidden" name="captchaId" ng-model="user.CaptchaId"/>
+    <a href ng-click="reload()">
+      <img ng-src="{{ img }}" alt="Captcha image"/>
+    </a>
+    <div class="form-group" 
+    ng-class="{'has-error': old && loginForm.solution.$error.required}">
+      <label class="control-label" for="i_solution">验证码</label>
+      <input ng-model="user.Solution" enter="ok(loginForm.$valid)"
+      required name="solution" type="text" class="form-control"
+      id="i_solution" placeholder="输入上图中的数字"/>
       <span class="help-block" ng-show="old && loginForm.password.$error.required">不能为空</span>
     </div><!-- form-group -->
   </form>
