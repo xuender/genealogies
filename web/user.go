@@ -80,23 +80,22 @@ func (u *User) Create() (err error) {
 }
 
 // 用户注册
-func UserRegister(session sessions.Session, user User, r render.Render) {
-	ret := make(map[string]interface{})
-	ret["ok"] = false
+func UserRegister(session sessions.Session, user Captcha, r render.Render) {
+	m := Msg{Ok: false}
 	log.Printf("手机注册:%s\n", user.Phone)
 	u := User{
 		Phone: user.Phone,
 	}
 	err := u.Find()
 	if err == nil {
-		ret["err"] = "手机号" + user.Phone + "已经使用，不能注册"
-		r.JSON(200, ret)
+		m.Err = "手机号" + user.Phone + "已经使用，不能注册"
+		r.JSON(200, m)
 		return
 	}
 	err = user.Create()
 	if err != nil {
-		ret["err"] = err.Error()
-		r.JSON(200, ret)
+		m.Err = err.Error()
+		r.JSON(200, m)
 		return
 	}
 	l := Log{
@@ -104,7 +103,7 @@ func UserRegister(session sessions.Session, user User, r render.Render) {
 		Work: "注册",
 	}
 	l.Create()
-	login(user, session, r)
+	login(user.User, session, r)
 }
 
 // 用户登录
@@ -166,7 +165,7 @@ func login(user User, session sessions.Session, r render.Render) {
 	r.JSON(200, Msg{
 		Ok:   true,
 		Cid:  captcha.NewLen(4),
-		User: user,
+		Data: user,
 	})
 	log.Printf("用户 [ %s ] 登录成功\n", user.Name)
 	l := Log{
@@ -178,22 +177,23 @@ func login(user User, session sessions.Session, r render.Render) {
 
 // 获取用户信息
 func UserGet(s Session, r render.Render) {
-	ret := make(map[string]interface{})
-	ret["ok"] = true
-	ret["user"] = s.User
-	r.JSON(200, ret)
+	r.JSON(200, Msg{
+		Ok:   true,
+		Data: s.User,
+	})
 }
 
 // 修改密码
 func UserPassword(p Password, s Session, r render.Render) {
-	ret := make(map[string]interface{})
 	ok := p.Old == s.User.Password
-	ret["ok"] = ok
+	ret := Msg{
+		Ok: ok,
+	}
 	if ok {
 		s.User.Password = p.Password
 		s.User.Save()
 	} else {
-		ret["err"] = "旧密码错误"
+		ret.Err = "旧密码错误"
 	}
 	r.JSON(200, ret)
 }

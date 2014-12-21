@@ -11,14 +11,11 @@ import (
 
 // 验证码
 type Captcha struct {
+	User
 	// ID
 	CaptchaId string
 	// 验证码
 	Solution string
-	// 姓名
-	Phone string `form:"phone" binding:"required"`
-	// 密码
-	Password string `form:"password" binding:"required"`
 }
 
 // 验证图片

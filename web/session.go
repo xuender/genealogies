@@ -76,5 +76,5 @@ func AuthJson(context martini.Context, session sessions.Session, r render.Render
 			return
 		}
 	}
-	r.JSON(200, map[string]interface{}{"ok": false, "err": "身份认证错误"})
+	r.JSON(200, Msg{Ok: false, Err: "身份认证错误"})
 }

@@ -36,7 +36,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
   $scope.showLogin = (m='l')->
     ### 显示登录窗口 ###
     i = $modal.open(
-      templateUrl: 'partials/login.html?1.html'
+      templateUrl: 'partials/login.html?2.html'
       controller: LoginCtrl
       backdrop: 'static'
       keyboard: false
@@ -88,8 +88,8 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
       $log.debug(data)
       $scope.isLogin = data.ok
       if data.ok
-        $scope.user = data.user
-        $log.debug('user id:%s', data.user.Id)
+        $scope.user = data.data
+        $log.debug('user id:%s', data.data.Id)
     )
 
 WebCtrl.$inject = [

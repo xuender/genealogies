@@ -30,7 +30,7 @@ LoginCtrl = ($scope, $http, $log, $modalInstance, m)->
   $scope.return = (data)->
     $log.debug(data)
     if data.ok
-      $modalInstance.close(data.user)
+      $modalInstance.close(data.data)
     else
       CID = data.cid
       $scope.user.CaptchaId = CID

@@ -34,15 +34,16 @@ func main() {
 		r.HTML(200, "index", map[string]interface{}{
 			"title": "测试",
 			"c": web.Captcha{
-				captcha.NewLen(4),
-				"", "", "",
+				CaptchaId: captcha.NewLen(4),
 			},
 		})
 	})
 	// 手机、密码登录
-	m.Post("/login", binding.Bind(web.Captcha{}), web.CaptchaCheck, web.UserLogin)
+	m.Post("/login", binding.Bind(web.Captcha{}),
+		web.CaptchaCheck, web.UserLogin)
 	// 用户注册
-	m.Post("/register", binding.Bind(web.User{}), web.UserRegister)
+	m.Post("/register", binding.Bind(web.Captcha{}),
+		web.CaptchaCheck, web.UserRegister)
 	// 获取用户信息
 	m.Get("/login", web.AuthJson, web.UserGet)
 	// 用户登出
