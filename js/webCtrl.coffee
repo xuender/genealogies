@@ -44,6 +44,10 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
       resolve:
         m: ->
           m
+        cid: ->
+          if $scope.user.cid
+            return $scope.user.cid
+          CID
     )
     i.result.then((user)->
       $scope.isLogin = true

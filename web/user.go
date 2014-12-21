@@ -92,6 +92,7 @@ func UserRegister(session sessions.Session, user Captcha, r render.Render) {
 		r.JSON(200, m)
 		return
 	}
+	user.IsManager = false
 	err = user.Create()
 	if err != nil {
 		m.Err = err.Error()

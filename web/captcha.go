@@ -4,7 +4,6 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
-	"io"
 	"log"
 	"net/http"
 )
@@ -28,7 +27,7 @@ func CaptchaImage(params martini.Params, w http.ResponseWriter) {
 	}
 }
 
-// shuaxin
+// 更换图片
 func CaptchaReload(params martini.Params, w http.ResponseWriter) {
 	captcha.Reload(params["id"])
 	CaptchaImage(params, w)
@@ -44,13 +43,4 @@ func CaptchaCheck(c Captcha, r render.Render) {
 		}
 		r.JSON(200, m)
 	}
-}
-func processFormHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if !captcha.VerifyString(r.FormValue("captchaId"), r.FormValue("captchaSolution")) {
-		io.WriteString(w, "Wrong captcha solution! No robots allowed!\n")
-	} else {
-		io.WriteString(w, "Great job, human! You solved the captcha.\n")
-	}
-	io.WriteString(w, "<br><a href='/'>Try another one</a>")
 }

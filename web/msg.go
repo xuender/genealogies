@@ -2,8 +2,12 @@ package web
 
 // 消息
 type Msg struct {
-	Ok   bool        `json:"ok"`
-	Err  string      `json:"err,omitempty"`
+	// 是否成功
+	Ok bool `json:"ok"`
+	// 错误信息
+	Err string `json:"err,omitempty"`
+	// 传输数据
 	Data interface{} `json:"data,omitempty"`
-	Cid  string      `json:"cid,omitempty"`
+	// 验证码ID
+	Cid string `json:"cid,omitempty"`
 }

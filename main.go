@@ -38,6 +38,15 @@ func main() {
 			},
 		})
 	})
+	// 后台管理
+	m.Get("/manager", func(r render.Render) {
+		r.HTML(200, "manager", map[string]interface{}{
+			"title": "后台管理",
+			"c": web.Captcha{
+				CaptchaId: captcha.NewLen(4),
+			},
+		})
+	})
 	// 手机、密码登录
 	m.Post("/login", binding.Bind(web.Captcha{}),
 		web.CaptchaCheck, web.UserLogin)
@@ -56,9 +65,9 @@ func main() {
 	m.Get("/captcha/img/:id", web.CaptchaImage)
 	//
 	m.Get("/captcha/reload/:id", web.CaptchaReload)
-	//m.NotFound(func(r render.Render) {
-	//	r.HTML(404, "404", nil)
-	//})
+	m.NotFound(func(r render.Render) {
+		r.HTML(404, "404", nil)
+	})
 	// 端口号
 	//http.ListenAndServe(":3000", m)
 	m.Run()
