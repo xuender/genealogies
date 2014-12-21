@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="renderer" content="webkit">
-    <title>{[{ .title }]}</title>
+    <title>{[{ .Title }]}</title>
   </head>
   <body ng-controller="WebCtrl"
   data-spy="scroll" data-target=".navbar-collapse">
@@ -22,8 +22,11 @@
             <li>
               <a href="/">首页</a>
             </li>
-            <li>
-              <a href="#about">关于</a>
+            <li ng-show="isLogin">
+              <a href ng-click="post('feature')">
+                <i class="fa fa-heart"></i>
+                功能建议
+              </a>
             </li>
             <li ng-show="isLogin && user.IsManager">
               <a href="/manager">后台管理</a>
@@ -65,7 +68,7 @@
       </div><!-- container -->
     </footer>
     <script type="text/javascript">
-    var CID = '{[{ .c.CaptchaId }]}'
+    var CID = '{[{ .Cid }]}'
     </script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

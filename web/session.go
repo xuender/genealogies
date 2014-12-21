@@ -42,7 +42,7 @@ func (s *Session) Find() (err error) {
 }
 
 // 创建会话
-func (s *Session) Create() error {
+func (s *Session) New() error {
 	c := DB.C("session")
 	s.Id = bson.NewObjectId()
 	s.Ca = time.Now()

@@ -15,7 +15,7 @@ import (
 func main() {
 	//base.LogInit("/tmp/a.log")
 	base.LogDev()
-	log.Println("网站对外运行环境，启动...")
+	log.Println("网站运行环境，启动...")
 	defer log.Println("系统关闭")
 	log.Println("连接数据库.")
 	s := base.Connect("127.0.0.1")
@@ -31,12 +31,7 @@ func main() {
 	m.Use(sessions.Sessions("f_session", store))
 	// 首页
 	m.Get("/", func(r render.Render) {
-		r.HTML(200, "index", map[string]interface{}{
-			"title": "测试",
-			"c": web.Captcha{
-				CaptchaId: captcha.NewLen(4),
-			},
-		})
+		r.HTML(200, "index", web.PageNew("测试"))
 	})
 	// 后台管理
 	m.Get("/manager", func(r render.Render) {
@@ -56,9 +51,9 @@ func main() {
 	// 获取用户信息
 	m.Get("/login", web.AuthJson, web.UserGet)
 	// 用户登出
-	m.Get("/logout", web.AuthJson, web.LogCreate("登出"), web.UserLogout)
+	m.Get("/logout", web.AuthJson, web.LogNew("登出"), web.UserLogout)
 	// 修改密码
-	m.Post("/password", web.AuthJson, web.LogCreate("修改密码"), binding.Bind(web.Password{}), web.UserPassword)
+	m.Post("/password", web.AuthJson, web.LogNew("修改密码"), binding.Bind(web.Password{}), web.UserPassword)
 	// 日志查询
 	m.Post("/logs", web.AuthJson, binding.Bind(web.Params{}), web.LogQuery)
 	// 验证码

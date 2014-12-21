@@ -22,7 +22,7 @@ type Log struct {
 }
 
 // 创建日志
-func (l *Log) Create() error {
+func (l *Log) New() error {
 	if l.Id.Valid() {
 		return errors.New("日志ID错误")
 	}
@@ -55,13 +55,13 @@ func (l *Log) Query(p Params) (logs []Log, count int, err error) {
 }
 
 // 创建日志
-func LogCreate(work string) martini.Handler {
+func LogNew(work string) martini.Handler {
 	return func(s Session) {
 		l := Log{
 			Uid:  s.Uid,
 			Work: work,
 		}
-		l.Create()
+		l.New()
 	}
 }
 

@@ -15,6 +15,8 @@ type Post struct {
 	Type string `bson:"type,omitempty" json:"type"`
 	// 内容
 	Content string `bson:"content,omitempty" json:"content"`
+	// 网址
+	Url string `bson:"url,omitempty" json:"url"`
 	// 用户ID
 	Uid bson.ObjectId `bson:"uid,omitempty" json:"-"`
 	// 用户
@@ -24,7 +26,7 @@ type Post struct {
 }
 
 // 创建帖子
-func (p *Post) Create() error {
+func (p *Post) New() error {
 	if p.Id.Valid() {
 		return errors.New("ID错误")
 	}

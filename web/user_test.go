@@ -26,7 +26,7 @@ func TestUserFind(t *testing.T) {
 	u := User{
 		Phone: "110",
 	}
-	u.Create()
+	u.New()
 	user := User{
 		Id: u.Id,
 	}
@@ -65,7 +65,7 @@ func TestUserFindByPhone(t *testing.T) {
 }
 
 // 用户创建
-func TestUserCreate(t *testing.T) {
+func TestUserNew(t *testing.T) {
 	s := base.Connect("127.0.0.1")
 	defer s.Close()
 	DB = s.DB("test")
@@ -73,7 +73,7 @@ func TestUserCreate(t *testing.T) {
 	u := User{
 		Phone: "110",
 	}
-	err := u.Create()
+	err := u.New()
 	if err != nil {
 		t.Errorf("创建用户失败")
 	}
@@ -87,7 +87,7 @@ func TestUserCreate(t *testing.T) {
 	if err != nil {
 		t.Errorf("创建用户未找到")
 	}
-	err = r.Create()
+	err = r.New()
 	if err == nil {
 		t.Errorf("重复手机未找到")
 	}
@@ -102,7 +102,7 @@ func TestUserSave(t *testing.T) {
 	u := User{
 		Phone: "110",
 	}
-	u.Create()
+	u.New()
 	u.Phone = "123"
 	err := u.Save()
 	if err != nil {

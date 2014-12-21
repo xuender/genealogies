@@ -15,11 +15,11 @@ func TestSessionFind(t *testing.T) {
 	u := User{
 		Phone: "110",
 	}
-	u.Create()
+	u.New()
 	n := Session{
 		Uid: u.Id,
 	}
-	n.Create()
+	n.New()
 	m := Session{
 		Id: n.Id,
 	}
@@ -33,7 +33,7 @@ func TestSessionFind(t *testing.T) {
 }
 
 // session 创建
-func TestSessionCreate(t *testing.T) {
+func TestSessionNew(t *testing.T) {
 	s := base.Connect("127.0.0.1")
 	defer s.Close()
 	DB = s.DB("test")
@@ -42,7 +42,7 @@ func TestSessionCreate(t *testing.T) {
 	n := Session{
 		Uid: uid,
 	}
-	err := n.Create()
+	err := n.New()
 	if err != nil {
 		t.Errorf("创建会话失败")
 	}

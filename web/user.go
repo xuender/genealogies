@@ -65,7 +65,7 @@ func (u *User) Find() error {
 }
 
 // 用户创建
-func (u *User) Create() (err error) {
+func (u *User) New() (err error) {
 	c := DB.C("user")
 	err = u.Find()
 	if err == nil {
@@ -93,7 +93,7 @@ func UserRegister(session sessions.Session, user Captcha, r render.Render) {
 		return
 	}
 	user.IsManager = false
-	err = user.Create()
+	err = user.New()
 	if err != nil {
 		m.Err = err.Error()
 		r.JSON(200, m)
@@ -103,7 +103,7 @@ func UserRegister(session sessions.Session, user Captcha, r render.Render) {
 		Uid:  user.Id,
 		Work: "注册",
 	}
-	l.Create()
+	l.New()
 	login(user.User, session, r)
 }
 
@@ -153,7 +153,7 @@ func login(user User, session sessions.Session, r render.Render) {
 	s := Session{
 		Uid: user.Id,
 	}
-	err := s.Create()
+	err := s.New()
 	if err != nil {
 		r.JSON(200, Msg{
 			Ok:  false,
@@ -173,7 +173,7 @@ func login(user User, session sessions.Session, r render.Render) {
 		Uid:  user.Id,
 		Work: "登录",
 	}
-	l.Create()
+	l.New()
 }
 
 // 获取用户信息

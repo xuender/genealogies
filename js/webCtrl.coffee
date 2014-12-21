@@ -15,7 +15,17 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
         $scope.isLogin = false
         $scope.user = {}
       )
-
+  $scope.post = (t)->
+    ### 提交 ###
+    $modal.open(
+      templateUrl: 'partials/post.html?v=2.html'
+      controller: PostCtrl
+      backdrop: 'static'
+      size: 'lg'
+      resolve:
+        type: ->
+          t
+    )
   $scope.showLog = ->
     ### 显示日志 ###
     $modal.open(
@@ -36,7 +46,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
   $scope.showLogin = (m='l')->
     ### 显示登录窗口 ###
     i = $modal.open(
-      templateUrl: 'partials/login.html?2.html'
+      templateUrl: 'partials/login.html?3.html'
       controller: LoginCtrl
       backdrop: 'static'
       keyboard: false

@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ name }}</h4>
+</div><!-- modal-header -->
+<div class="modal-body">
+  <form name="postForm">
+    <div class="form-group" 
+    ng-class="{'has-error': postForm.title.$error.required}">
+      <label class="control-label" for="i_title">标题</label>
+      <input ng-model="p.title" enter required name="title"
+      type="text" class="form-control" id="i_title" placeholder="输入标题"/>
+      <span class="help-block" ng-show="postForm.title.$error.required">不能为空</span>
+    </div><!-- form-group -->
+    <div class="form-group">
+      <label class="control-label" for="i_content">内容</label>
+      <textarea ng-model="p.content" name="content" rows="6"
+      class="form-control" id="i_content" placeholder="输入内容"/>
+    </div><!-- form-group -->
+  </form>
+</div><!-- modal-body -->
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="cancel()">发送</button>
+  <button class="btn btn-warning" ng-click="cancel()">取消</button>
+</div><!-- modal-footer -->

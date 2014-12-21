@@ -17,12 +17,12 @@ func TestLogQuery(t *testing.T) {
 		Uid:  uid,
 		Work: "测试",
 	}
-	n.Create()
+	n.New()
 	n = Log{
 		Uid:  uid,
 		Work: "测试",
 	}
-	n.Create()
+	n.New()
 	l := Log{}
 	p := Params{
 		Page:  1,
@@ -64,7 +64,7 @@ func TestLogQuery(t *testing.T) {
 }
 
 // 日志创建
-func TestLogCreate(t *testing.T) {
+func TestLogNew(t *testing.T) {
 	s := base.Connect("127.0.0.1")
 	defer s.Close()
 	DB = s.DB("test")
@@ -74,28 +74,28 @@ func TestLogCreate(t *testing.T) {
 		Uid:  uid,
 		Work: "测试",
 	}
-	err := n.Create()
+	err := n.New()
 	if err != nil {
 		t.Errorf("创建日志失败")
 	}
 	if n.Uid != uid {
 		t.Errorf("用户ID错误")
 	}
-	err = n.Create()
+	err = n.New()
 	if err == nil {
 		t.Errorf("id错误")
 	}
 	n = Log{
 		Uid: uid,
 	}
-	err = n.Create()
+	err = n.New()
 	if err == nil {
 		t.Errorf("内容不能为空")
 	}
 	n = Log{
 		Work: "xxx",
 	}
-	err = n.Create()
+	err = n.New()
 	if err == nil {
 		t.Errorf("用户不能为空")
 	}

@@ -242,6 +242,7 @@ module.exports = (grunt)->
             'js/loginCtrl.coffee'
             'js/logCtrl.coffee'
             'js/passwordCtrl.coffee'
+            'js/postCtrl.coffee'
           ]
           'public/js/app.min.js': [
             'js/data.coffee'
