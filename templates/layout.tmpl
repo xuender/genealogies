@@ -23,6 +23,18 @@
               <a href="/">首页</a>
             </li>
             <li ng-show="isLogin">
+              <a href ng-click="post('question')">
+                <i class="fa fa-question-circle"></i>
+                问题
+              </a>
+            </li>
+            <li ng-show="isLogin">
+              <a href ng-click="post('bug')">
+                <i class="fa fa-times-circle"></i>
+                错误 
+              </a>
+            </li>
+            <li ng-show="isLogin">
               <a href ng-click="post('feature')">
                 <i class="fa fa-heart"></i>
                 功能建议
