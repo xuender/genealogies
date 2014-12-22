@@ -8,7 +8,7 @@ import (
 func TestParamsFind(t *testing.T) {
 	m := bson.M{}
 	p := Params{
-		Filter: map[string]string{"a": "aa", "b": "bb", "c": ""},
+		Filter: map[string]interface{}{"a": "aa", "b": "bb", "c": ""},
 	}
 	p.Find(m)
 	if len(m) != 2 {

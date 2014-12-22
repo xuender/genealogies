@@ -58,8 +58,10 @@ func main() {
 	m.Post("/logs", web.AuthJson, binding.Bind(web.Params{}), web.LogQuery)
 	// 验证码
 	m.Get("/captcha/img/:id", web.CaptchaImage)
-	//
+	// 刷新验证码
 	m.Get("/captcha/reload/:id", web.CaptchaReload)
+	// 查询用户列表
+	m.Get("/users", web.ManagerJson, binding.Bind(web.Params{}), web.UserQuery)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

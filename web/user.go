@@ -24,7 +24,7 @@ type User struct {
 	// 姓名
 	Name string
 	// 密码
-	Password string `form:"password" binding:"required"`
+	Password string `form:"password" binding:"required" json:"-"`
 	// 是否是管理员
 	IsManager bool
 	// 创建时间
@@ -76,6 +76,18 @@ func (u *User) New() (err error) {
 	u.En = true
 	u.IsManager = false
 	err = c.Insert(u)
+	return
+}
+
+// 查询
+func (u *User) Query(p Params) (users []User, count int, err error) {
+	m := bson.M{}
+	p.Find(m)
+	q := DB.C("user").Find(m)
+	count, err = q.Count()
+	if err == nil && count > 0 {
+		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&users)
+	}
 	return
 }
 
@@ -195,6 +207,21 @@ func UserPassword(p Password, s Session, r render.Render) {
 		s.User.Save()
 	} else {
 		ret.Err = "旧密码错误"
+	}
+	r.JSON(200, ret)
+}
+
+// 查询用户
+func UserQuery(session Session, params Params, r render.Render) {
+	ret := Msg{}
+	u := User{}
+	ls, count, err := u.Query(params)
+	ret.Ok = err == nil
+	if err == nil {
+		ret.Count = count
+		ret.Data = ls
+	} else {
+		ret.Err = err.Error()
 	}
 	r.JSON(200, ret)
 }

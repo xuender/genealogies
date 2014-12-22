@@ -78,3 +78,18 @@ func AuthJson(context martini.Context, session sessions.Session, r render.Render
 	}
 	r.JSON(200, Msg{Ok: false, Err: "身份认证错误"})
 }
+
+// 管理员json身份认证
+func ManagerJson(context martini.Context, session sessions.Session, r render.Render) {
+	if session.Get("id") != nil {
+		s := Session{
+			Id: bson.ObjectIdHex(session.Get("id").(string)),
+		}
+		err := s.Find()
+		if err == nil && s.User.IsManager {
+			context.Map(s)
+			return
+		}
+	}
+	r.JSON(200, Msg{Ok: false, Err: "管理员身份认证错误"})
+}

@@ -13,7 +13,7 @@ type Params struct {
 	// 排序
 	Sorting []string
 	// 过滤
-	Filter map[string]string
+	Filter map[string]interface{}
 }
 
 // 起始
@@ -37,10 +37,13 @@ func (p *Params) Sort(def string) string {
 // 查找条件
 func (p *Params) Find(m bson.M) {
 	for k, v := range p.Filter {
-		if v != "" {
-			m[k] = bson.RegEx{Pattern: v, Options: "i"}
-			//m[k] = bson.RegEx{Pattern: "^"+v, Options: "i"}
-			//m[k] = "/^"+v+"/"
+		switch v.(type) {
+		case string:
+			if v.(string) != "" {
+				m[k] = bson.RegEx{Pattern: v.(string), Options: "i"}
+			}
+		case int:
+			m[k] = v.(int)
 		}
 	}
 }

@@ -55,7 +55,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
         m: ->
           m
         cid: ->
-          if $scope.user.cid
+          if $scope.user and 'cid' in $scope.user
             return $scope.user.cid
           CID
     )

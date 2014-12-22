@@ -8,6 +8,8 @@ type Msg struct {
 	Err string `json:"err,omitempty"`
 	// 传输数据
 	Data interface{} `json:"data,omitempty"`
+	// 总数
+	Count int `json:"count,omitempty"`
 	// 验证码ID
 	Cid string `json:"cid,omitempty"`
 }
