@@ -1,11 +1,21 @@
 ###
-log.coffee
+usersCtrl.coffee
 Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-LogCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter)->
-  ### 日志控制 ###
+UsersCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
+  ### 用户 ###
+  $log.debug '用户'
+  $scope.ims = ->
+    def = $q.defer()
+    ret = [
+      {id:true, title:'是'}
+      {id:false, title:'否'}
+    ]
+    def.resolve(ret)
+    def
+  $scope.$parent.name = 'users'
   $scope.tableParams = new ngTableParams(
     page: 1
     count: 10
@@ -14,7 +24,7 @@ LogCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter)->
   ,
     getData: ($defer, params)->
       # 过滤
-      $http.post('/logs',
+      $http.post('/users',
         Page: params.page()
         Count: params.count()
         Sorting: params.orderBy()
@@ -24,14 +34,13 @@ LogCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter)->
         $defer.resolve(data.data)
       )
   )
-  $scope.cancel = ->
-    $modalInstance.dismiss('cancel')
 
-LogCtrl.$inject = [
+UsersCtrl.$inject = [
   '$scope'
-  '$modalInstance'
   '$http'
   '$log'
   'ngTableParams'
   '$filter'
+  '$q'
 ]
+

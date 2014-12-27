@@ -2,6 +2,7 @@ package web
 
 import (
 	"gopkg.in/mgo.v2/bson"
+	"log"
 )
 
 // 查询参数
@@ -44,6 +45,9 @@ func (p *Params) Find(m bson.M) {
 			}
 		case int:
 			m[k] = v.(int)
+		case bool:
+			m[k] = v.(bool)
 		}
 	}
+	log.Println(m)
 }

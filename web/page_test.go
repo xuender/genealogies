@@ -6,7 +6,7 @@ import (
 
 // 页面新建
 func TestPageNew(t *testing.T) {
-	p := PageNew("test")
+	p := PageNew("test", false)
 	if p.Title != "test" {
 		t.Errorf("页面创建错误:%s", p.Title)
 	}

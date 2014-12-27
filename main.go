@@ -5,7 +5,6 @@ import (
 	"./web"
 	"log"
 	//"net/http"
-	"github.com/dchest/captcha"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
@@ -31,16 +30,11 @@ func main() {
 	m.Use(sessions.Sessions("f_session", store))
 	// 首页
 	m.Get("/", func(r render.Render) {
-		r.HTML(200, "index", web.PageNew("测试"))
+		r.HTML(200, "index", web.PageNew("测试", false))
 	})
 	// 后台管理
 	m.Get("/manager", func(r render.Render) {
-		r.HTML(200, "manager", map[string]interface{}{
-			"title": "后台管理",
-			"c": web.Captcha{
-				CaptchaId: captcha.NewLen(4),
-			},
-		})
+		r.HTML(200, "manager", web.PageNew("管理", true))
 	})
 	// 手机、密码登录
 	m.Post("/login", binding.Bind(web.Captcha{}),
@@ -61,7 +55,9 @@ func main() {
 	// 刷新验证码
 	m.Get("/captcha/reload/:id", web.CaptchaReload)
 	// 查询用户列表
-	m.Get("/users", web.ManagerJson, binding.Bind(web.Params{}), web.UserQuery)
+	m.Post("/users", web.ManagerJson, binding.Bind(web.Params{}), web.UserQuery)
+	// 查询会话列表
+	m.Post("/session", web.ManagerJson, binding.Bind(web.Params{}), web.SessionQuery)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

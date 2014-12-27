@@ -18,19 +18,19 @@ type Password struct {
 
 // 用户
 type User struct {
-	Id bson.ObjectId `bson:"_id,omitempty"`
+	Id bson.ObjectId `bson:"_id,omitempty" json:"id"`
 	// 手机
-	Phone string `form:"phone" binding:"required"`
+	Phone string `bson:"phone" json:"phone" form:"phone" binding:"required"`
 	// 姓名
-	Name string
+	Name string `bson:"name" json:"name"`
 	// 密码
-	Password string `form:"password" binding:"required" json:"-"`
+	Password string `bson:"password" json:"-"`
 	// 是否是管理员
-	IsManager bool
+	IsManager bool `bson:"im" json:"im"`
 	// 创建时间
-	Ca time.Time `bson:"ca,omitempty"`
+	Ca time.Time `bson:"ca,omitempty" json:"ca"`
 	// 修改时间
-	Ua time.Time `bson:"ua,omitempty"`
+	Ua time.Time `bson:"ua,omitempty" json:"ua"`
 	// 有效标记
 	En bool
 }
@@ -163,7 +163,9 @@ func UserLogout(session sessions.Session, r render.Render) {
 // 登录
 func login(user User, session sessions.Session, r render.Render) {
 	s := Session{
-		Uid: user.Id,
+		Uid:       user.Id,
+		Name:      user.Name,
+		IsManager: user.IsManager,
 	}
 	err := s.New()
 	if err != nil {
@@ -212,10 +214,11 @@ func UserPassword(p Password, s Session, r render.Render) {
 }
 
 // 查询用户
-func UserQuery(session Session, params Params, r render.Render) {
+func UserQuery(params Params, r render.Render) {
 	ret := Msg{}
 	u := User{}
 	ls, count, err := u.Query(params)
+	log.Printf("count:%d\n", count)
 	ret.Ok = err == nil
 	if err == nil {
 		ret.Count = count

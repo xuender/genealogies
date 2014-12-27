@@ -15,6 +15,7 @@ type Captcha struct {
 	CaptchaId string
 	// 验证码
 	Solution string
+	Password string `form:"password" binding:"required"`
 }
 
 // 验证图片
@@ -35,6 +36,7 @@ func CaptchaReload(params martini.Params, w http.ResponseWriter) {
 
 // 图片验证
 func CaptchaCheck(c Captcha, r render.Render) {
+	log.Println("CaptchaCheck")
 	if !captcha.VerifyString(c.CaptchaId, c.Solution) {
 		m := Msg{
 			Ok:  false,

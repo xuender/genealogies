@@ -244,17 +244,11 @@ module.exports = (grunt)->
             'js/passwordCtrl.coffee'
             'js/postCtrl.coffee'
           ]
-          'public/js/app.min.js': [
-            'js/data.coffee'
-            'js/app.coffee'
-            'js/confirmCtrl.coffee'
-            'js/genealogyCtrl.coffee'
-            'js/nodeCtrl.coffee'
-            'js/children.coffee'
-            'js/webCtrl.coffee'
-            'js/loginCtrl.coffee'
-            'js/logCtrl.coffee'
-            'js/passwordCtrl.coffee'
+          'public/js/manager.min.js': [
+            'js/manager/countCtrl.coffee'
+            'js/manager/usersCtrl.coffee'
+            'js/manager/sessionCtrl.coffee'
+            'js/manager/manager.coffee'
           ]
     uglify:
       main:
@@ -285,7 +279,7 @@ module.exports = (grunt)->
         tasks: ['copy:root']
       coffee:
         files: [
-          'js/*.coffee'
+          'js/**/*.coffee'
         ]
         tasks: ['coffee']
     karma:
