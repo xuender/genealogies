@@ -6,18 +6,23 @@ import (
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 	"gopkg.in/mgo.v2/bson"
+	"net/http"
 	"time"
 )
 
 // 会话
 type Session struct {
 	Id bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	// IP
+	Ip string `bson:"ip,omitempty" json:"ip"`
 	// 当前用户
 	Uid bson.ObjectId `bson:"uid,omitempty" json:"uid"`
 	// 姓名
 	Name string `bson:"name" json:"name"`
+	// 手机
+	Phone string `bson:"phone,omitempty" json:"phone"`
 	// 是否是管理员
-	IsManager bool `bson:"im" json:"im"`
+	Cs bool `bson:"cs" json:"cs"`
 	// 用户信息
 	User User `bson:",omitempty" json:"user"`
 	// 创建时间
@@ -83,14 +88,17 @@ func (s *Session) Query(p Params) (session []Session, count int, err error) {
 }
 
 // 身份认证
-func Authorize(context martini.Context, session sessions.Session, r render.Render) {
+func Authorize(context martini.Context, session sessions.Session,
+	r render.Render, req *http.Request) {
 	if session.Get("id") != nil {
 		s := Session{
 			Id: bson.ObjectIdHex(session.Get("id").(string)),
 		}
 		err := s.Find()
 		if err == nil {
+			s.Ip = req.RemoteAddr
 			context.Map(s)
+			s.Save()
 			return
 		}
 	}
@@ -98,13 +106,15 @@ func Authorize(context martini.Context, session sessions.Session, r render.Rende
 }
 
 // json身份认证
-func AuthJson(context martini.Context, session sessions.Session, r render.Render) {
+func AuthJson(context martini.Context, session sessions.Session,
+	r render.Render, req *http.Request) {
 	if session.Get("id") != nil {
 		s := Session{
 			Id: bson.ObjectIdHex(session.Get("id").(string)),
 		}
 		err := s.Find()
 		if err == nil {
+			s.Ip = req.RemoteAddr
 			context.Map(s)
 			s.Save()
 			return
@@ -114,14 +124,17 @@ func AuthJson(context martini.Context, session sessions.Session, r render.Render
 }
 
 // 管理员json身份认证
-func ManagerJson(context martini.Context, session sessions.Session, r render.Render) {
+func ManagerJson(context martini.Context, session sessions.Session,
+	r render.Render, req *http.Request) {
 	if session.Get("id") != nil {
 		s := Session{
 			Id: bson.ObjectIdHex(session.Get("id").(string)),
 		}
 		err := s.Find()
-		if err == nil && s.User.IsManager {
+		if err == nil && s.User.Cs {
+			s.Ip = req.RemoteAddr
 			context.Map(s)
+			s.Save()
 			return
 		}
 	}
@@ -144,4 +157,20 @@ func SessionQuery(params Params, r render.Render) {
 		ret.Err = err.Error()
 	}
 	r.JSON(200, ret)
+}
+
+// 删除会话
+func SessionRemove(params martini.Params, r render.Render) {
+	s := Session{
+		Id: bson.ObjectIdHex(params["id"]),
+	}
+	err := s.Logout()
+	ok := err == nil
+	m := Msg{
+		Ok: ok,
+	}
+	if !ok {
+		m.Err = err.Error()
+	}
+	r.JSON(200, m)
 }

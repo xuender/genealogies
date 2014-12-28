@@ -1,12 +1,12 @@
 ###
-usersCtrl.coffee
+sessionCtrl.coffee
 Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-UsersCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
-  ### 用户 ###
-  $log.debug '用户'
+SessionCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
+  ### 会话 ###
+  $log.debug '会话'
   $scope.ims = ->
     def = $q.defer()
     ret = [
@@ -15,23 +15,37 @@ UsersCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
     ]
     def.resolve(ret)
     def
-  $scope.$parent.name = 'users'
+  $scope.remove = (d)->
+    # 删除
+    $scope.confirm('是否删除这条会话记录?', ->
+      $http.delete("/cs/session/#{d.id}").success((data)->
+        $log.debug data
+        if data.ok
+          $scope.tableParams.reload()
+        else
+          alert(data.err)
+      )
+    )
+  $scope.$parent.name = 'session'
   $scope.tableParams = new ngTableParams(
     page: 1
     count: 10
     sorting:
-      ca: 'desc'
+      ua: 'desc'
   ,
     getData: ($defer, params)->
       # 过滤
-      $http.post('/users',
+      $http.post('/cs/session',
         Page: params.page()
         Count: params.count()
         Sorting: params.orderBy()
         Filter: params.filter()
       ).success((data)->
-        params.total(data.count)
-        $defer.resolve(data.data)
+        if data.ok
+          params.total(data.count)
+          $defer.resolve(data.data)
+        else
+          alert(data.err)
       )
   )
 

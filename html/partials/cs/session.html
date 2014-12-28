@@ -1,0 +1,29 @@
+<h3>会话</h3>
+<table ng-table="tableParams" show-filter="true"
+  class="table table-hover table-condensed">
+  <tr ng-repeat="d in $data">
+    <td data-title="'手机'" sortable="'phone'" filter="{'phone': 'text'}">
+      {{ d.phone }}
+    </td>
+    <td data-title="'姓名'" sortable="'name'" filter="{'name': 'text'}">
+      {{ d.name }}
+    </td>
+    <td data-title="'客服'" sortable="'im'" filter="{'im': 'select'}" filter-data="ims()">
+      {{ d.im ? '是' : '否' }}
+    </td>
+    <td data-title="'IP'" sortable="'ip'" filter="{'ip': 'text'}">
+      {{ d.ip }}
+    </td>
+    <td data-title="'创建'" sortable="'ca'" class="text-center">
+      <small>{{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}</small>
+    </td>
+    <td data-title="'修改'" sortable="'ua'" class="text-center">
+      <small>{{ d.ua | date:"yyyy-MM-dd HH:mm:ss" }}</small>
+    </td>
+    <td>
+      <button class="btn btn-danger btn-xs" ng-click="remove(d)">
+        <i class="fa fa-trash"></i>
+      </button>
+    </td>
+  </tr>
+</table>

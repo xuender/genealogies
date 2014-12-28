@@ -20,7 +20,7 @@ cursor: pointer;
 }
 
 .ng-table {
-  border: 1px solid #000;
+  border: 1px solid #ddd;
 }
 body {
   background: white;

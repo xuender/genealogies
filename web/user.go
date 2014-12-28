@@ -7,6 +7,7 @@ import (
 	"github.com/martini-contrib/sessions"
 	"gopkg.in/mgo.v2/bson"
 	"log"
+	"net/http"
 	"time"
 )
 
@@ -25,8 +26,8 @@ type User struct {
 	Name string `bson:"name" json:"name"`
 	// 密码
 	Password string `bson:"password" json:"-"`
-	// 是否是管理员
-	IsManager bool `bson:"im" json:"im"`
+	// 是否是客服
+	Cs bool `bson:"cs" json:"cs"`
 	// 创建时间
 	Ca time.Time `bson:"ca,omitempty" json:"ca"`
 	// 修改时间
@@ -74,7 +75,7 @@ func (u *User) New() (err error) {
 	u.Id = bson.NewObjectId()
 	u.Ca = time.Now()
 	u.En = true
-	u.IsManager = false
+	u.Cs = false
 	err = c.Insert(u)
 	return
 }
@@ -92,7 +93,8 @@ func (u *User) Query(p Params) (users []User, count int, err error) {
 }
 
 // 用户注册
-func UserRegister(session sessions.Session, user Captcha, r render.Render) {
+func UserRegister(session sessions.Session, user Captcha,
+	r render.Render, req *http.Request) {
 	m := Msg{Ok: false}
 	log.Printf("手机注册:%s\n", user.Phone)
 	u := User{
@@ -104,7 +106,7 @@ func UserRegister(session sessions.Session, user Captcha, r render.Render) {
 		r.JSON(200, m)
 		return
 	}
-	user.IsManager = false
+	user.Cs = false
 	err = user.New()
 	if err != nil {
 		m.Err = err.Error()
@@ -116,11 +118,12 @@ func UserRegister(session sessions.Session, user Captcha, r render.Render) {
 		Work: "注册",
 	}
 	l.New()
-	login(user.User, session, r)
+	login(user.User, session, r, req.RemoteAddr)
 }
 
 // 用户登录
-func UserLogin(session sessions.Session, user Captcha, r render.Render) {
+func UserLogin(session sessions.Session, user Captcha,
+	r render.Render, req *http.Request) {
 	log.Printf("手机登陆:%s\n", user.Phone)
 	u := User{
 		Phone: user.Phone,
@@ -142,30 +145,25 @@ func UserLogin(session sessions.Session, user Captcha, r render.Render) {
 		})
 		return
 	}
-	login(u, session, r)
+	login(u, session, r, req.RemoteAddr)
 }
 
 // 用户登出
-func UserLogout(session sessions.Session, r render.Render) {
-	id := session.Get("id").(string)
-	log.Printf("读取Session:%s\n", id)
-	s := Session{
-		Id: bson.ObjectIdHex(id),
-	}
-	err := s.Find()
-	if err == nil {
-		s.Logout()
-		session.Delete("id")
-	}
-	r.JSON(200, "ok")
+func UserLogout(s Session, session sessions.Session, r render.Render) {
+	s.Logout()
+	session.Delete("id")
+	r.Redirect("/")
 }
 
 // 登录
-func login(user User, session sessions.Session, r render.Render) {
+func login(user User, session sessions.Session, r render.Render,
+	ip string) {
 	s := Session{
-		Uid:       user.Id,
-		Name:      user.Name,
-		IsManager: user.IsManager,
+		Uid:   user.Id,
+		Name:  user.Name,
+		Phone: user.Phone,
+		Cs:    user.Cs,
+		Ip:    ip,
 	}
 	err := s.New()
 	if err != nil {
@@ -186,6 +184,7 @@ func login(user User, session sessions.Session, r render.Render) {
 	l := Log{
 		Uid:  user.Id,
 		Work: "登录",
+		Ip:   ip,
 	}
 	l.New()
 }

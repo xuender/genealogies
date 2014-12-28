@@ -7,13 +7,13 @@ Distributed under terms of the MIT license.
 app.config(['$routeProvider', ($routeProvider)->
   $routeProvider.
     when('/count',
-      templateUrl: 'partials/count.html'
+      templateUrl: 'partials/cs/count.html'
       controller: 'CountCtrl'
     ).when('/users',
-      templateUrl: 'partials/users.html'
+      templateUrl: 'partials/cs/users.html'
       controller: 'UsersCtrl'
     ).when('/session',
-      templateUrl: 'partials/session.html'
+      templateUrl: 'partials/cs/session.html'
       controller: 'SessionCtrl'
     ).otherwise({
       redirectTo: '/count'

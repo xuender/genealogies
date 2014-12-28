@@ -7,14 +7,6 @@ Distributed under terms of the MIT license.
 WebCtrl = ($scope, $log, $http, $modal, lss)->
   ### 网页制器 ###
   lss.bind($scope, "isLogin", false)
-  $scope.logout = ->
-    ### 登出 ###
-    if $scope.isLogin
-      $http.get('/logout/').success((data)->
-        $log.debug(data)
-        $scope.isLogin = false
-        $scope.user = {}
-      )
   $scope.post = (t)->
     ### 提交 ###
     $modal.open(
@@ -29,7 +21,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss)->
   $scope.showLog = ->
     ### 显示日志 ###
     $modal.open(
-      templateUrl: 'partials/log.html?v=1.html'
+      templateUrl: 'partials/log.html?3.html'
       controller: LogCtrl
       backdrop: 'static'
       size: 'lg'

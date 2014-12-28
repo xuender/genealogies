@@ -5,6 +5,7 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2/bson"
+	"net/http"
 	"time"
 )
 
@@ -13,6 +14,8 @@ type Log struct {
 	Id bson.ObjectId `bson:"_id,omitempty" json:"-"`
 	// 姓名
 	Work string `bson:"work,omitempty" json:"work"`
+	// IP
+	Ip string `bson:"ip,omitempty" json:"ip"`
 	// 用户ID
 	Uid bson.ObjectId `bson:"uid,omitempty" json:"-"`
 	// 用户
@@ -56,10 +59,11 @@ func (l *Log) Query(p Params) (logs []Log, count int, err error) {
 
 // 创建日志
 func LogNew(work string) martini.Handler {
-	return func(s Session) {
+	return func(s Session, req *http.Request) {
 		l := Log{
 			Uid:  s.Uid,
 			Work: work,
+			Ip:   req.RemoteAddr,
 		}
 		l.New()
 	}

@@ -32,9 +32,9 @@ func main() {
 	m.Get("/", func(r render.Render) {
 		r.HTML(200, "index", web.PageNew("测试", false))
 	})
-	// 后台管理
-	m.Get("/manager", func(r render.Render) {
-		r.HTML(200, "manager", web.PageNew("管理", true))
+	// 客服
+	m.Get("/cs", func(r render.Render) {
+		r.HTML(200, "cs", web.PageNew("客户服务", true))
 	})
 	// 手机、密码登录
 	m.Post("/login", binding.Bind(web.Captcha{}),
@@ -45,7 +45,7 @@ func main() {
 	// 获取用户信息
 	m.Get("/login", web.AuthJson, web.UserGet)
 	// 用户登出
-	m.Get("/logout", web.AuthJson, web.LogNew("登出"), web.UserLogout)
+	m.Get("/logout", web.Authorize, web.LogNew("登出"), web.UserLogout)
 	// 修改密码
 	m.Post("/password", web.AuthJson, web.LogNew("修改密码"), binding.Bind(web.Password{}), web.UserPassword)
 	// 日志查询
@@ -55,9 +55,12 @@ func main() {
 	// 刷新验证码
 	m.Get("/captcha/reload/:id", web.CaptchaReload)
 	// 查询用户列表
-	m.Post("/users", web.ManagerJson, binding.Bind(web.Params{}), web.UserQuery)
+	m.Post("/cs/users", web.ManagerJson, binding.Bind(web.Params{}), web.UserQuery)
 	// 查询会话列表
-	m.Post("/session", web.ManagerJson, binding.Bind(web.Params{}), web.SessionQuery)
+	m.Post("/cs/session", web.ManagerJson, binding.Bind(web.Params{}), web.SessionQuery)
+	// 删除会话
+	m.Delete("/cs/session/:id", web.ManagerJson,
+		web.LogNew("会话删除"), web.SessionRemove)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

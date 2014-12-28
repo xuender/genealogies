@@ -2,10 +2,14 @@
   <h4 class="modal-title">用户操作日志</h4>
 </div><!-- modal-header -->
 <div class="modal-body">
-  <table ng-table="tableParams" show-filter="true" class="table">
+  <table ng-table="tableParams" show-filter="true"
+  class="table table-hover table-condensed">
     <tr ng-repeat="d in $data">
       <td data-title="'行为'" sortable="'work'" filter="{'work': 'text'}">
         {{ d.work }}
+      </td>
+      <td data-title="'IP'" sortable="'ip'" filter="{'ip': 'text'}">
+        {{ d.ip }}
       </td>
       <td data-title="'时间'" sortable="'ca'">
         {{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}
@@ -14,5 +18,5 @@
   </table>
 </div><!-- modal-body -->
 <div class="modal-footer">
-  <button class="btn btn-primary" ng-click="cancel()">取消</button>
+  <button class="btn btn-primary" ng-click="cancel()">关闭</button>
 </div><!-- modal-footer -->

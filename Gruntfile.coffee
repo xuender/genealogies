@@ -243,12 +243,13 @@ module.exports = (grunt)->
             'js/logCtrl.coffee'
             'js/passwordCtrl.coffee'
             'js/postCtrl.coffee'
+            'js/confirmCtrl.coffee'
           ]
-          'public/js/manager.min.js': [
-            'js/manager/countCtrl.coffee'
-            'js/manager/usersCtrl.coffee'
-            'js/manager/sessionCtrl.coffee'
-            'js/manager/manager.coffee'
+          'public/js/cs.min.js': [
+            'js/cs/countCtrl.coffee'
+            'js/cs/usersCtrl.coffee'
+            'js/cs/sessionCtrl.coffee'
+            'js/cs/manager.coffee'
           ]
     uglify:
       main:
