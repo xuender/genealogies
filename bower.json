@@ -22,7 +22,7 @@
     "jquery": "~2.1.1",
     "angular": "~1.2.*",
     "bootstrap": "~3.2.0",
-    "angular-bootstrap": "~0.11.*",
+    "angular-bootstrap": "~0.12.*",
     "ngSocket": "~0.2.1",
     "angular-local-storage": "~0.0.5",
     "ng-hotkey": "~1.0.6",
