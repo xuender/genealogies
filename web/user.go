@@ -21,7 +21,7 @@ type Password struct {
 type User struct {
 	Id bson.ObjectId `bson:"_id,omitempty" json:"id"`
 	// 手机
-	Phone string `bson:"phone" json:"phone" form:"phone" binding:"required"`
+	Phone string `bson:"phone" json:"phone"`
 	// 姓名
 	Name string `bson:"name" json:"name"`
 	// 密码

@@ -12,7 +12,7 @@
     <div class="panel-body col-xs-3">
       <div class="list-group">
         <a href class="list-group-item"
-        ng-class="{'active': type=='question'}" ng-click="type='question'">
+        ng-class="{'active': p.type=='question'}" ng-click="p.type='question'">
           <span class="badge">14</span>
           <h4 class="list-group-item-heading">
             <i class="fa fa-question-circle"></i>
@@ -21,7 +21,7 @@
           <p class="list-group-item-text">使用过程中遇到的问题</p>
         </a>
         <a href class="list-group-item"
-        ng-class="{'active': type=='bug'}" ng-click="type='bug'">
+        ng-class="{'active': p.type=='bug'}" ng-click="p.type='bug'">
           <span class="badge">14</span>
           <h4 class="list-group-item-heading">
             <i class="fa fa-times-circle"></i>
@@ -30,7 +30,7 @@
           <p class="list-group-item-text">发现的错误</p>
         </a>
         <a href class="list-group-item"
-        ng-class="{'active': type=='feature'}" ng-click="type='feature'">
+        ng-class="{'active': p.type=='feature'}" ng-click="p.type='feature'">
           <span class="badge">14</span>
           <h4 class="list-group-item-heading">
             <i class="fa fa-heart"></i>
@@ -69,6 +69,6 @@
   </div><!-- row -->
 </div><!-- modal-body -->
 <div class="modal-footer">
-  <button class="btn btn-primary" ng-click="cancel()">发送</button>
+  <button class="btn btn-primary" ng-click="ok()">发送</button>
   <button class="btn btn-warning" ng-click="cancel()">取消</button>
 </div><!-- modal-footer -->

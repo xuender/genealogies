@@ -10,8 +10,7 @@ POST_TYPE =
   feature: '功能建议'
   
 PostCtrl = ($scope, $modalInstance, $http, $log, type)->
-  ### 日志控制 ###
-  $scope.type = type
+  ### 反馈控制 ###
   $scope.new = true
   $scope.name = POST_TYPE[type]
   $scope.$watch('type', (n, o)->
@@ -21,6 +20,15 @@ PostCtrl = ($scope, $modalInstance, $http, $log, type)->
   $scope.p =
     title: ''
     content: ''
+    type: type
+  $scope.ok = ->
+    $http.post('/post', $scope.p).success((data)->
+      if data.ok
+        $log.debug data
+        $modalInstance.dismiss('cancel')
+      else
+        alert(data.err)
+    )
   $scope.cancel = ->
     $modalInstance.dismiss('cancel')
 

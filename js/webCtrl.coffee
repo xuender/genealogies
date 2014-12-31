@@ -4,13 +4,22 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-WebCtrl = ($scope, $log, $http, $modal, lss)->
+WebCtrl = ($scope, $log, $http, $modal, lss, $q)->
   ### 网页制器 ###
   lss.bind($scope, "isLogin", false)
+  $scope.selectBoolean = ->
+    # 布尔列表
+    def = $q.defer()
+    ret = [
+      {id:true, title:'是'}
+      {id:false, title:'否'}
+    ]
+    def.resolve(ret)
+    def
   $scope.post = (t)->
     ### 提交 ###
     $modal.open(
-      templateUrl: 'partials/post.html?v=2.html'
+      templateUrl: 'partials/post.html?v=3.html'
       controller: PostCtrl
       backdrop: 'static'
       size: 'lg'
@@ -104,5 +113,6 @@ WebCtrl.$inject = [
   '$http'
   '$modal'
   'localStorageService'
+  '$q'
 ]
 

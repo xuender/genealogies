@@ -8,7 +8,7 @@
     <td data-title="'手机'" sortable="'phone'" filter="{'phone': 'text'}">
       {{ d.phone }}
     </td>
-    <td data-title="'客服'" sortable="'im'" filter="{'im': 'select'}" filter-data="ims()">
+    <td data-title="'客服'" sortable="'im'" filter="{'im': 'select'}" filter-data="selectBoolean()">
       {{ d.im ? '是' : '否' }}
     </td>
     <td data-title="'注册'" sortable="'ca'" class="text-center">

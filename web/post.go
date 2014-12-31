@@ -2,7 +2,9 @@ package web
 
 import (
 	"errors"
+	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2/bson"
+	"log"
 	"time"
 )
 
@@ -12,6 +14,7 @@ const (
 	受理中
 	拒绝
 	已解决
+	postName = "post"
 )
 
 // 帖子
@@ -22,7 +25,7 @@ type Post struct {
 	// 分类
 	Type string `bson:"type" json:"type"`
 	// 状态
-	Status uint `bson:"status" json:"status"`
+	Status int `bson:"status" json:"status"`
 	// 内容
 	Content string `bson:"content,omitempty" json:"content"`
 	// 回复
@@ -32,9 +35,9 @@ type Post struct {
 	// 是否阅读
 	Read bool `bson:"read,omitempty" json:"read"`
 	// 用户ID
-	Uid bson.ObjectId `bson:"uid" json:"-"`
+	Uid bson.ObjectId `bson:"uid" json:"uid"`
 	// 用户
-	User User `bson:",omitempty" json:"-"`
+	User User `bson:",omitempty" json:"user"`
 	// 创建时间
 	Ca time.Time `bson:"ca,omitempty" json:"ca"`
 	// 创建时间
@@ -55,7 +58,7 @@ func (p *Post) New() error {
 	if !p.Uid.Valid() {
 		return errors.New("用户不能为空")
 	}
-	c := DB.C("post")
+	c := DB.C(postName)
 	p.Id = bson.NewObjectId()
 	p.Ca = time.Now()
 	p.Read = true
@@ -67,7 +70,7 @@ func (p *Post) New() error {
 func (p *Post) Reply(rt string) error {
 	p.Rt = rt
 	p.Ua = time.Now()
-	return DB.C("post").UpdateId(p.Id, p)
+	return DB.C(postName).UpdateId(p.Id, p)
 }
 
 // 查询
@@ -77,12 +80,48 @@ func (i *Post) Query(p Params) (posts []Post, count int, err error) {
 		m["uid"] = i.Uid
 	}
 	p.Find(m)
-	q := DB.C("post").Find(m)
+	q := DB.C(postName).Find(m)
 	count, err = q.Count()
 	if err == nil && count > 0 {
 		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&posts)
 	}
+	for i, p := range posts {
+		p.User.Id = p.Uid
+		p.User.Find()
+		posts[i] = p
+		log.Println(p.User.Name)
+	}
 	return
+}
+
+// 新增帖子
+func PostNew(s Session, post Post, r render.Render) {
+	log.Printf("post title:%s\n", post.Title)
+	post.Uid = s.Uid
+	ret := Msg{}
+	err := post.New()
+	ret.Ok = err == nil
+	if !ret.Ok {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
+}
+
+// 查询帖子
+func PostQuery(params Params, r render.Render) {
+	ret := Msg{}
+	p := Post{}
+	log.Printf("%s\n", params)
+	ls, count, err := p.Query(params)
+	log.Printf("count:%d\n", count)
+	ret.Ok = err == nil
+	if err == nil {
+		ret.Count = count
+		ret.Data = ls
+	} else {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
 }
 
 // TODO 增加post创建、查询方法
@@ -93,7 +132,7 @@ func (i *Post) Query(p Params) (posts []Post, count int, err error) {
 //		err = errors.New("分类不能为空")
 //		return
 //	}
-//	q := DB.C("post").Find(bson.M{"type": p.Type})
+//	q := DB.C(postName).Find(bson.M{"type": p.Type})
 //	err = q.Sort("-ca").Limit(size).All(&posts)
 //	return
 //}

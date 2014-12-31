@@ -4,17 +4,9 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-UsersCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
+UsersCtrl = ($scope, $http, $log, ngTableParams, $filter)->
   ### 用户 ###
   $log.debug '用户'
-  $scope.ims = ->
-    def = $q.defer()
-    ret = [
-      {id:true, title:'是'}
-      {id:false, title:'否'}
-    ]
-    def.resolve(ret)
-    def
   $scope.$parent.name = 'users'
   $scope.tableParams = new ngTableParams(
     page: 1
@@ -44,6 +36,5 @@ UsersCtrl.$inject = [
   '$log'
   'ngTableParams'
   '$filter'
-  '$q'
 ]
 

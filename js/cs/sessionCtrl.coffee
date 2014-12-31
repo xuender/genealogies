@@ -4,17 +4,9 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-SessionCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
+SessionCtrl = ($scope, $http, $log, ngTableParams, $filter)->
   ### 会话 ###
   $log.debug '会话'
-  $scope.ims = ->
-    def = $q.defer()
-    ret = [
-      {id:true, title:'是'}
-      {id:false, title:'否'}
-    ]
-    def.resolve(ret)
-    def
   $scope.remove = (d)->
     # 删除
     $scope.confirm('是否删除这条会话记录?', ->
@@ -55,6 +47,5 @@ UsersCtrl.$inject = [
   '$log'
   'ngTableParams'
   '$filter'
-  '$q'
 ]
 

@@ -45,6 +45,10 @@ func (p *Params) Find(m bson.M) {
 			}
 		case int:
 			m[k] = v.(int)
+		case uint:
+			m[k] = v.(uint)
+		case float64:
+			m[k] = v.(float64)
 		case bool:
 			m[k] = v.(bool)
 		}

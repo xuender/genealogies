@@ -15,6 +15,9 @@ app.config(['$routeProvider', ($routeProvider)->
     ).when('/session',
       templateUrl: 'partials/cs/session.html'
       controller: 'SessionCtrl'
+    ).when('/post',
+      templateUrl: 'partials/cs/posts.html'
+      controller: 'PostsCtrl'
     ).otherwise({
       redirectTo: '/count'
     })

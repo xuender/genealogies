@@ -1,0 +1,24 @@
+<h3>用户</h3>
+<table ng-table="tableParams" show-filter="true"
+  class="table table-hover table-condensed">
+  <tr ng-repeat="d in $data">
+    <td data-title="'类型'" sortable="'type'" filter="{'type': 'select'}" filter-data="selectType()">
+      {{ type(d.type ) }}
+    </td>
+    <td data-title="'标题'" sortable="'title'" filter="{'title': 'text'}">
+      {{ d.title }}
+    </td>
+    <td data-title="'用户'">
+      {{ d.user.name }}
+    </td>
+    <td data-title="'状态'" sortable="'status'" filter="{'status': 'select'}" filter-data="selectStatus()">
+      {{ status(d.status) }}
+    </td>
+    <td data-title="'已读'" sortable="'read'" filter="{'read': 'select'}" filter-data="selectBoolean()">
+      {{ d.read ? '是' : '否' }}
+    </td>
+    <td data-title="'创建'" sortable="'ca'" class="text-center">
+      <small>{{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}</small>
+    </td>
+  </tr>
+</table>

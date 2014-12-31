@@ -249,6 +249,7 @@ module.exports = (grunt)->
             'js/cs/countCtrl.coffee'
             'js/cs/usersCtrl.coffee'
             'js/cs/sessionCtrl.coffee'
+            'js/cs/postsCtrl.coffee'
             'js/cs/manager.coffee'
           ]
     uglify:
