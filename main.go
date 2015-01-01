@@ -62,7 +62,9 @@ func main() {
 	m.Delete("/cs/session/:id", web.ManagerJson,
 		web.LogNew("会话删除"), web.SessionRemove)
 	// 用户反馈
-	m.Post("/post", web.AuthJson, binding.Bind(web.Post{}), web.PostNew)
+	m.Put("/post", web.AuthJson, binding.Bind(web.Post{}), web.PostNew)
+	// 历史反馈查询
+	m.Post("/post", web.AuthJson, binding.Bind(web.Params{}), web.PostQuery2)
 	// 查询用户反馈列表
 	m.Post("/cs/post", web.ManagerJson, binding.Bind(web.Params{}), web.PostQuery)
 	m.NotFound(func(r render.Render) {

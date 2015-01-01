@@ -116,6 +116,7 @@ func UserRegister(session sessions.Session, user Captcha,
 	l := Log{
 		Uid:  user.Id,
 		Work: "注册",
+		Ip:   req.RemoteAddr,
 	}
 	l.New()
 	login(user.User, session, r, req.RemoteAddr)

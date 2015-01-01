@@ -19,7 +19,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss, $q)->
   $scope.post = (t)->
     ### 提交 ###
     $modal.open(
-      templateUrl: 'partials/post.html?v=3.html'
+      templateUrl: 'partials/post.html?v=5.html'
       controller: PostCtrl
       backdrop: 'static'
       size: 'lg'

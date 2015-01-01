@@ -4,13 +4,6 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-POST_STATUS = [
-  {id:0 , title:'新建'}
-  {id:1 , title:'待受理'}
-  {id:2 , title:'受理中'}
-  {id:3 , title:'拒绝'}
-  {id:4 , title:'已解决'}
-]
 PostsCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
   ### 帖子 ###
   $log.debug '帖子'

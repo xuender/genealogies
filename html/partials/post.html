@@ -18,7 +18,7 @@
             <i class="fa fa-question-circle"></i>
             问题
           </h4>
-          <p class="list-group-item-text">使用过程中遇到的问题</p>
+          <p class="list-group-item-text">使用中遇到的问题</p>
         </a>
         <a href class="list-group-item"
         ng-class="{'active': p.type=='bug'}" ng-click="p.type='bug'">
@@ -36,7 +36,7 @@
             <i class="fa fa-heart"></i>
             功能建议
           </h4>
-          <p class="list-group-item-text">对本网站的建议</p>
+          <p class="list-group-item-text">对本站的建议</p>
         </a>
       </div><!-- list-group -->
     </div><!-- panel-body -->
@@ -44,10 +44,13 @@
       <table ng-table="tableParams" show-filter="true" class="table">
         <tr ng-repeat="d in $data">
           <td data-title="'标题'" sortable="'title'" filter="{'title': 'text'}">
-            {{ d.work }}
+            {{ d.title }}
+          </td>
+          <td data-title="'状态'" sortable="'status'" filter="{'status': 'select'}" filter-data="selectStatus()">
+            {{ status(d.status) }}
           </td>
           <td data-title="'时间'" sortable="'ca'">
-            {{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}
+            <small>{{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}</small>
           </td>
         </tr>
       </table>

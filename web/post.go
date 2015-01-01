@@ -109,8 +109,19 @@ func PostNew(s Session, post Post, r render.Render) {
 
 // 查询帖子
 func PostQuery(params Params, r render.Render) {
-	ret := Msg{}
 	p := Post{}
+	postQuery(p, params, r)
+}
+
+// 查询用户帖子
+func PostQuery2(session Session, params Params, r render.Render) {
+	p := Post{
+		Uid: session.Uid,
+	}
+	postQuery(p, params, r)
+}
+func postQuery(p Post, params Params, r render.Render) {
+	ret := Msg{}
 	log.Printf("%s\n", params)
 	ls, count, err := p.Query(params)
 	log.Printf("count:%d\n", count)
