@@ -2,8 +2,14 @@
   <h4 class="modal-title">
   {{ name }}
     <div class="btn-group pull-right">
-      <label class="btn btn-info" ng-model="new" btn-radio="true">新增{{ name }}</label>
-      <label class="btn btn-info" ng-model="new" btn-radio="false">历史{{ name }}</label>
+      <label class="btn btn-info" ng-model="new" btn-radio="true">
+        <i class="fa fa-file-o"></i>
+        新增{{ name }}
+      </label>
+      <label class="btn btn-info" ng-model="new" btn-radio="false">
+        <i class="fa fa-history"></i>
+        历史{{ name }}
+      </label>
     </div><!-- btn-group -->
   </h4>
 </div><!-- modal-header -->
@@ -81,6 +87,12 @@
   </div><!-- row -->
 </div><!-- modal-body -->
 <div class="modal-footer">
-  <button class="btn btn-primary" ng-click="ok()">发送</button>
-  <button class="btn btn-warning" ng-click="cancel()">关闭</button>
+  <button class="btn btn-primary" ng-show="new" ng-click="ok()">
+    <i class="fa fa-paper-plane"></i>
+    发送
+  </button>
+  <button class="btn btn-warning" ng-click="cancel()">
+    <i class="fa fa-times"></i>
+    关闭
+  </button>
 </div><!-- modal-footer -->

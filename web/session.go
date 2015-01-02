@@ -117,6 +117,11 @@ func AuthJson(context martini.Context, session sessions.Session,
 			s.Ip = req.RemoteAddr
 			context.Map(s)
 			s.Save()
+			l := Log{
+				Uid: s.Uid,
+				Ip:  s.Ip,
+			}
+			context.Map(l)
 			return
 		}
 	}
@@ -135,6 +140,11 @@ func ManagerJson(context martini.Context, session sessions.Session,
 			s.Ip = req.RemoteAddr
 			context.Map(s)
 			s.Save()
+			l := Log{
+				Uid: s.Uid,
+				Ip:  s.Ip,
+			}
+			context.Map(l)
 			return
 		}
 	}

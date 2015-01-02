@@ -118,20 +118,21 @@ func (i *Post) Query(p Params) (posts []Post, count int, err error) {
 }
 
 // 新增帖子
-func PostNew(s Session, post Post, r render.Render) {
-	log.Printf("post title:%s\n", post.Title)
-	post.Uid = s.Uid
+func PostNew(l Log, s Session, p Post, r render.Render) {
+	log.Printf("post title:%s\n", p.Title)
+	p.Uid = s.Uid
 	ret := Msg{}
-	err := post.New()
+	err := p.New()
 	ret.Ok = err == nil
 	if !ret.Ok {
 		ret.Err = err.Error()
 	}
 	r.JSON(200, ret)
+	l.Log(p.Id, "反馈新增")
 }
 
 // 修改帖子
-func PostUpdate(p Post, r render.Render) {
+func PostUpdate(l Log, p Post, r render.Render) {
 	p.Read = false
 	ret := Msg{}
 	err := p.Save()
@@ -140,10 +141,11 @@ func PostUpdate(p Post, r render.Render) {
 		ret.Err = err.Error()
 	}
 	r.JSON(200, ret)
+	l.Log(p.Id, "反馈修改")
 }
 
 // 帖子阅读
-func PostRead(params martini.Params, r render.Render) {
+func PostRead(l Log, params martini.Params, r render.Render) {
 	p := Post{
 		Id: bson.ObjectIdHex(params["id"]),
 	}
@@ -158,14 +160,19 @@ func PostRead(params martini.Params, r render.Render) {
 		ret.Err = err.Error()
 	}
 	r.JSON(200, ret)
+	l.Log(p.Id, "反馈阅读")
 }
 
 // 帖子删除
-func PostRemove(params martini.Params, r render.Render) {
+func PostRemove(l Log, params martini.Params, r render.Render) {
 	p := Post{
 		Id: bson.ObjectIdHex(params["id"]),
 	}
-	err := p.Remove()
+	err := p.Find()
+	if err == nil {
+		err = p.Remove()
+		l.Log(p.Id, "反馈删除")
+	}
 	ret := Msg{}
 	ret.Ok = err == nil
 	if !ret.Ok {

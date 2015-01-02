@@ -11,6 +11,9 @@
       <td data-title="'IP'" sortable="'ip'" filter="{'ip': 'text'}">
         {{ d.ip }}
       </td>
+      <td ng-show="url">
+        {{ d.user.name }}
+      </td>
       <td data-title="'时间'" sortable="'ca'">
         {{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}
       </td>
@@ -18,5 +21,8 @@
   </table>
 </div><!-- modal-body -->
 <div class="modal-footer">
-  <button class="btn btn-primary" ng-click="cancel()">关闭</button>
+  <button class="btn btn-primary" ng-click="cancel()">
+    <i class="fa fa-times"></i>
+    关闭
+  </button>
 </div><!-- modal-footer -->

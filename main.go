@@ -73,6 +73,8 @@ func main() {
 	m.Put("/cs/post", web.ManagerJson, binding.Bind(web.Post{}), web.PostUpdate)
 	// 删除反馈
 	m.Delete("/cs/post/:id", web.ManagerJson, web.PostRemove)
+	// 日志列表
+	m.Post("/cs/logs/:oid", web.ManagerJson, binding.Bind(web.Params{}), web.LogList)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

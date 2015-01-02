@@ -4,7 +4,7 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-PostsCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
+PostsCtrl = ($scope, $http, $log, $modal, ngTableParams, $filter, $q)->
   ### 帖子 ###
   $log.debug '帖子'
   $scope.$parent.name = 'post'
@@ -84,10 +84,21 @@ PostsCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
           alert(data.err)
       )
     )
+  $scope.log = (d)->
+    $modal.open(
+      templateUrl: 'partials/log.html?3.html'
+      controller: LogCtrl
+      backdrop: 'static'
+      size: 'lg'
+      resolve:
+        oid: ->
+          d.id
+    )
 PostsCtrl.$inject = [
   '$scope'
   '$http'
   '$log'
+  '$modal'
   'ngTableParams'
   '$filter'
   '$q'

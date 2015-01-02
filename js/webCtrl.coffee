@@ -19,7 +19,7 @@ WebCtrl = ($scope, $log, $http, $modal, lss, $q)->
   $scope.post = (t)->
     ### 提交 ###
     $modal.open(
-      templateUrl: 'partials/post.html?v=6.html'
+      templateUrl: 'partials/post.html?v=7.html'
       controller: PostCtrl
       backdrop: 'static'
       size: 'lg'
@@ -34,6 +34,9 @@ WebCtrl = ($scope, $log, $http, $modal, lss, $q)->
       controller: LogCtrl
       backdrop: 'static'
       size: 'lg'
+      resolve:
+        oid: ->
+          false
     )
   $scope.password = ->
     # 更改密码

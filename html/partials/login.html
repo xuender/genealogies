@@ -7,8 +7,14 @@
       用户注册
     </span>
     <div class="btn-group pull-right">
-      <label class="btn btn-info" ng-model="user.m" btn-radio="'l'">登录</label>
-      <label class="btn btn-info" ng-model="user.m" btn-radio="'r'">注册</label>
+      <label class="btn btn-info" ng-model="user.m" btn-radio="'l'">
+        <i class="fa fa-key"></i>
+        登录
+      </label>
+      <label class="btn btn-info" ng-model="user.m" btn-radio="'r'">
+        <i class="fa fa-pencil-square-o"></i>
+        注册
+      </label>
     </div><!-- btn-group -->
   </h4>
 </div><!-- modal-header -->
@@ -84,8 +90,17 @@
 </div><!-- modal-body -->
 <div class="modal-footer">
   <button ng-show="user.m == 'l'" ng-click="ok(loginForm.$valid)" ng-disabled="old && !loginForm.$valid"
-  class="btn btn-primary">登录</button>
+  class="btn btn-primary">
+    <i class="fa fa-key"></i>
+    登录
+  </button>
   <button ng-show="user.m == 'r'" ng-click="ok(registerForm.$valid)" ng-disabled="old && !registerForm.$valid"
-  class="btn btn-primary">注册</button>
-  <button class="btn btn-warning" ng-click="cancel()">取消</button>
+  class="btn btn-primary">
+    <i class="fa fa-pencil-square-o"></i>
+    注册
+  </button>
+  <button class="btn btn-warning" ng-click="cancel()">
+    <i class="fa fa-times"></i>
+    关闭
+  </button>
 </div><!-- modal-footer -->
