@@ -13,7 +13,6 @@
       <div class="list-group">
         <a href class="list-group-item"
         ng-class="{'active': p.type=='question'}" ng-click="p.type='question'">
-          <span class="badge">14</span>
           <h4 class="list-group-item-heading">
             <i class="fa fa-question-circle"></i>
             问题
@@ -22,7 +21,6 @@
         </a>
         <a href class="list-group-item"
         ng-class="{'active': p.type=='bug'}" ng-click="p.type='bug'">
-          <span class="badge">14</span>
           <h4 class="list-group-item-heading">
             <i class="fa fa-times-circle"></i>
             错误
@@ -31,7 +29,6 @@
         </a>
         <a href class="list-group-item"
         ng-class="{'active': p.type=='feature'}" ng-click="p.type='feature'">
-          <span class="badge">14</span>
           <h4 class="list-group-item-heading">
             <i class="fa fa-heart"></i>
             功能建议
@@ -44,9 +41,9 @@
       <table ng-table="tableParams" show-filter="true"
       class="table table-hover table-condensed">
         <tbody ng-repeat="d in $data">
-          <tr ng-class="{'info': !d.read}">
+          <tr class="btn-link" ng-class="{'info': !d.read}" ng-click="read(d)">
             <td data-title="'标题'" sortable="'title'" filter="{'title': 'text'}">
-              <a href ng-click="read(d)">{{ d.title }}</a>
+              {{ d.title }}
             </td>
             <td data-title="'状态'" sortable="'status'" filter="{'status': 'select'}" filter-data="selectStatus()">
               {{ status(d.status) }}

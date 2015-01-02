@@ -1,13 +1,13 @@
-<h3>用户</h3>
+<h3>用户反馈</h3>
 <table ng-table="tableParams" show-filter="true"
   class="table table-hover table-condensed">
   <tbody ng-repeat="d in $data">
-    <tr>
+    <tr class="btn-link" ng-click="d.$edit=!d.$edit">
       <td data-title="'类型'" sortable="'type'" filter="{'type': 'select'}" filter-data="selectType()">
         {{ type(d.type ) }}
       </td>
       <td data-title="'标题'" sortable="'title'" filter="{'title': 'text'}">
-        <a href ng-click="d.$edit=!d.$edit">{{ d.title }}</a>
+        {{ d.title }}
       </td>
       <td data-title="'用户'">
         {{ d.user.name }}

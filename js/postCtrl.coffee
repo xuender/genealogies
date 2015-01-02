@@ -54,6 +54,7 @@ PostCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter, $q, typ
     page: 1
     count: 10
     sorting:
+      read: 'asc'
       ca: 'desc'
   ,
     getData: ($defer, params)->
@@ -73,14 +74,15 @@ PostCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter, $q, typ
     $modalInstance.dismiss('cancel')
   $scope.read = (d)->
     # 读取
-    $http.get("/post/#{d.id}").success((data)->
-      $log.debug data
-      if data.ok
-        d.$edit=!d.$edit
-        d.read=true
-      else
-        alert(data.err)
-    )
+    if !d.read
+      $http.get("/post/#{d.id}").success((data)->
+        $log.debug data
+        if data.ok
+          d.read=true
+        else
+          alert(data.err)
+      )
+    d.$edit=!d.$edit
 
 PostCtrl.$inject = [
   '$scope'
