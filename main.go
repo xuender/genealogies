@@ -61,12 +61,18 @@ func main() {
 	// 删除会话
 	m.Delete("/cs/session/:id", web.ManagerJson,
 		web.LogNew("会话删除"), web.SessionRemove)
+	// 用户读取
+	m.Get("/post/:id", web.AuthJson, web.PostRead)
 	// 用户反馈
-	m.Put("/post", web.AuthJson, binding.Bind(web.Post{}), web.PostNew)
+	m.Post("/post", web.AuthJson, binding.Bind(web.Post{}), web.PostNew)
 	// 历史反馈查询
-	m.Post("/post", web.AuthJson, binding.Bind(web.Params{}), web.PostQuery2)
+	m.Post("/postq", web.AuthJson, binding.Bind(web.Params{}), web.PostQuery2)
 	// 查询用户反馈列表
 	m.Post("/cs/post", web.ManagerJson, binding.Bind(web.Params{}), web.PostQuery)
+	// 反馈修改
+	m.Put("/cs/post", web.ManagerJson, binding.Bind(web.Post{}), web.PostUpdate)
+	// 删除反馈
+	m.Delete("/cs/post/:id", web.ManagerJson, web.PostRemove)
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

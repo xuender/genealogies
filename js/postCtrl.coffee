@@ -10,10 +10,9 @@ POST_TYPE =
   feature: '功能建议'
 POST_STATUS = [
   {id:0 , title:'新建'}
-  {id:1 , title:'待受理'}
-  {id:2 , title:'受理中'}
-  {id:3 , title:'拒绝'}
-  {id:4 , title:'已解决'}
+  {id:1 , title:'受理'}
+  {id:2 , title:'拒绝'}
+  {id:3 , title:'解决'}
 ]
   
 PostCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter, $q, type)->
@@ -44,7 +43,7 @@ PostCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter, $q, typ
     content: ''
     type: type
   $scope.ok = ->
-    $http.put('/post', $scope.p).success((data)->
+    $http.post('/post', $scope.p).success((data)->
       if data.ok
         $log.debug data
         $modalInstance.dismiss('cancel')
@@ -59,7 +58,7 @@ PostCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter, $q, typ
   ,
     getData: ($defer, params)->
       # 过滤
-      $http.post('/post',
+      $http.post('/postq',
         Page: params.page()
         Count: params.count()
         Sorting: params.orderBy()
@@ -72,6 +71,16 @@ PostCtrl = ($scope, $modalInstance, $http, $log, ngTableParams, $filter, $q, typ
   )
   $scope.cancel = ->
     $modalInstance.dismiss('cancel')
+  $scope.read = (d)->
+    # 读取
+    $http.get("/post/#{d.id}").success((data)->
+      $log.debug data
+      if data.ok
+        d.$edit=!d.$edit
+        d.read=true
+      else
+        alert(data.err)
+    )
 
 PostCtrl.$inject = [
   '$scope'

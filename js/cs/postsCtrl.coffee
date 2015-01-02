@@ -32,7 +32,9 @@ PostsCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
   $scope.selectStatus = ->
     # 布尔列表
     def = $q.defer()
-    ret = POST_STATUS
+    ret = []
+    for i in POST_STATUS
+      ret.push i
     def.resolve(ret)
     def
   $scope.tableParams = new ngTableParams(
@@ -57,7 +59,31 @@ PostsCtrl = ($scope, $http, $log, ngTableParams, $filter, $q)->
           alert(data.err)
       )
   )
-
+  $scope.ret = (s, d, rt=null)->
+    # 回复
+    if rt
+      d.rt = rt
+    d.status = s
+    $http.put('/cs/post',d).success((data)->
+      $log.debug data
+      if data.ok
+        d.$edit = false
+        #alert('修改成功')
+      else
+        alert(data.err)
+    )
+  $scope.remove = (d)->
+    # 删除
+    $scope.confirm("是否删除 [ #{ d.title } ] ?", ->
+      $http.delete("/cs/post/#{d.id}").success((data)->
+        $log.debug data
+        if data.ok
+          $scope.tableParams.reload()
+          alert('删除成功')
+        else
+          alert(data.err)
+      )
+    )
 PostsCtrl.$inject = [
   '$scope'
   '$http'

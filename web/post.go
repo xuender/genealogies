@@ -2,6 +2,7 @@ package web
 
 import (
 	"errors"
+	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2/bson"
 	"log"
@@ -10,16 +11,15 @@ import (
 
 const (
 	新建 = iota
-	待受理
-	受理中
+	受理
 	拒绝
-	已解决
+	解决
 	postName = "post"
 )
 
 // 帖子
 type Post struct {
-	Id bson.ObjectId `bson:"_id,omitempty" json:"-"`
+	Id bson.ObjectId `bson:"_id,omitempty" json:"id"`
 	// 标题
 	Title string `bson:"title" json:"title"`
 	// 分类
@@ -66,11 +66,35 @@ func (p *Post) New() error {
 	return c.Insert(p)
 }
 
-// 回复
-func (p *Post) Reply(rt string) error {
-	p.Rt = rt
+// 查找
+func (p *Post) Find() (err error) {
+	c := DB.C(postName)
+	if p.Id.Valid() {
+		err = c.FindId(p.Id).One(p)
+		return
+	}
+	return errors.New("Id无效，无法查找")
+}
+
+// 查找
+func (p *Post) Remove() (err error) {
+	c := DB.C(postName)
+	if p.Id.Valid() {
+		err = c.RemoveId(p.Id)
+		return
+	}
+	return errors.New("Id无效，无法查找")
+}
+
+// 保存
+func (p *Post) Save() error {
+	c := DB.C(postName)
+	if p.Ca.IsZero() {
+		p.Ca = time.Now()
+		return c.Insert(p)
+	}
 	p.Ua = time.Now()
-	return DB.C(postName).UpdateId(p.Id, p)
+	return c.UpdateId(p.Id, p)
 }
 
 // 查询
@@ -89,7 +113,6 @@ func (i *Post) Query(p Params) (posts []Post, count int, err error) {
 		p.User.Id = p.Uid
 		p.User.Find()
 		posts[i] = p
-		log.Println(p.User.Name)
 	}
 	return
 }
@@ -100,6 +123,50 @@ func PostNew(s Session, post Post, r render.Render) {
 	post.Uid = s.Uid
 	ret := Msg{}
 	err := post.New()
+	ret.Ok = err == nil
+	if !ret.Ok {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
+}
+
+// 修改帖子
+func PostUpdate(p Post, r render.Render) {
+	p.Read = false
+	ret := Msg{}
+	err := p.Save()
+	ret.Ok = err == nil
+	if !ret.Ok {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
+}
+
+// 帖子阅读
+func PostRead(params martini.Params, r render.Render) {
+	p := Post{
+		Id: bson.ObjectIdHex(params["id"]),
+	}
+	err := p.Find()
+	if err == nil {
+		p.Read = true
+		err = p.Save()
+	}
+	ret := Msg{}
+	ret.Ok = err == nil
+	if !ret.Ok {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
+}
+
+// 帖子删除
+func PostRemove(params martini.Params, r render.Render) {
+	p := Post{
+		Id: bson.ObjectIdHex(params["id"]),
+	}
+	err := p.Remove()
+	ret := Msg{}
 	ret.Ok = err == nil
 	if !ret.Ok {
 		ret.Err = err.Error()

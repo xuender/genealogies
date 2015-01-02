@@ -41,18 +41,30 @@
       </div><!-- list-group -->
     </div><!-- panel-body -->
     <div class="col-xs-9" collapse="new">
-      <table ng-table="tableParams" show-filter="true" class="table">
-        <tr ng-repeat="d in $data">
-          <td data-title="'标题'" sortable="'title'" filter="{'title': 'text'}">
-            {{ d.title }}
-          </td>
-          <td data-title="'状态'" sortable="'status'" filter="{'status': 'select'}" filter-data="selectStatus()">
-            {{ status(d.status) }}
-          </td>
-          <td data-title="'时间'" sortable="'ca'">
-            <small>{{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}</small>
-          </td>
-        </tr>
+      <table ng-table="tableParams" show-filter="true"
+      class="table table-hover table-condensed">
+        <tbody ng-repeat="d in $data">
+          <tr ng-class="{'info': !d.read}">
+            <td data-title="'标题'" sortable="'title'" filter="{'title': 'text'}">
+              <a href ng-click="read(d)">{{ d.title }}</a>
+            </td>
+            <td data-title="'状态'" sortable="'status'" filter="{'status': 'select'}" filter-data="selectStatus()">
+              {{ status(d.status) }}
+            </td>
+            <td data-title="'时间'" sortable="'ca'">
+              <small>{{ d.ca | date:"yyyy-MM-dd HH:mm:ss" }}</small>
+            </td>
+          </tr>
+          <tr ng-show="d.$edit">
+            <td colspan="2">
+              <pre>{{ d.content }}</pre>
+              <pre ng-show="d.rt">{{ d.rt}}</pre>
+            </td>
+            <td colspan="1" style="vertical-align: middle;">
+              <small ng-show="d.status>0">{{ d.ua | date:"yyyy-MM-dd HH:mm:ss" }}</small>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div><!-- 9 -->
     <form name="postForm" class="col-xs-9" collapse="!new">
@@ -73,5 +85,5 @@
 </div><!-- modal-body -->
 <div class="modal-footer">
   <button class="btn btn-primary" ng-click="ok()">发送</button>
-  <button class="btn btn-warning" ng-click="cancel()">取消</button>
+  <button class="btn btn-warning" ng-click="cancel()">关闭</button>
 </div><!-- modal-footer -->

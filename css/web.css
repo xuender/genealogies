@@ -66,6 +66,10 @@ td {
   */
 }
 
+.rt-time {
+  vertical-align: middle;
+}
+
 footer {
   text-align: center;
   padding: 30px 0;
