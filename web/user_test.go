@@ -7,10 +7,8 @@ import (
 
 // 用户禁用
 func TestUserDisable(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	var u User
 	u.En = true
 	u.Disable()
@@ -19,10 +17,8 @@ func TestUserDisable(t *testing.T) {
 	}
 }
 func TestUserFind(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	u := User{
 		Phone: "110",
 	}
@@ -36,15 +32,12 @@ func TestUserFind(t *testing.T) {
 	}
 }
 func TestUserFindByPhone(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
-	c := DB.C("user")
+	base.DbTest()
+	defer base.DbClose()
 	u := User{
 		Phone: "110",
 	}
-	c.Insert(&u)
+	u.Save()
 	user := User{
 		Phone: "110",
 	}
@@ -66,10 +59,8 @@ func TestUserFindByPhone(t *testing.T) {
 
 // 用户创建
 func TestUserNew(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	u := User{
 		Phone: "110",
 	}
@@ -95,10 +86,8 @@ func TestUserNew(t *testing.T) {
 
 // 用户保存
 func TestUserSave(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	u := User{
 		Phone: "110",
 	}

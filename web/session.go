@@ -1,7 +1,7 @@
 package web
 
 import (
-	"errors"
+	"../base"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
@@ -12,7 +12,7 @@ import (
 
 // 会话
 type Session struct {
-	Id bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	Id bson.ObjectId `bson:"_id,omitempty" json:"id" table:"session"`
 	// IP
 	Ip string `bson:"ip,omitempty" json:"ip"`
 	// 当前用户
@@ -33,20 +33,16 @@ type Session struct {
 
 // 登出
 func (s *Session) Logout() error {
-	return DB.C("session").RemoveId(s.Id)
+	return base.Remove(s)
 }
 
 // 会话查找
 func (s *Session) Find() (err error) {
-	c := DB.C("session")
-	if s.Id.Valid() {
-		err = c.FindId(s.Id).One(s)
-		if err == nil {
-			s.Read()
-			return
-		}
+	err = base.Find(s)
+	if err == nil {
+		s.Read()
 	}
-	return errors.New("Id无效，无法查找")
+	return
 }
 
 // 读取用户
@@ -60,30 +56,17 @@ func (s *Session) Read() (err error) {
 
 // 创建会话
 func (s *Session) New() error {
-	s.Id = bson.NewObjectId()
 	return s.Save()
 }
 
 // 保存
 func (s *Session) Save() error {
-	c := DB.C("session")
-	if s.Ca.IsZero() {
-		s.Ca = time.Now()
-		return c.Insert(s)
-	}
-	s.Ua = time.Now()
-	return c.UpdateId(s.Id, s)
+	return base.Save(s)
 }
 
 // 查询
-func (s *Session) Query(p Params) (session []Session, count int, err error) {
-	m := bson.M{}
-	p.Find(m)
-	q := DB.C("session").Find(m)
-	count, err = q.Count()
-	if err == nil && count > 0 {
-		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&session)
-	}
+func (s *Session) Query(p base.Params) (session []Session, count int, err error) {
+	count, err = p.Query(s, "-ca", &session)
 	return
 }
 
@@ -152,7 +135,7 @@ func ManagerJson(context martini.Context, session sessions.Session,
 }
 
 // 查询会话
-func SessionQuery(params Params, r render.Render) {
+func SessionQuery(params base.Params, r render.Render) {
 	ret := Msg{}
 	s := Session{}
 	ls, count, err := s.Query(params)

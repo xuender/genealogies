@@ -7,10 +7,8 @@ import (
 )
 
 func TestPostNew(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	p := Post{
 		Type: "bug",
 	}
@@ -25,28 +23,14 @@ func TestPostNew(t *testing.T) {
 		t.Errorf("创建失败")
 	}
 }
-func TestPosReply(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
-	p := Post{
-		Type:  "bug",
-		Title: "test",
-		Uid:   bson.NewObjectId(),
-	}
-	p.New()
-	err := p.Reply("rrr")
-	if err != nil {
-		t.Errorf("回复失败:%s", err.Error())
-	}
-}
 func TestPostQuery(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
-	uid := bson.NewObjectId()
+	base.DbTest()
+	defer base.DbClose()
+	u := User{
+		Phone: "123",
+	}
+	u.New()
+	uid := u.Id
 	p := Post{
 		Uid:   uid,
 		Title: "t",
@@ -54,14 +38,14 @@ func TestPostQuery(t *testing.T) {
 	}
 	p.New()
 	p.Status = 2
-	p.Reply("xxx")
+	p.Save()
 	p1 := Post{
 		Uid:   uid,
 		Title: "t",
 		Type:  "b",
 	}
 	p1.New()
-	pa := Params{
+	pa := base.Params{
 		Page:   1,
 		Count:  100,
 		Filter: map[string]interface{}{"status": 2},

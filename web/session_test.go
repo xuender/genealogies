@@ -8,10 +8,8 @@ import (
 
 // Session查找
 func TestSessionFind(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	u := User{
 		Phone: "110",
 	}
@@ -34,10 +32,8 @@ func TestSessionFind(t *testing.T) {
 
 // session 创建
 func TestSessionNew(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	uid := bson.NewObjectId()
 	n := Session{
 		Uid: uid,

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"../base"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
@@ -26,7 +27,7 @@ func Path(m *martini.ClassicMartini, p string) {
 	m.Post(p+"password", AuthJson, LogNew("修改密码"),
 		binding.Bind(Password{}), UserPassword)
 	// 日志查询
-	m.Post(p+"logs", AuthJson, binding.Bind(Params{}), LogQuery)
+	m.Post(p+"logs", AuthJson, binding.Bind(base.Params{}), LogQuery)
 	// 验证码
 	m.Get(p+"captcha/img/:id", CaptchaImage)
 	// 刷新验证码
@@ -34,7 +35,7 @@ func Path(m *martini.ClassicMartini, p string) {
 	// 用户反馈
 	m.Post(p+"post", AuthJson, binding.Bind(Post{}), PostNew)
 	// 历史反馈查询
-	m.Post(p+"postq", AuthJson, binding.Bind(Params{}), PostQuery2)
+	m.Post(p+"postq", AuthJson, binding.Bind(base.Params{}), PostQuery2)
 	// 用户读取
 	m.Get(p+"post/:id", AuthJson, PostRead)
 }
@@ -46,7 +47,7 @@ func CsPath(m *martini.ClassicMartini, p string) {
 		r.HTML(200, "cs", PageNew("客户服务", true))
 	})
 	// 查询用户列表
-	m.Post(p+"/users", ManagerJson, binding.Bind(Params{}), UserQuery)
+	m.Post(p+"/users", ManagerJson, binding.Bind(base.Params{}), UserQuery)
 	// 查询会话列表
 	m.Post(p+"/session", ManagerJson, binding.Bind(Params{}),
 		SessionQuery)
@@ -54,11 +55,11 @@ func CsPath(m *martini.ClassicMartini, p string) {
 	m.Delete(p+"/session/:id", ManagerJson, LogNew("会话删除"),
 		SessionRemove)
 	// 查询用户反馈列表
-	m.Post(p+"/post", ManagerJson, binding.Bind(Params{}), PostQuery)
+	m.Post(p+"/post", ManagerJson, binding.Bind(base.Params{}), PostQuery)
 	// 反馈修改
 	m.Put(p+"/post", ManagerJson, binding.Bind(Post{}), PostUpdate)
 	// 删除反馈
 	m.Delete(p+"/post/:id", ManagerJson, PostRemove)
 	// 日志列表
-	m.Post(p+"/logs/:oid", ManagerJson, binding.Bind(Params{}), LogList)
+	m.Post(p+"/logs/:oid", ManagerJson, binding.Bind(base.Params{}), LogList)
 }

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"../base"
 	"errors"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
@@ -9,11 +10,9 @@ import (
 	"time"
 )
 
-const logName = "log"
-
 // 日志
 type Log struct {
-	Id bson.ObjectId `bson:"_id,omitempty" json:"-"`
+	Id bson.ObjectId `bson:"_id,omitempty" json:"-" table:"log"`
 	// 对象ID
 	Oid bson.ObjectId `bson:"oid,omitempty" json:"-"`
 	// 姓名
@@ -39,20 +38,15 @@ func (l *Log) New() error {
 	if !l.Uid.Valid() {
 		return errors.New("用户不能为空")
 	}
-	c := DB.C(logName)
-	l.Id = bson.NewObjectId()
-	l.Ca = time.Now()
-	return c.Insert(l)
+	return l.Save()
 }
 
 // 生成日志
 func (l *Log) Log(oid bson.ObjectId, msg string) error {
-	c := DB.C(logName)
-	l.Work = msg
-	l.Id = bson.NewObjectId()
-	l.Ca = time.Now()
-	l.Oid = oid
-	return c.Insert(l)
+	log := l
+	log.Work = msg
+	log.Oid = oid
+	return log.Save()
 }
 
 // 读取用户
@@ -64,21 +58,25 @@ func (l *Log) Read() (err error) {
 	return
 }
 
+// 保存
+func (l *Log) Save() error {
+	return base.Save(l)
+}
+
 // 查询
-func (l *Log) Query(p Params) (logs []Log, count int, err error) {
-	m := bson.M{}
+func (l *Log) Query(p base.Params) (logs []Log, count int, err error) {
+	m := make(map[string]interface{})
 	if l.Uid.Valid() {
 		m["uid"] = l.Uid
 	}
 	if l.Oid.Valid() {
 		m["oid"] = l.Oid
 	}
-	p.Find(m)
-	q := DB.C(logName).Find(m)
-	count, err = q.Count()
-	if err == nil && count > 0 {
-		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&logs)
+	if len(m) == 0 {
+		err = errors.New("缺少日志过滤条件")
+		return
 	}
+	count, err = p.QueryM(l, "-ca", &logs, m)
 	return
 }
 
@@ -95,7 +93,7 @@ func LogNew(work string) martini.Handler {
 }
 
 // 查询日志
-func LogQuery(session Session, params Params, r render.Render) {
+func LogQuery(session Session, params base.Params, r render.Render) {
 	ret := Msg{}
 	l := Log{
 		Uid: session.Uid,
@@ -112,7 +110,7 @@ func LogQuery(session Session, params Params, r render.Render) {
 }
 
 // 日志列表
-func LogList(p martini.Params, params Params, r render.Render) {
+func LogList(p martini.Params, params base.Params, r render.Render) {
 	ret := Msg{}
 	l := Log{
 		Oid: bson.ObjectIdHex(p["oid"]),

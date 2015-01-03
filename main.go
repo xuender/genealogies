@@ -16,9 +16,8 @@ func main() {
 	log.Println("网站运行环境，启动...")
 	defer log.Println("系统关闭")
 	log.Println("连接数据库.")
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	web.DB = s.DB("family")
+	base.DbOpen("127.0.0.1", "family")
+	defer base.DbClose()
 	log.Println("启动WEB服务.")
 	m := martini.Classic()
 	m.Use(render.Renderer(render.Options{

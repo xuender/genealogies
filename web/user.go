@@ -1,6 +1,7 @@
 package web
 
 import (
+	"../base"
 	"errors"
 	"github.com/dchest/captcha"
 	"github.com/martini-contrib/render"
@@ -19,7 +20,7 @@ type Password struct {
 
 // 用户
 type User struct {
-	Id bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	Id bson.ObjectId `bson:"_id,omitempty" json:"id" table:"user"`
 	// 手机
 	Phone string `bson:"phone" json:"phone"`
 	// 姓名
@@ -44,51 +45,37 @@ func (u *User) Disable() {
 
 // 保存
 func (u *User) Save() error {
-	c := DB.C("user")
-	if u.Ca.IsZero() {
-		u.Ca = time.Now()
-		return c.Insert(u)
-	}
-	u.Ua = time.Now()
-	return c.UpdateId(u.Id, u)
+	return base.Save(u)
 }
 
 // 查找用户
 func (u *User) Find() error {
-	c := DB.C("user")
 	if u.Id.Valid() {
-		return c.FindId(u.Id).One(u)
+		return base.Find(u)
 	}
 	if u.Phone != "" {
-		return c.Find(bson.M{"phone": u.Phone}).One(u)
+		m := make(map[string]interface{})
+		m["phone"] = u.Phone
+		return base.FindM(u, m)
 	}
 	return errors.New("条件不具足，无法查找.")
 }
 
 // 用户创建
 func (u *User) New() (err error) {
-	c := DB.C("user")
 	err = u.Find()
 	if err == nil {
 		return errors.New("手机" + u.Phone + "已经注册")
 	}
-	u.Id = bson.NewObjectId()
-	u.Ca = time.Now()
 	u.En = true
 	u.Cs = false
-	err = c.Insert(u)
+	err = u.Save()
 	return
 }
 
 // 查询
-func (u *User) Query(p Params) (users []User, count int, err error) {
-	m := bson.M{}
-	p.Find(m)
-	q := DB.C("user").Find(m)
-	count, err = q.Count()
-	if err == nil && count > 0 {
-		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&users)
-	}
+func (u *User) Query(p base.Params) (users []User, count int, err error) {
+	count, err = p.Query(u, "-ca", &users)
 	return
 }
 
@@ -214,7 +201,7 @@ func UserPassword(p Password, s Session, r render.Render) {
 }
 
 // 查询用户
-func UserQuery(params Params, r render.Render) {
+func UserQuery(params base.Params, r render.Render) {
 	ret := Msg{}
 	u := User{}
 	ls, count, err := u.Query(params)

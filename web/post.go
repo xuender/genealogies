@@ -1,6 +1,7 @@
 package web
 
 import (
+	"../base"
 	"errors"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
@@ -14,12 +15,11 @@ const (
 	受理
 	拒绝
 	解决
-	postName = "post"
 )
 
 // 帖子
 type Post struct {
-	Id bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	Id bson.ObjectId `bson:"_id,omitempty" json:"id" table:"post"`
 	// 标题
 	Title string `bson:"title" json:"title"`
 	// 分类
@@ -58,64 +58,60 @@ func (p *Post) New() error {
 	if !p.Uid.Valid() {
 		return errors.New("用户不能为空")
 	}
-	c := DB.C(postName)
-	p.Id = bson.NewObjectId()
-	p.Ca = time.Now()
 	p.Read = true
 	p.Status = 新建
-	return c.Insert(p)
+	return p.Save()
 }
 
 // 查找
-func (p *Post) Find() (err error) {
-	c := DB.C(postName)
-	if p.Id.Valid() {
-		err = c.FindId(p.Id).One(p)
-		return
-	}
-	return errors.New("Id无效，无法查找")
+func (p *Post) Find() error {
+	return base.Find(p)
 }
 
 // 查找
-func (p *Post) Remove() (err error) {
-	c := DB.C(postName)
-	if p.Id.Valid() {
-		err = c.RemoveId(p.Id)
-		return
-	}
-	return errors.New("Id无效，无法查找")
+func (p *Post) Remove() error {
+	return base.Remove(p)
 }
 
 // 保存
 func (p *Post) Save() error {
-	c := DB.C(postName)
-	if p.Ca.IsZero() {
-		p.Ca = time.Now()
-		return c.Insert(p)
-	}
-	p.Ua = time.Now()
-	return c.UpdateId(p.Id, p)
+	return base.Save(p)
 }
 
 // 查询
-func (i *Post) Query(p Params) (posts []Post, count int, err error) {
-	m := bson.M{}
+func (i *Post) Query(p base.Params) (posts []Post, count int, err error) {
+	m := make(map[string]interface{})
 	if i.Uid.Valid() {
 		m["uid"] = i.Uid
 	}
-	p.Find(m)
-	q := DB.C(postName).Find(m)
-	count, err = q.Count()
-	if err == nil && count > 0 {
-		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&posts)
-	}
-	for i, p := range posts {
-		p.User.Id = p.Uid
-		p.User.Find()
-		posts[i] = p
+	count, err = p.QueryM(i, "-ca", &posts, m)
+	for l, post := range posts {
+		post.User.Id = post.Uid
+		post.User.Find()
+		posts[l] = post
 	}
 	return
 }
+
+// 查询
+//func (i *Post) Query(p Params) (posts []Post, count int, err error) {
+//	m := bson.M{}
+//	if i.Uid.Valid() {
+//		m["uid"] = i.Uid
+//	}
+//	p.Find(m)
+//	q := DB.C(postName).Find(m)
+//	count, err = q.Count()
+//	if err == nil && count > 0 {
+//		err = q.Sort(p.Sort("-ca")).Skip(p.Skip()).Limit(p.Limit()).All(&posts)
+//	}
+//	for i, p := range posts {
+//		p.User.Id = p.Uid
+//		p.User.Find()
+//		posts[i] = p
+//	}
+//	return
+//}
 
 // 新增帖子
 func PostNew(l Log, s Session, p Post, r render.Render) {
@@ -182,19 +178,19 @@ func PostRemove(l Log, params martini.Params, r render.Render) {
 }
 
 // 查询帖子
-func PostQuery(params Params, r render.Render) {
+func PostQuery(params base.Params, r render.Render) {
 	p := Post{}
 	postQuery(p, params, r)
 }
 
 // 查询用户帖子
-func PostQuery2(session Session, params Params, r render.Render) {
+func PostQuery2(session Session, params base.Params, r render.Render) {
 	p := Post{
 		Uid: session.Uid,
 	}
 	postQuery(p, params, r)
 }
-func postQuery(p Post, params Params, r render.Render) {
+func postQuery(p Post, params base.Params, r render.Render) {
 	ret := Msg{}
 	log.Printf("%s\n", params)
 	ls, count, err := p.Query(params)
@@ -208,16 +204,3 @@ func postQuery(p Post, params Params, r render.Render) {
 	}
 	r.JSON(200, ret)
 }
-
-// TODO 增加post创建、查询方法
-
-//// 最后几条
-//func (p *Post) Top(size int) (posts []Post, err error) {
-//	if p.Type == "" {
-//		err = errors.New("分类不能为空")
-//		return
-//	}
-//	q := DB.C(postName).Find(bson.M{"type": p.Type})
-//	err = q.Sort("-ca").Limit(size).All(&posts)
-//	return
-//}

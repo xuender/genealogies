@@ -8,10 +8,8 @@ import (
 
 // 日志查询
 func TestLogQuery(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	uid := bson.NewObjectId()
 	n := Log{
 		Uid:  uid,
@@ -24,7 +22,7 @@ func TestLogQuery(t *testing.T) {
 	}
 	n.New()
 	l := Log{}
-	p := Params{
+	p := base.Params{
 		Page:  1,
 		Count: 100,
 	}
@@ -65,10 +63,8 @@ func TestLogQuery(t *testing.T) {
 
 // 日志创建
 func TestLogNew(t *testing.T) {
-	s := base.Connect("127.0.0.1")
-	defer s.Close()
-	DB = s.DB("test")
-	DB.DropDatabase()
+	base.DbTest()
+	defer base.DbClose()
 	uid := bson.NewObjectId()
 	n := Log{
 		Uid:  uid,
