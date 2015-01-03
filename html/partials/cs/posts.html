@@ -2,7 +2,8 @@
 <table ng-table="tableParams" show-filter="true"
   class="table table-hover table-condensed">
   <tbody ng-repeat="d in $data">
-    <tr class="btn-link" ng-click="d.$edit=!d.$edit">
+    <tr class="btn-link"
+    ng-click="d.$edit=!d.$edit" ng-class="{'active':d.$edit}">
       <td data-title="'类型'" sortable="'type'" filter="{'type': 'select'}" filter-data="selectType()">
         {{ type(d.type ) }}
       </td>
@@ -31,23 +32,40 @@
         <textarea ng-model="d.rt" name="rt" rows="5"
         class="form-control" placeholder="回复内容"/>
       </td>
-      <td class="text-center">
-        <p>
-          <button class="btn btn-info btn-xs" ng-click="ret(1, d)">受理</button>
-          <button class="btn btn-info btn-xs" ng-click="ret(1, d, '您的'+type(d.type)+'已经进行受理。')">标准受理</button>
-        </p>
-        <p>
-          <button class="btn btn-primary btn-xs" ng-click="ret(3, d)">解决</button>
-          <button class="btn btn-primary btn-xs" ng-click="ret(3, d, '您的'+type(d.type)+'已经解决。')">标准解决</button>
-        </p>
-        <p>
-          <button class="btn btn-danger btn-xs" ng-click="ret(2, d)">拒绝</button>
-          <button class="btn btn-danger btn-xs" ng-click="ret(2, d, '对不起您的'+type(d.type)+'暂时无法解决。')">标准拒绝</button>
-        </p>
-        <p>
-          <button class="btn btn-danger btn-xs" ng-click="remove(d)">删除</button>
-          <button class="btn btn-info btn-xs" ng-click="log(d)">日志</button>
-        </p>
+      <td>
+        <div class="btn-group" dropdown>
+          <button class="btn btn-default" dropdown-toggle>
+            操作
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li>
+              <a href ng-click="ret(1, d)">受理</a>
+            </li>
+            <li>
+              <a href ng-click="ret(1, d, '您的'+type(d.type)+'已经进行受理。')">标准受理</a>
+            </li>
+            <li>
+              <a href ng-click="ret(3, d)">解决</a>
+            </li>
+            <li>
+              <a href ng-click="ret(3, d, '您的'+type(d.type)+'已经解决。')">标准解决</a>
+            </li>
+            <li class="bg-warning">
+              <a href ng-click="ret(2, d)">拒绝</a>
+            </li>
+            <li class="bg-warning">
+              <a href ng-click="ret(2, d, '对不起您的'+type(d.type)+'暂时无法解决。')">标准拒绝</a>
+            </li>
+            <li class="divider"></li>
+            <li class="bg-danger">
+              <a href ng-click="remove(d)">删除</a>
+            </li>
+            <li>
+              <a href ng-click="log(d)">日志</a>
+            </li>
+          </ul>
+        </div>
       </td>
     </tr>
   </tbody>

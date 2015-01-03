@@ -49,7 +49,7 @@ func CsPath(m *martini.ClassicMartini, p string) {
 	// 查询用户列表
 	m.Post(p+"/users", ManagerJson, binding.Bind(base.Params{}), UserQuery)
 	// 查询会话列表
-	m.Post(p+"/session", ManagerJson, binding.Bind(Params{}),
+	m.Post(p+"/session", ManagerJson, binding.Bind(base.Params{}),
 		SessionQuery)
 	// 删除会话
 	m.Delete(p+"/session/:id", ManagerJson, LogNew("会话删除"),

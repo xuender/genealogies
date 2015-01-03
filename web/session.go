@@ -6,6 +6,7 @@ import (
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 	"gopkg.in/mgo.v2/bson"
+	"log"
 	"net/http"
 	"time"
 )
@@ -67,6 +68,7 @@ func (s *Session) Save() error {
 // 查询
 func (s *Session) Query(p base.Params) (session []Session, count int, err error) {
 	count, err = p.Query(s, "-ca", &session)
+	log.Println(count)
 	return
 }
 
