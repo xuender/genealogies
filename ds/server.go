@@ -3,7 +3,6 @@ package ds
 import (
 	"errors"
 	"fmt"
-	"github.com/takama/daemon"
 	"log"
 	"net"
 	"net/http"
@@ -11,6 +10,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	//"github.com/takama/daemon"
+	"../../daemon"
 )
 
 // 监听服务

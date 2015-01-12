@@ -2,6 +2,7 @@ package main
 
 import (
 	"./base"
+	"./fr"
 	"log"
 	"net/rpc"
 )
@@ -13,10 +14,19 @@ func main() {
 	if err != nil {
 		log.Println("链接rpc服务器失败:", err)
 	}
-	var str string
-	err = client.Call("Test.New", "nn", &str)
+	var count int
+	err = client.Call("Ctrl.NasInfo", fr.Count, &count)
 	if err != nil {
 		log.Println("调用远程服务失败", err)
 	}
-	log.Println("远程服务返回结果：", str)
+	log.Println("远程服务返回结果：", count)
+	var ns []fr.Nas
+	err = client.Call("Ctrl.NasFind", 0, &ns)
+	if err != nil {
+		log.Println("调用远程服务失败", err)
+	}
+	for _, n := range ns {
+		log.Println("ns id:", n.Id, " name:", n.Nasname)
+		log.Println(n)
+	}
 }
