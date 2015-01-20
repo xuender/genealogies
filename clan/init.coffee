@@ -7,10 +7,10 @@ Distributed under terms of the MIT license.
 app.config(['$routeProvider', ($routeProvider)->
   $routeProvider.
     when('/tree',
-      templateUrl: 'partials/clan/tree.html?1.html'
+      templateUrl: 'partials/clan/tree.html?2.html'
       controller: 'TreeCtrl'
     ).when('/users',
-      templateUrl: 'partials/clan/tree.html?1.html'
+      templateUrl: 'partials/clan/tree.html?2.html'
       controller: 'TreeCtrl'
     ).otherwise({
       redirectTo: '/tree'

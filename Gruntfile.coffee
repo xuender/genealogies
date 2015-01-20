@@ -273,6 +273,7 @@ module.exports = (grunt)->
           ]
           'public/js/clan.min.js': [
             'clan/d3.coffee'
+            'clan/node.coffee'
             'clan/tree.coffee'
             'clan/init.coffee'
           ]
