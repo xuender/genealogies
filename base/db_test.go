@@ -108,3 +108,27 @@ func TestRemove2(t *testing.T) {
 		t.Errorf("虚拟删除错误")
 	}
 }
+func TestQuery(t *testing.T) {
+	DbTest()
+	defer DbClose()
+	o := TestObj{
+		Title: "123",
+	}
+	Save(&o)
+	o1 := TestObj{
+		Title: "123",
+	}
+	Save(&o1)
+	o2 := TestObj{
+		Title: "1",
+	}
+	Save(&o2)
+	var r []TestObj
+	m := bson.M{
+		"title": "123",
+	}
+	Query(&o, m, &r)
+	if len(r) != 2 {
+		t.Errorf("查询错误")
+	}
+}

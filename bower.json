@@ -33,6 +33,7 @@
     "blueimp-md5": "~1.1.0",
     "angular-route": "~1.2.*",
     "ng-table": "~0.3.3",
-    "angular-i18n": "~1.2.*"
+    "angular-i18n": "~1.2.*",
+    "d3": "~3.5.3"
   }
 }

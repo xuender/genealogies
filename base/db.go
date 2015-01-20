@@ -100,6 +100,11 @@ func (o *Obj) FindM(i interface{}, m bson.M) error {
 	return dbDB.C(o.Name).Find(m).One(i)
 }
 
+// 查找
+func (o *Obj) Query(m bson.M, list interface{}) error {
+	return dbDB.C(o.Name).Find(m).All(list)
+}
+
 // 删除
 func (o *Obj) Remove(i interface{}) error {
 	m := reflect.ValueOf(i).Elem()
@@ -162,14 +167,19 @@ func Find(i interface{}) error {
 }
 
 // 查找对象M
-func FindM(i interface{}, in map[string]interface{}) error {
-	m := bson.M{}
-	for k, v := range in {
-		m[k] = v
-	}
+func FindM(i interface{}, m bson.M) error {
 	obj, err := findObj(i)
 	if err == nil {
 		err = obj.FindM(i, m)
+	}
+	return err
+}
+
+// 查询
+func Query(i interface{}, m bson.M, r interface{}) error {
+	obj, err := findObj(i)
+	if err == nil {
+		err = obj.Query(m, r)
 	}
 	return err
 }

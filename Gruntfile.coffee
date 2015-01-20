@@ -30,6 +30,15 @@ module.exports = (grunt)->
             expand: true
           }
         ]
+      clan:
+        files: [
+          src: [
+            'clan/*.html'
+          ]
+          dest: 'public/partials'
+          filter: 'isFile'
+          expand: true
+        ]
       root:
         files: [
           cwd: 'html'
@@ -61,6 +70,16 @@ module.exports = (grunt)->
           ]
           dest: 'public'
           expand: true
+        ]
+      d3:
+        files: [
+          cwd: 'bower_components/d3/'
+          src: [
+            'd3.min.js'
+          ]
+          dest: 'public/js'
+          expand: true
+          filter: 'isFile'
         ]
       angular:
         files: [
@@ -252,6 +271,11 @@ module.exports = (grunt)->
             'js/cs/postsCtrl.coffee'
             'js/cs/manager.coffee'
           ]
+          'public/js/clan.min.js': [
+            'clan/d3.coffee'
+            'clan/tree.coffee'
+            'clan/init.coffee'
+          ]
     uglify:
       main:
         files:
@@ -277,11 +301,16 @@ module.exports = (grunt)->
       html:
         files: [
           'html/**/*.html'
+          'clan/**/*.html'
         ]
-        tasks: ['copy:root']
+        tasks: [
+          'copy:root'
+          'copy:clan'
+        ]
       coffee:
         files: [
           'js/**/*.coffee'
+          'clan/**/*.coffee'
         ]
         tasks: ['coffee']
     karma:

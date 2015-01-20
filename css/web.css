@@ -83,3 +83,11 @@ footer {
 .page-header{
   padding-top: 70px;
 }
+
+clan rect {
+}
+clan text{
+  font-size: 11px;
+  fill: white;
+  color: white;
+}

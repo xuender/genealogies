@@ -2,6 +2,7 @@ package main
 
 import (
 	"./base"
+	"./clan"
 	"./web"
 	"log"
 	//"net/http"
@@ -30,6 +31,8 @@ func main() {
 	web.Path(m, "/")
 	// 客服网址
 	web.CsPath(m, "/cs")
+	// 家族网址
+	clan.Path(m, "/clan")
 	m.NotFound(func(r render.Render) {
 		r.HTML(404, "404", nil)
 	})

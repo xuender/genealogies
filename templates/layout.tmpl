@@ -22,6 +22,9 @@
             <li>
               <a href="/">首页</a>
             </li>
+            <li ng-show="isLogin">
+              <a href="/clan">家谱</a>
+            </li>
           </ul>
           <ul ng-hide="isLogin" class="nav navbar-nav navbar-right">
             <li>
@@ -82,6 +85,9 @@
     <script type="text/javascript">
     var CID = '{[{ .Cid }]}'
     </script>
+{[{ if eq current "clan" }]}
+    <script src="js/d3.min.js"></script>
+{[{ end }]}
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/angular.min.js"></script>
@@ -94,6 +100,9 @@
     <script src="js/index.min.js"></script>
 {[{ with .Cs }]}
     <script src="js/cs.min.js"></script>
+{[{ end }]}
+{[{ if eq current "clan" }]}
+    <script src="js/clan.min.js"></script>
 {[{ end }]}
   </body>
 </html>
