@@ -3,6 +3,7 @@ package clan
 import (
 	//  "errors"
 	"gopkg.in/mgo.v2/bson"
+	"log"
 )
 
 // 树结构
@@ -11,9 +12,9 @@ type Tree struct {
 	// 节点ID
 	Id bson.ObjectId `bson:"_id,omitempty"`
 	// 伴侣
-	P []interface{} `bson:"p"`
+	P []*Tree `bson:"p"`
 	// 子女
-	C []interface{} `bson:"c"`
+	C []*Tree `bson:"c"`
 	// 节点
 	Node *Node `bson:"-" json:"-"`
 }
@@ -42,6 +43,7 @@ func (t *Tree) New() error {
 
 // 读取妻子、儿女 T
 func (t *Tree) Read(r rune, nid bson.ObjectId) {
+	log.Println(r)
 	if r < 1 {
 		return
 	}
@@ -65,7 +67,7 @@ func (t *Tree) Read(r rune, nid bson.ObjectId) {
 				Node: &p,
 			}
 			nt.Data = p.Data
-			t.P = append(t.P, nt)
+			t.P = append(t.P, &nt)
 		}
 	}
 	// 查找子女
@@ -77,11 +79,8 @@ func (t *Tree) Read(r rune, nid bson.ObjectId) {
 				Node: &c,
 			}
 			nt.Data = c.Data
-			t.C = append(t.C, nt)
+			t.C = append(t.C, &nt)
+			nt.Read(r-1, nid)
 		}
-	}
-	for _, c := range t.C {
-		n := c.(Tree)
-		n.Read(r-1, nid)
 	}
 }

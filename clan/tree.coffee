@@ -27,6 +27,8 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $log.debug '族谱'
   $scope.t =
     N: 'test'
+    B: '2008-06-16'
+    D: '3008-06-16'
   $scope.editor= (n, func)->
     # 编辑用户信息
     i = $modal.open(
@@ -69,11 +71,29 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     $scope.editor(angular.copy(node), (n)->
       $log.debug '修改'
       $log.info n
-      #$http.post("/node/#{n.Id}", n).success((data)->
-      #  $log.debug data
-      #  if data.ok
-      $scope.update($scope.t, n)
-      #)
+      $http.put("/clan/node/#{n.Id}", n).success((msg)->
+        $log.debug msg
+        if msg.ok
+          $scope.update($scope.t, n)
+      )
+    )
+  $scope.addc = (node)->
+    ### 增加子女 ###
+    $log.debug 'addC'
+    $scope.editor(
+      N: "#{node.N}的儿子"
+      G: true
+      L: true
+    , (n)->
+      $log.debug 'addC ok'
+      $log.debug n
+      $http.post("/clan/node/#{node.Id}/c", n).success((msg)->
+        if msg.ok
+          if node.C
+            node.C.push(msg.data)
+          else
+            node.C = [msg.data]
+      )
     )
   $http.get('/clan/info').success((msg)->
     $log.debug 'get info'

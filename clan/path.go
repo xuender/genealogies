@@ -3,6 +3,7 @@ package clan
 import (
 	"../web"
 	"github.com/go-martini/martini"
+	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
 )
 
@@ -14,4 +15,8 @@ func Path(m *martini.ClassicMartini, p string) {
 	})
 	// 获取用户信息树
 	m.Get(p+"/info", web.AuthJson, InfoGet)
+	// 修改节点
+	m.Put(p+"/node/:id", web.AuthJson, binding.Bind(Data{}), NodeUpdate)
+	// 增加节点
+	m.Post(p+"/node/:id/:type", web.AuthJson, binding.Bind(Data{}), NodeAdd)
 }

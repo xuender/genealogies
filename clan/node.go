@@ -2,7 +2,10 @@ package clan
 
 import (
 	"../base"
+	"../web"
 	"errors"
+	"github.com/go-martini/martini"
+	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -103,4 +106,43 @@ func (n *Node) Children() (nodes []Node, err error) {
 		err = base.Query(n, bson.M{"_id": bson.M{"$in": n.C}}, &nodes)
 	}
 	return
+}
+
+// 修改节点信息
+func NodeUpdate(session web.Session, data Data, params martini.Params, r render.Render) {
+	ret := web.Msg{}
+	n := Node{
+		Id: bson.ObjectIdHex(params["id"]),
+	}
+	err := n.Find()
+	ret.Ok = err == nil
+	if ret.Ok {
+		n.Data = data
+		err = n.Save()
+	}
+	ret.Ok = err == nil
+	if ret.Ok {
+		InfoRemove(session)
+	} else {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
+}
+
+// 增加节点信息
+func NodeAdd(session web.Session, data Data, params martini.Params, r render.Render) {
+	ret := web.Msg{}
+	n := Node{
+		Id: bson.ObjectIdHex(params["id"]),
+	}
+	err := n.Find()
+	ret.Ok = err == nil
+	if ret.Ok {
+		c := n.Add(params["type"], data)
+		ret.Data = c
+		InfoRemove(session)
+	} else {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
 }

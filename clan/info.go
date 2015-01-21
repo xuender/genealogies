@@ -20,6 +20,24 @@ type Info struct {
 	T Tree `json:"t"`
 }
 
+// 删除
+func (i *Info) Remove() error {
+	return base.Remove(i)
+}
+
+// 删除用户信息
+func InfoRemove(session web.Session) error {
+	i := Info{
+		Id: session.Uid,
+	}
+	return i.Remove()
+}
+
+// 保存
+func (i *Info) Save() error {
+	return base.Save(i)
+}
+
 // 查找用户信息
 func (i *Info) Find() (err error) {
 	//base.Remove(i)
@@ -36,6 +54,7 @@ func (i *Info) Find() (err error) {
 			i.T.T = u.Phone
 			i.T.L = true
 			i.T.New()
+			i.Save()
 		}
 		return
 	}

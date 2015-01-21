@@ -4,17 +4,42 @@ Copyright (C) 2015 ender xu <xuender@gmail.com>
 
 Distributed under terms of the MIT license.
 ###
-app.directive('clandef', ->
+Date2Str = (d)->
+  # 日期转换
+  if typeof(d) == 'string'
+    return d.substr(0, 10)
+  if !Date.prototype.toISOString
+    Date.prototype.toISOString = ->
+      pad = (n)->
+        n < 10 ? '0' + n : n
+      "#{
+        this.getUTCFullYear()
+      }-#{
+        pad(this.getUTCMonth() + 1)
+      }-#{
+        pad(this.getUTCDate())
+      }T#{
+        pad(this.getUTCHours())
+      }:#{
+        pad(this.getUTCMinutes())
+      }:#{
+        pad(this.getUTCSeconds())
+      }.#{
+        pad(this.getUTCMilliseconds())
+      }Z"
+  d.toISOString().substr(0, 10)
+app.directive('clan', ->
   {
     restrict: 'E'
     scope:
       node: '='
       edit: '&'
+      addc: '&'
     link: (scope, element, attrs)->
       pen = (t, svg, x, y)->
         console.info t
         rw = 120
-        rh = 76
+        rh = 56
         g = svg.append('g')
           .attr('transform', "translate(#{x}, #{y})")
         g.append('rect')
@@ -70,18 +95,19 @@ app.directive('clandef', ->
           .attr('x', 5)
           .attr('y', 18)
           .attr('font-size', 11)
+          .append('tspan')
+          .text("#{ t.E }: #{ t.N }")
         if t.L
           text.attr('color', 'white').attr('fill', 'white')
-        text.append('tspan')
-          .text("#{ t.E }: #{ t.N }")
-        text.append('tspan')
-          .attr('x', 5)
-          .attr('dy', 16)
-          .text("生辰: #{ t.B | date:"yyyy-MM-dd" }")
-        text.append('tspan')
-          .attr('x', 5)
-          .attr('dy', 16)
-          .text("忌日: #{ t.D | date:"yyyy-MM-dd" }")
+          text.append('tspan')
+            .attr('x', 5)
+            .attr('dy', 16)
+            .text("生辰: #{ Date2Str(t.B) }")
+        else
+          text.append('tspan')
+            .attr('x', 5)
+            .attr('dy', 16)
+            .text("忌日: #{ Date2Str(t.D) }")
         text.append('tspan')
           .attr('x', 5)
           .attr('dy', 16)
@@ -102,6 +128,11 @@ app.directive('clandef', ->
           .attr('font-weight', 'normal')
           .attr('font-size', '16')
           .html('&#xf063')
+          .on('click', (n)->
+            scope.addc(
+              node: t
+            )
+          )
         text.append('tspan')
           .attr('dx', 4)
           .attr('cursor', 'pointer')
