@@ -25,7 +25,10 @@ Node {
 TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   ### 用户 ###
   $log.debug '族谱'
+  $scope.svgw = 1000
+  $scope.svgh = 500
   $scope.t =
+    Id: 'test'
     N: 'test'
     B: '2008-06-16'
     D: '3008-06-16'
