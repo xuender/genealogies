@@ -80,6 +80,41 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           $scope.update($scope.t, n)
       )
     )
+  $scope.addp = (t)->
+    ### 增加伴侣 ###
+    $log.debug 'addP'
+    $scope.editor(
+      N: if t.G then "#{t.N}的妻子" else "#{t.N}的丈夫"
+      G: !t.G
+      L: t.L
+    , (n)->
+      $log.debug 'addP ok'
+      $http.post("/clan/node/#{t.Id}/p", n).success((msg)->
+        $log.debug msg
+        if msg.ok
+          if t.P
+            t.P.push(msg.data)
+          else
+            t.P =[msg.data]
+      )
+    )
+  $scope.addf = (t)->
+    ### 增加父亲 ###
+    $log.debug 'addF'
+    $scope.editor(
+      N: "#{t.N}的父亲"
+      G: true
+      L: t.L
+    , (n)->
+      $log.debug 'addF ok'
+      $log.debug n
+      $http.post("/clan/node/#{t.Id}/f", n).success((msg)->
+        if msg.ok
+          l = $scope.t
+          $scope.t = msg.data
+          $scope.t.C = [l]
+      )
+    )
   $scope.addc = (node)->
     ### 增加子女 ###
     $log.debug 'addC'
@@ -98,11 +133,18 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
             node.C = [msg.data]
       )
     )
+  $scope.toggle = (node)->
+    # 收起展开
+    if node.C
+      node._C = node.C
+      node.C = null
+    else
+      node.C = node._C
+      node._C = null
   $http.get('/clan/info').success((msg)->
     $log.debug 'get info'
     if msg.ok
       $scope.t = msg.data.t
-    $log.debug angular.copy msg.data.t
   )
 
 TreeCtrl.$inject = [
