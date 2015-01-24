@@ -7,6 +7,7 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2/bson"
+	"log"
 	"time"
 )
 
@@ -92,6 +93,35 @@ func (n *Node) Add(t string, d Data) Node {
 	return o
 }
 
+// 删除节点
+func (n *Node) Remove() error {
+	log.Println(n)
+	if n.F.Valid() && len(n.P) > 0 {
+		return errors.New("删除前请先删除伴侣")
+	}
+	cs, err := n.Children()
+	if err != nil {
+		return err
+	}
+	if !n.F.Valid() && len(cs) < 2 {
+		if len(cs) == 1 {
+			cs[0].F = *new(bson.ObjectId)
+			cs[0].Save()
+		}
+	} else if len(cs) > 0 {
+		return errors.New("删除前请先删除子女")
+	}
+	for _, pid := range n.P {
+		p := Node{
+			Id: pid,
+		}
+		p.Find()
+		base.SliceRemove(&p.P, n.Id)
+		p.Save()
+	}
+	return base.Remove(n)
+}
+
 // 查找伴侣 T
 func (n *Node) Partner() (nodes []Node, err error) {
 	if len(n.P) > 0 {
@@ -142,6 +172,26 @@ func NodeAdd(session web.Session, data Data, params martini.Params, r render.Ren
 		ret.Data = c
 		InfoRemove(session)
 	} else {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
+}
+
+// 节点删除
+func NodeRemove(session web.Session, params martini.Params, r render.Render) {
+	ret := web.Msg{}
+	n := Node{
+		Id: bson.ObjectIdHex(params["id"]),
+	}
+	err := n.Find()
+	if err == nil {
+		err = n.Remove()
+		if err == nil {
+			InfoRemove(session)
+		}
+	}
+	ret.Ok = err == nil
+	if err != nil {
 		ret.Err = err.Error()
 	}
 	r.JSON(200, ret)

@@ -27,6 +27,11 @@ func DbOpen(ip, name string) (err error) {
 	return
 }
 
+// 数据库清空
+func DbClean() {
+	dbDB.DropDatabase()
+}
+
 // 测试数据库
 func DbTest() (err error) {
 	dbSession, err = mgo.Dial("127.0.0.1")

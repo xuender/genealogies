@@ -17,6 +17,8 @@ func Path(m *martini.ClassicMartini, p string) {
 	m.Get(p+"/info", web.AuthJson, InfoGet)
 	// 修改节点
 	m.Put(p+"/node/:id", web.AuthJson, binding.Bind(Data{}), NodeUpdate)
+	// 删除节点
+	m.Delete(p+"/node/:id", web.AuthJson, NodeRemove)
 	// 增加节点
 	m.Post(p+"/node/:id/:type", web.AuthJson, binding.Bind(Data{}), NodeAdd)
 }

@@ -138,6 +138,30 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       )
     , '增加子女'
     )
+  $scope.delete = (n, t=$scope.t)->
+    # 删除
+    if t.P
+      if t.P.indexOf(n) >= 0
+        t.P.splice(t.P.indexOf(n), 1)
+        return
+    if t.C
+      if t.C.indexOf(n) >= 0
+        t.C.splice(t.C.indexOf(n), 1)
+      else
+        for c in t.C
+          $scope.delete(n, c)
+  $scope.remove = (node)->
+    # 删除
+    $scope.confirm("是否删除 #{node.N}？", ->
+      $log.debug "删除 #{node.N}"
+      $http.delete("/clan/node/#{node.Id}").success((msg)->
+        $log.debug msg
+        if msg.ok
+          $scope.delete(node)
+        else
+          $scope.alert msg.err
+      )
+    )
   $scope.toggle = (node)->
     # 收起展开
     if node.C

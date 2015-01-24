@@ -43,6 +43,7 @@ app.directive('clan', ->
       addp: '&'
       addf: '&'
       toggle: '&'
+      remove: '&'
     link: (scope, element, attrs)->
       tree = (t)->
         # 排序
@@ -193,7 +194,12 @@ app.directive('clan', ->
                 node: t
               )
             )
-        if not ((t.C and t.C.length > 0) or (t._C and t._C.length > 0) or (t.P and t.P.length > 0))
+        if (not (
+          (t.C and t.C.length > 0) or
+          (t._C and t._C.length > 0) or
+          (t.P and t.P.length > 0)
+        )) or
+        ( not nt[t.Id].f and t.C and t.C.length == 1)
           text.append('tspan')
             .attr('dx', 4)
             .attr('cursor', 'pointer')
@@ -201,6 +207,11 @@ app.directive('clan', ->
             .attr('font-weight', 'normal')
             .attr('font-size', '16')
             .html('&#xf235')
+            .on('click', (n)->
+              scope.remove(
+                node: t
+              )
+            )
         if t.P
           #w = (nw + 10) * (t.P.length + 1) + 50
           for p in t.P
@@ -297,6 +308,11 @@ app.directive('clan', ->
             .attr('font-weight', 'normal')
             .attr('font-size', '16')
             .html('&#xf235')
+            .on('click', (n)->
+              scope.remove(
+                node: p
+              )
+            )
       reset =(n)->
         console.info 'node修改', n
         nt = {}
