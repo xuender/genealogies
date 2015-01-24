@@ -5,8 +5,9 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 Distributed under terms of the MIT license.
 ###
 
-NodeCtrl= ($scope, $log, $modalInstance, node)->
+NodeCtrl= ($scope, $log, $modalInstance, node, title)->
   $scope.node = node
+  $scope.title = title
   $scope.ok = ->
     $log.debug 'ok'
     $modalInstance.close(
@@ -29,5 +30,6 @@ NodeCtrl.$inject = [
   '$log'
   '$modalInstance'
   'node'
+  'title'
 ]
 

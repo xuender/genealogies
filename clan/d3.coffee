@@ -132,7 +132,7 @@ app.directive('clan', ->
           .attr('font-family', 'FontAwesome')
           .attr('font-weight', 'normal')
           .attr('font-size', '16')
-          .html('&#xf063')
+          .html('&#xf1ae')
           .on('click', (n)->
             scope.addc(
               node: t
@@ -144,7 +144,7 @@ app.directive('clan', ->
           .attr('font-family', 'FontAwesome')
           .attr('font-weight', 'normal')
           .attr('font-size', '16')
-          .html('&#xf061')
+          .html('&#xf228')
           .on('click', (n)->
             scope.addp(
               node: t
@@ -193,13 +193,14 @@ app.directive('clan', ->
                 node: t
               )
             )
-        text.append('tspan')
-          .attr('dx', 4)
-          .attr('cursor', 'pointer')
-          .attr('font-family', 'FontAwesome')
-          .attr('font-weight', 'normal')
-          .attr('font-size', '16')
-          .html('&#xf00d')
+        if not ((t.C and t.C.length > 0) or (t._C and t._C.length > 0) or (t.P and t.P.length > 0))
+          text.append('tspan')
+            .attr('dx', 4)
+            .attr('cursor', 'pointer')
+            .attr('font-family', 'FontAwesome')
+            .attr('font-weight', 'normal')
+            .attr('font-size', '16')
+            .html('&#xf235')
         if t.P
           #w = (nw + 10) * (t.P.length + 1) + 50
           for p in t.P
@@ -282,19 +283,30 @@ app.directive('clan', ->
           .attr('font-family', 'FontAwesome')
           .attr('font-weight', 'normal')
           .attr('font-size', '16')
-          .html('&#xf063')
+          .html('&#xf1ae')
           .on('click', (n)->
             scope.addc(
               node: p
             )
           )
+        if not ((p.C and p.C.length > 0))
+          ptext.append('tspan')
+            .attr('dx', 4)
+            .attr('cursor', 'pointer')
+            .attr('font-family', 'FontAwesome')
+            .attr('font-weight', 'normal')
+            .attr('font-size', '16')
+            .html('&#xf235')
       reset =(n)->
         console.info 'node修改', n
         nt = {}
         nt[n.Id]=
           x: 0
           y: 0
+        scope.svgw = 600
+        scope.svgh = 400
         tree(n)
+        console.info scope.svgw
         d3.select(element[0]).select('svg').remove()
         svg = d3.select(element[0]).append("svg")
           .attr('width', scope.svgw)

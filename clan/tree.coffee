@@ -25,14 +25,14 @@ Node {
 TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   ### 用户 ###
   $log.debug '族谱'
-  $scope.svgw = 1000
-  $scope.svgh = 500
+  $scope.svgw = 600
+  $scope.svgh = 400
   $scope.t =
     Id: 'test'
     N: 'test'
     B: '2008-06-16'
     D: '3008-06-16'
-  $scope.editor= (n, func)->
+  $scope.editor= (n, func, title='编辑')->
     # 编辑用户信息
     i = $modal.open(
       templateUrl: '/partials/clan/node.html?v=2'
@@ -43,6 +43,8 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       resolve:
         node: ->
           n
+        title: ->
+          title
         genealogy: ->
           $scope
     )
@@ -97,6 +99,7 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           else
             t.P =[msg.data]
       )
+    , '增加伴侣'
     )
   $scope.addf = (t)->
     ### 增加父亲 ###
@@ -114,6 +117,7 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           $scope.t = msg.data
           $scope.t.C = [l]
       )
+    , '增加父亲'
     )
   $scope.addc = (node)->
     ### 增加子女 ###
@@ -132,6 +136,7 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           else
             node.C = [msg.data]
       )
+    , '增加子女'
     )
   $scope.toggle = (node)->
     # 收起展开
