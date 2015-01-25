@@ -27,6 +27,9 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $log.debug '族谱'
   $scope.svgw = 600
   $scope.svgh = 400
+  $scope.$watch('svgw', (n, o)->
+    $log.debug 'w', n
+  )
   $scope.t =
     Id: 'test'
     N: 'test'
@@ -91,6 +94,7 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       L: t.L
     , (n)->
       $log.debug 'addP ok'
+      n.E = t.E
       $http.post("/clan/node/#{t.Id}/p", n).success((msg)->
         $log.debug msg
         if msg.ok
@@ -111,6 +115,7 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
     , (n)->
       $log.debug 'addF ok'
       $log.debug n
+      n.E = t.E
       $http.post("/clan/node/#{t.Id}/f", n).success((msg)->
         if msg.ok
           l = $scope.t
@@ -128,7 +133,7 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
       L: true
     , (n)->
       $log.debug 'addC ok'
-      $log.debug n
+      n.E = node.E
       $http.post("/clan/node/#{node.Id}/c", n).success((msg)->
         if msg.ok
           if node.C
@@ -161,6 +166,45 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         else
           $scope.alert msg.err
       )
+    )
+  $scope.children= (t, p)->
+    # 选择子女
+    i = $modal.open(
+      templateUrl: '/partials/clan/children.html?v=1'
+      controller: 'ChildrenCtrl'
+      backdrop: 'static'
+      keyboard: true
+      size: 'sm'
+      resolve:
+        p: ->
+          p.N
+        t: ->
+          t.N
+        c: ->
+          ret = angular.copy t.C
+          if p.C
+            for c in p.C
+              for r in ret
+                if c.Id == r.Id
+                  r.s = true
+          $log.debug ret
+          ret
+
+    )
+    i.result.then((ids)->
+      $log.debug '修改子女', ids
+      $http.put("/clan/children/#{p.Id}", ids).success((msg)->
+        $log.debug msg
+        if msg.ok
+          p.C = []
+          for c in msg.data
+            if t.C
+              for tc in t.C
+                if tc.Id == c.Id
+                  p.C.push tc
+      )
+    ,->
+      $log.info '取消'
     )
   $scope.toggle = (node)->
     # 收起展开

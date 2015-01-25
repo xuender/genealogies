@@ -106,8 +106,11 @@ func (o *Obj) FindM(i interface{}, m bson.M) error {
 }
 
 // 查找
-func (o *Obj) Query(m bson.M, list interface{}) error {
-	return dbDB.C(o.Name).Find(m).All(list)
+func (o *Obj) Query(list interface{}, m bson.M, fields ...string) error {
+	if len(fields) == 0 {
+		return dbDB.C(o.Name).Find(m).All(list)
+	}
+	return dbDB.C(o.Name).Find(m).Sort(fields...).All(list)
 }
 
 // 删除
@@ -181,10 +184,10 @@ func FindM(i interface{}, m bson.M) error {
 }
 
 // 查询
-func Query(i interface{}, m bson.M, r interface{}) error {
+func Query(i interface{}, r interface{}, m bson.M, fields ...string) error {
 	obj, err := findObj(i)
 	if err == nil {
-		err = obj.Query(m, r)
+		err = obj.Query(r, m, fields...)
 	}
 	return err
 }

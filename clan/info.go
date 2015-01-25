@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2/bson"
+	"log"
 	"time"
 )
 
@@ -27,6 +28,7 @@ func (i *Info) Remove() error {
 
 // 删除用户信息
 func InfoRemove(session web.Session) error {
+	log.Println("删除info:", session.Uid)
 	i := Info{
 		Id: session.Uid,
 	}
@@ -54,6 +56,7 @@ func (i *Info) Find() (err error) {
 			i.T.T = u.Phone
 			i.T.L = true
 			i.T.New()
+			i.T.Title()
 			i.Save()
 		}
 		return

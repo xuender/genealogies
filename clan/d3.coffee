@@ -44,12 +44,17 @@ app.directive('clan', ->
       addf: '&'
       toggle: '&'
       remove: '&'
+      children: '&'
     link: (scope, element, attrs)->
       tree = (t)->
         # 排序
         tt = nt[t.Id]
-        scope.svgw = if tt.x + 200 > scope.svgw then tt.x + 200 else scope.svgw
+        if t.P and t.P.length > 0
+          scope.svgw = if tt.x + 200 + (t.P.length * 150) > scope.svgw then tt.x + 200 + (t.P.length * 150) else scope.svgw
+        else
+          scope.svgw = if tt.x + 200 > scope.svgw then tt.x + 200 else scope.svgw
         scope.svgh = if tt.y + 160 > scope.svgh then tt.y + 160 else scope.svgh
+        console.info scope.svgw
         tt['mx'] = tt.x
         if t.C
           console.debug '排序 [ %s ] 的子女', t.N
@@ -58,11 +63,11 @@ app.directive('clan', ->
               f: t.Id
               x: tt.mx
               y: tt.y + nh + 50
-            tt.mx = if c.P then tt.mx += (nw * 2) + 60 else tt.mx += nw + 40
+            tt.mx = if c.P and c.P.length > 0 then tt.mx += (nw * 2) + 60 else tt.mx += nw + 40
             tree(c)
             if nt[c.Id].mx > tt.mx
               tt.mx = nt[c.Id].mx
-        if t.P
+        if t.P and t.P.length > 0
           w = ((nw + 10) * (t.P.length + 1)) + 50
           if tt.mx > tt.x + w
             tt.x += (tt.mx - tt.x - w) / 2
@@ -114,9 +119,42 @@ app.directive('clan', ->
             .attr('x', 5)
             .attr('dy', 16)
             .text("忌日: #{ Date2Str(t.D) }")
-        text.append('tspan')
-          .attr('x', 5)
-          .attr('dy', 16)
+        isS = true
+        if t.C && t.C.length > 0
+          isS = false
+          text.append('tspan')
+            .attr('x', 5)
+            .attr('dy', 16)
+            .attr('cursor', 'pointer')
+            .attr('font-family', 'FontAwesome')
+            .attr('font-weight', 'normal')
+            .attr('font-size', '16')
+            .html('&#xf147')
+            .on('click', (n)->
+              console.info 'toggle'
+              scope.toggle(
+                node: t
+              )
+              reset scope.node
+            )
+        if t._C
+          isS = false
+          text.append('tspan')
+            .attr('x', 5)
+            .attr('dy', 16)
+            .attr('cursor', 'pointer')
+            .attr('font-family', 'FontAwesome')
+            .attr('font-weight', 'normal')
+            .attr('font-size', '16')
+            .html('&#xf196')
+            .on('click', (n)->
+              console.info 'toggle'
+              scope.toggle(
+                node: t
+              )
+              reset scope.node
+            )
+        st = text.append('tspan')
           .attr('cursor', 'pointer')
           .attr('font-family', 'FontAwesome')
           .attr('font-weight', 'normal')
@@ -127,6 +165,10 @@ app.directive('clan', ->
               node: t
             )
           )
+        if isS
+          st.attr('x', 5).attr('dy', 16)
+        else
+          st.attr('dx', 4)
         text.append('tspan')
           .attr('dx', 4)
           .attr('cursor', 'pointer')
@@ -151,36 +193,6 @@ app.directive('clan', ->
               node: t
             )
           )
-        if t.C && t.C.length > 0
-          text.append('tspan')
-            .attr('dx', 4)
-            .attr('cursor', 'pointer')
-            .attr('font-family', 'FontAwesome')
-            .attr('font-weight', 'normal')
-            .attr('font-size', '16')
-            .html('&#xf068')
-            .on('click', (n)->
-              console.info 'toggle'
-              scope.toggle(
-                node: t
-              )
-              reset scope.node
-            )
-        if t._C
-          text.append('tspan')
-            .attr('dx', 4)
-            .attr('cursor', 'pointer')
-            .attr('font-family', 'FontAwesome')
-            .attr('font-weight', 'normal')
-            .attr('font-size', '16')
-            .html('&#xf067')
-            .on('click', (n)->
-              console.info 'toggle'
-              scope.toggle(
-                node: t
-              )
-              reset scope.node
-            )
         if 'f' not of nt[t.Id]
           text.append('tspan')
             .attr('dx', 4)
@@ -212,21 +224,18 @@ app.directive('clan', ->
                 node: t
               )
             )
-        if t.P
+        if t.P and t.P.length > 0
           #w = (nw + 10) * (t.P.length + 1) + 50
           for p in t.P
-            penP p, svg
+            penP p, t, svg
         if t.C
           for c in t.C
             pen c, svg
           for c in t.C
-            if nt[c.Id].x == nt[nt[c.Id].f].x
-              to = 'L 0 44'
-            else
-              to = 'C 0 39 ' + (nt[c.Id].x - nt[nt[c.Id].f].x - 25) + ' 5 ' + (nt[c.Id].x - nt[nt[c.Id].f].x - 20) + ' 44'
+            to = 'C 0 39 ' + (nt[c.Id].x - nt[nt[c.Id].f].x + 15) + ' 5 ' + (nt[c.Id].x - nt[nt[c.Id].f].x + 20) + ' 44'
             svg.append('path')
               .attr('transform', "translate(#{
-                nt[nt[c.Id].f].x + (nw/2)
+                nt[nt[c.Id].f].x + 15
               }, #{
                 nt[nt[c.Id].f].y + nh + 3
               })")
@@ -236,7 +245,7 @@ app.directive('clan', ->
               .attr('fill', 'none')
               .attr('stroke', '#87a35c')
               .attr('stroke-width', 2)
-      penP = (p, svg)->
+      penP = (p, t, svg)->
         # 画伴侣
         pg = svg.append('g')
           .attr('transform', "translate(#{ nt[p.Id].x }, #{ nt[p.Id].y })")
@@ -296,9 +305,11 @@ app.directive('clan', ->
           .attr('font-size', '16')
           .html('&#xf1ae')
           .on('click', (n)->
-            scope.addc(
-              node: p
+            scope.children(
+              t: t
+              p: p
             )
+            #reset scope.node
           )
         if not ((p.C and p.C.length > 0))
           ptext.append('tspan')
@@ -313,6 +324,22 @@ app.directive('clan', ->
                 node: p
               )
             )
+        if t.C and t.C.length > 0 and p.C and p.C.length > 0
+          for c in p.C
+            console.info '划线', c.N
+            to = 'C 0 39 ' + (nt[c.Id].x - nt[p.Id].x + 75) + ' 5 ' + (nt[c.Id].x - nt[p.Id].x + 70) + ' 44'
+            pg.append('path')
+              .attr('transform', "translate(#{
+                15
+              }, #{
+                nh + 3
+              })")
+              .attr('d', "M 0 0 #{
+                to
+              }")
+              .attr('fill', 'none')
+              .attr('stroke', '#a3875c')
+              .attr('stroke-width', 2)
       reset =(n)->
         console.info 'node修改', n
         nt = {}

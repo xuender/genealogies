@@ -2,17 +2,18 @@ package main
 
 import (
 	"./base"
-	"gopkg.in/mgo.v2/bson"
 	"log"
 )
+
+func a(t ...string) {
+	for _, i := range t {
+		log.Println(i)
+	}
+}
 
 func main() {
 	base.LogDev()
 	log.Println("启动")
-	i := bson.NewObjectId()
-	log.Println(i)
-	i = *new(bson.ObjectId)
-	log.Println(i)
-	var a []bson.ObjectId
-
+	b := []string{"aa", "bb", "cc"}
+	a(b...)
 }

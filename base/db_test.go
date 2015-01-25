@@ -10,6 +10,8 @@ type TestObj struct {
 	Id bson.ObjectId `bson:"_id,omitempty" json:"id" table:"to"`
 	// 标题
 	Title string `bson:"title" json:"title"`
+	// 名称
+	Name string `bson:"name" json:"name"`
 	// 创建时间
 	Ca time.Time `bson:"ca,omitempty" json:"ca"`
 	// 创建时间
@@ -113,22 +115,33 @@ func TestQuery(t *testing.T) {
 	defer DbClose()
 	o := TestObj{
 		Title: "123",
+		Name:  "1",
 	}
 	Save(&o)
 	o1 := TestObj{
 		Title: "123",
+		Name:  "2",
 	}
 	Save(&o1)
 	o2 := TestObj{
 		Title: "1",
+		Name:  "3",
 	}
 	Save(&o2)
 	var r []TestObj
 	m := bson.M{
 		"title": "123",
 	}
-	Query(&o, m, &r)
+	Query(&o, &r, m)
 	if len(r) != 2 {
 		t.Errorf("查询错误")
+	}
+	Query(&o, &r, m, "name")
+	if r[0].Name != "1" {
+		t.Errorf("排序错误1")
+	}
+	Query(&o, &r, m, "-name")
+	if r[0].Name != "2" {
+		t.Errorf("排序错误2")
 	}
 }

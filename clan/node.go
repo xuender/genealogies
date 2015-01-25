@@ -11,6 +11,11 @@ import (
 	"time"
 )
 
+type Id struct {
+	// 主键
+	Id string
+}
+
 // 加点
 type Node struct {
 	Data
@@ -37,7 +42,10 @@ func (n *Node) Save() error {
 // 查找 T
 func (n *Node) Find() error {
 	if n.Id.Valid() {
-		return base.Find(n)
+		err := base.Find(n)
+		if err == nil {
+			return nil
+		}
 	}
 	// 按照手机查找
 	if n.T != "" {
@@ -78,16 +86,55 @@ func (n *Node) Add(t string, d Data) Node {
 		o.C = append(o.C, n.Id)
 		o.Save()
 		n.F = o.Id
+		// 设置称谓
+		if o.E != "" {
+			ti, ok := titles[o.E]
+			if ok {
+				if o.G {
+					o.E = ti.Pt
+				} else {
+					o.E = ti.Pf
+				}
+			} else {
+				o.E = ""
+			}
+		}
 	}
 	if t == "p" {
 		o.P = append(o.P, n.Id)
 		o.Save()
 		n.P = append(n.P, o.Id)
+		// 设置称谓
+		if o.E != "" {
+			ti, ok := titles[o.E]
+			if ok {
+				if o.G {
+					o.E = ti.Pt
+				} else {
+					o.E = ti.Pf
+				}
+			} else {
+				o.E = ""
+			}
+		}
 	}
 	if t == "c" {
 		o.F = n.Id
 		o.Save()
 		n.C = append(n.C, o.Id)
+		// 设置称谓
+		if o.E != "" {
+			ti, ok := titles[o.E]
+			if ok {
+				if o.G {
+					o.E = ti.Ct
+				} else {
+					o.E = ti.Cf
+				}
+			} else {
+				o.E = ""
+			}
+		}
 	}
 	n.Save()
 	return o
@@ -125,7 +172,7 @@ func (n *Node) Remove() error {
 // 查找伴侣 T
 func (n *Node) Partner() (nodes []Node, err error) {
 	if len(n.P) > 0 {
-		err = base.Query(n, bson.M{"_id": bson.M{"$in": n.P}}, &nodes)
+		err = base.Query(n, &nodes, bson.M{"_id": bson.M{"$in": n.P}}, "data.b")
 	}
 	return
 }
@@ -133,9 +180,27 @@ func (n *Node) Partner() (nodes []Node, err error) {
 // 查找子女 T
 func (n *Node) Children() (nodes []Node, err error) {
 	if len(n.C) > 0 {
-		err = base.Query(n, bson.M{"_id": bson.M{"$in": n.C}}, &nodes)
+		err = base.Query(n, &nodes, bson.M{"_id": bson.M{"$in": n.C}}, "-data.g", "data.b")
 	}
 	return
+}
+
+// 设置子女
+func (i *Node) Child(ids []string) error {
+	i.C = []bson.ObjectId{}
+	for _, id := range ids {
+		node := Node{
+			Id: bson.ObjectIdHex(id),
+		}
+		err := node.Find()
+		if err != nil {
+			return err
+		}
+		i.C = append(i.C, node.Id)
+	}
+	i.Save()
+	log.Println(i)
+	return nil
 }
 
 // 修改节点信息
@@ -191,6 +256,31 @@ func NodeRemove(session web.Session, params martini.Params, r render.Render) {
 		}
 	}
 	ret.Ok = err == nil
+	if err != nil {
+		ret.Err = err.Error()
+	}
+	r.JSON(200, ret)
+}
+
+// 设置孩子
+func NodeChild(session web.Session, ids []Id, params martini.Params, r render.Render) {
+	log.Println(ids)
+	ret := web.Msg{}
+	node := Node{
+		Id: bson.ObjectIdHex(params["id"]),
+	}
+	err := node.Find()
+	ret.Ok = err == nil
+	if ret.Ok {
+		var is []string
+		for _, i := range ids {
+			is = append(is, i.Id)
+		}
+		node.Child(is)
+		cs, _ := node.Children()
+		ret.Data = cs
+		InfoRemove(session)
+	}
 	if err != nil {
 		ret.Err = err.Error()
 	}
