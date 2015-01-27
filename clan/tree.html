@@ -1,15 +1,50 @@
-<h3>族谱</h3>
-<div style="position:relative;overflow-x:auto;">
-<clan svgw="svgw" svgh="svgh" node="t"
-edit="edit(node)" addc="addc(node)" addp="addp(node)" addf="addf(node)"
-children="children(t, p)" toggle="toggle(node)" remove="remove(node)"
-/>
-</div><!-- container-fluid -->
-<i class="fa fa-user"></i>编辑；
-<i class="fa fa-child"></i>增加子女；
-<i class="fa fa-venus-mars"></i>增加伴侣；
-<i class="fa fa-plus-square-o"></i>展开；
-<i class="fa fa-minus-square-o"></i>收起；
-<i class="fa fa-arrow-up"></i>设置父亲；
-<i class="fa fa-user-times"></i>删除；
+<div class="btn-group">
+  <label class="btn btn-info" ng-model="showThree" btn-radio="true">
+    <i class="fa fa-file-o"></i>
+    家谱
+  </label>
+  <label class="btn btn-info" ng-model="showThree" btn-radio="false">
+    <i class="fa fa-history"></i>
+    通讯录
+  </label>
+</div><!-- btn-group -->
+<div collapse="!showThree">
+  <div style="position:relative;overflow-x:auto;">
+    <clan svgw="svgw" svgh="svgh" node="t"
+    edit="edit(node)" addc="addc(node)" addp="addp(node)" addf="addf(node)"
+    children="children(t, p)" toggle="toggle(node)" remove="remove(node)"
+    />
+  </div><!-- container-fluid -->
+  <i class="fa fa-user"></i>编辑；
+  <i class="fa fa-child"></i>增加子女；
+  <i class="fa fa-venus-mars"></i>增加伴侣；
+  <i class="fa fa-plus-square-o"></i>展开；
+  <i class="fa fa-minus-square-o"></i>收起；
+  <i class="fa fa-arrow-up"></i>设置父亲；
+  <i class="fa fa-user-times"></i>删除；
+</div>
+<div collapse="showThree" ng-controller="ContactsCtrl">
+  <table ng-table="tableParams" show-filter="true"
+  class="table table-hover table-condensed">
+    <tbody ng-repeat="d in $data">
+      <tr class="btn-link" ng-click="edit(d)">
+        <td data-title="'称谓'" sortable="'E'" filter="{'E': 'text'}">
+          {{ d.E }}
+        </td>
+        <td data-title="'姓名'" sortable="'N'" filter="{'N': 'text'}">
+          {{ d.N }}
+        </td>
+        <td data-title="'性别'" sortable="'G'" filter="{'G': 'text'}">
+          {{ d.G }}
+        </td>
+        <td data-title="'生辰'" sortable="'B'" filter="{'B': 'text'}">
+          {{ d.B | date:"yyyy-MM-dd" }}
+        </td>
+        <td data-title="'手机'" sortable="'T'" filter="{'T': 'text'}">
+          {{ d.T }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 

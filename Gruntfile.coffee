@@ -276,6 +276,7 @@ module.exports = (grunt)->
             'clan/children.coffee'
             'clan/node.coffee'
             'clan/tree.coffee'
+            'clan/contacts.coffee'
             'clan/init.coffee'
           ]
     uglify:

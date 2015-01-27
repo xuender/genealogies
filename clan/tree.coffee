@@ -27,6 +27,7 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   $log.debug '族谱'
   $scope.svgw = 600
   $scope.svgh = 400
+  $scope.showThree = true
   $scope.$watch('svgw', (n, o)->
     $log.debug 'w', n
   )
