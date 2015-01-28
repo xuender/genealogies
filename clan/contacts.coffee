@@ -9,21 +9,25 @@ ContactsCtrl = ($scope, $log, ngTableParams, $filter, $q)->
   $log.debug '通讯簿'
   $scope.add = (n)->
     $log.debug 'add', n.N
+    $scope.isRemove[n.Id] = Node.isRemove(n, false)
     $scope.dt.push n
     if n.P
       for p in n.P
+        $scope.isRemove[p.Id] = Node.isRemove(p, false)
         $scope.dt.push p
     if n.C
       for c in n.C
         $scope.add c
   $scope.dt = []
+  $scope.isRemove = {}
   $scope.add $scope.t
   $scope.$watch('t', (n, o)->
     $scope.dt = []
     $log.debug 'watch', n.N
     $scope.add n
     $log.debug 'watch', $scope.dt.length
-    $scope.tableParams.reload()
+    if n.Id != 'test'
+      $scope.tableParams.reload()
   , true)
   $scope.tableParams = new ngTableParams(
     page: 1

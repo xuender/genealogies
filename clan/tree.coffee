@@ -33,6 +33,7 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
   )
   $scope.t =
     Id: 'test'
+    G:  true
     N: 'test'
     B: '2008-06-16'
     D: '3008-06-16'
@@ -49,8 +50,6 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
           n
         title: ->
           title
-        genealogy: ->
-          $scope
     )
     i.result.then((node)->
       $log.debug '编辑完毕'

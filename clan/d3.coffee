@@ -206,12 +206,7 @@ app.directive('clan', ->
                 node: t
               )
             )
-        if (not (
-          (t.C and t.C.length > 0) or
-          (t._C and t._C.length > 0) or
-          (t.P and t.P.length > 0)
-        )) or
-        ( not nt[t.Id].f and t.C and t.C.length == 1)
+        if Node.isRemove(t, not nt[t.Id].f)
           text.append('tspan')
             .attr('dx', 4)
             .attr('cursor', 'pointer')

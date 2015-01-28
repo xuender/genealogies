@@ -1,10 +1,10 @@
 <div class="btn-group">
   <label class="btn btn-info" ng-model="showThree" btn-radio="true">
-    <i class="fa fa-file-o"></i>
+    <i class="fa fa-users"></i>
     家谱
   </label>
   <label class="btn btn-info" ng-model="showThree" btn-radio="false">
-    <i class="fa fa-history"></i>
+    <i class="fa fa-list-alt"></i>
     通讯录
   </label>
 </div><!-- btn-group -->
@@ -27,11 +27,11 @@
   <table ng-table="tableParams" show-filter="true"
   class="table table-hover table-condensed">
     <tbody ng-repeat="d in $data">
-      <tr class="btn-link" ng-click="edit(d)">
-        <td data-title="'称谓'" sortable="'E'" filter="{'E': 'text'}">
+      <tr class="btn-link">
+        <td data-title="'称谓'" sortable="'E'" filter="{'E': 'text'}" ng-click="edit(d)">
           {{ d.E }}
         </td>
-        <td data-title="'姓名'" sortable="'N'" filter="{'N': 'text'}">
+        <td data-title="'姓名'" sortable="'N'" filter="{'N': 'text'}" ng-click="edit(d)">
           {{ d.N }}
         </td>
         <td data-title="'性别'" sortable="'G'" filter="{'G': 'text'}">
@@ -42,6 +42,9 @@
         </td>
         <td data-title="'手机'" sortable="'T'" filter="{'T': 'text'}">
           {{ d.T }}
+        </td>
+        <td data-title="'操作'">
+          <i class="fa fa-user-times" ng-click="remove(d)" ng-show="isRemove[d.Id]"></i>
         </td>
       </tr>
     </tbody>

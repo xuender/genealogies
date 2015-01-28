@@ -5,6 +5,18 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 Distributed under terms of the MIT license.
 ###
 
+class Node
+  @isRoot: ->
+    false
+  @isRemove: (t, root)->
+    (not (
+      (t.C and t.C.length > 0) or
+      (t._C and t._C.length > 0) or
+      (t.P and t.P.length > 0)
+    )) or
+    ( root and t.C and t.C.length == 1)
+
+
 NodeCtrl= ($scope, $log, $modalInstance, node, title)->
   $scope.node = node
   $scope.title = title
