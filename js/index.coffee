@@ -10,4 +10,5 @@ app = angular.module('web', [
   'hotkey'
   'LocalStorageModule'
   'ngTable'
+  'highcharts-ng'
 ])

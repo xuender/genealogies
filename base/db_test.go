@@ -76,6 +76,24 @@ func TestFindM(t *testing.T) {
 	}
 }
 
+// count
+func TestCount(t *testing.T) {
+	DbTest()
+	defer DbClose()
+	o := TestObj{
+		Title: "123",
+	}
+	Save(&o)
+	n := TestObj{}
+	m := bson.M{
+		"title": "123",
+	}
+	c := Count(&n, m)
+	if c != 1 {
+		t.Errorf("统计错误")
+	}
+}
+
 // 删除
 func TestRemove(t *testing.T) {
 	DbTest()

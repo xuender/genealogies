@@ -23,4 +23,6 @@ func Path(m *martini.ClassicMartini, p string) {
 	m.Post(p+"/node/:id/:type", web.AuthJson, binding.Bind(Data{}), NodeAdd)
 	// 增加子女
 	m.Put(p+"/children/:id", web.AuthJson, binding.Bind([]Id{}), NodeChild)
+	// 统计
+	m.Get(p+"/count", web.ManagerJson, CountQuery)
 }

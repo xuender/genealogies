@@ -81,6 +81,26 @@ module.exports = (grunt)->
           expand: true
           filter: 'isFile'
         ]
+      highcharts:
+        files: [
+          cwd: 'bower_components/highcharts/'
+          src: [
+            'highcharts-all.js'
+          ]
+          dest: 'public/js'
+          expand: true
+          filter: 'isFile'
+        ]
+      highchartsNg:
+        files: [
+          cwd: 'bower_components/highcharts-ng/dist/'
+          src: [
+            'highcharts-ng.min.js'
+          ]
+          dest: 'public/js'
+          expand: true
+          filter: 'isFile'
+        ]
       angular:
         files: [
           cwd: 'bower_components/angular/'

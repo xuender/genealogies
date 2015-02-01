@@ -37,6 +37,14 @@ type User struct {
 	En bool
 }
 
+// 用户统计
+func (u *User) Sum() int {
+	m := bson.M{
+		"cs": false,
+	}
+	return base.Count(u, m)
+}
+
 // 用户禁用
 func (u *User) Disable() {
 	u.En = false

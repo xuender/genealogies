@@ -36,6 +36,12 @@ type Node struct {
 	Ua time.Time `bson:"ua,omitempty"`
 }
 
+// 统计
+func (n *Node) Sum() int {
+	m := bson.M{}
+	return base.Count(n, m)
+}
+
 // 保存 T
 func (n *Node) Save() error {
 	return base.Save(n)

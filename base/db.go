@@ -101,8 +101,20 @@ func (o *Obj) Find(i interface{}) error {
 }
 
 // Map查找
-func (o *Obj) FindM(i interface{}, m bson.M) error {
-	return dbDB.C(o.Name).Find(m).One(i)
+func (o *Obj) FindM(i interface{}, m bson.M, fields ...string) error {
+	if len(fields) == 0 {
+		return dbDB.C(o.Name).Find(m).One(i)
+	}
+	return dbDB.C(o.Name).Find(m).Sort(fields...).One(i)
+}
+
+// count
+func (o *Obj) Count(i interface{}, m bson.M) int {
+	ret, err := dbDB.C(o.Name).Find(m).Count()
+	if err == nil {
+		return ret
+	}
+	return 0
 }
 
 // 查找
@@ -175,12 +187,21 @@ func Find(i interface{}) error {
 }
 
 // 查找对象M
-func FindM(i interface{}, m bson.M) error {
+func FindM(i interface{}, m bson.M, fields ...string) error {
 	obj, err := findObj(i)
 	if err == nil {
-		err = obj.FindM(i, m)
+		err = obj.FindM(i, m, fields...)
 	}
 	return err
+}
+
+// 统计
+func Count(i interface{}, m bson.M) int {
+	obj, err := findObj(i)
+	if err == nil {
+		return obj.Count(i, m)
+	}
+	return 0
 }
 
 // 查询
