@@ -28,6 +28,8 @@ type Node struct {
 	P []bson.ObjectId `bson:"p,omitempty"`
 	// 子女们
 	C []bson.ObjectId `bson:"c,omitempty"`
+	// 使用标记
+	U bool `bson:"u,omitempty"`
 	// 创建时间
 	Ca time.Time `bson:"ca,omitempty"`
 	// 修改时间
@@ -143,6 +145,9 @@ func (n *Node) Add(t string, d Data) Node {
 // 删除节点
 func (n *Node) Remove() error {
 	log.Println(n)
+	if n.U {
+		return errors.New("用户使用不能删除")
+	}
 	if n.F.Valid() && len(n.P) > 0 {
 		return errors.New("删除前请先删除伴侣")
 	}

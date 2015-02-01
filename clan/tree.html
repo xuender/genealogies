@@ -27,15 +27,18 @@
   <table ng-table="tableParams" show-filter="true"
   class="table table-hover table-condensed">
     <tbody ng-repeat="d in $data">
-      <tr class="btn-link">
-        <td data-title="'称谓'" sortable="'E'" filter="{'E': 'text'}" ng-click="edit(d)">
+      <tr>
+        <td class="btn-link" data-title="'称谓'" sortable="'E'" filter="{'E': 'text'}" ng-click="edit(d)">
           {{ d.E }}
         </td>
-        <td data-title="'姓名'" sortable="'N'" filter="{'N': 'text'}" ng-click="edit(d)">
+        <td class="btn-link" data-title="'姓名'" sortable="'N'" filter="{'N': 'text'}" ng-click="edit(d)">
           {{ d.N }}
         </td>
-        <td data-title="'性别'" sortable="'G'" filter="{'G': 'text'}">
-          {{ d.G }}
+        <td data-title="'性别'"
+        sortable="'G'"
+        filter="{'G': 'select'}"
+        filter-data="selectG()">
+          {{ d.G ? '男' : '女' }}
         </td>
         <td data-title="'生辰'" sortable="'B'" filter="{'B': 'text'}">
           {{ d.B | date:"yyyy-MM-dd" }}
@@ -43,8 +46,10 @@
         <td data-title="'手机'" sortable="'T'" filter="{'T': 'text'}">
           {{ d.T }}
         </td>
-        <td data-title="'操作'">
-          <i class="fa fa-user-times" ng-click="remove(d)" ng-show="isRemove[d.Id]"></i>
+        <td>
+          <button class="btn btn-xs" ng-show="cn.isRemove(d)" ng-click="remove(d)">
+            <i class="fa fa-user-times"></i>
+          </button>
         </td>
       </tr>
     </tbody>

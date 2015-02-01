@@ -130,6 +130,8 @@ func (t *Tree) New() error {
 	n.Data = t.Data
 	err := n.Find()
 	if err == nil {
+		n.U = true
+		n.Save()
 		root := n.Root(4) //查找4祖
 		t.Data = root.Data
 		t.Id = root.Id
@@ -137,6 +139,7 @@ func (t *Tree) New() error {
 		t.Read(9, n.Id) // 读取9族
 	} else {
 		n.Data = t.Data
+		n.U = true
 		n.Save()
 		t.Id = n.Id
 		t.Node = &n

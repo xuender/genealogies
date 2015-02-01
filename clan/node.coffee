@@ -5,16 +5,17 @@ Copyright (C) 2014 ender xu <xuender@gmail.com>
 Distributed under terms of the MIT license.
 ###
 
-class Node
-  @isRoot: ->
-    false
-  @isRemove: (t, root)->
+class CheckNode
+  constructor: (@root)->
+  isRemove: (t)->
     (not (
       (t.C and t.C.length > 0) or
       (t._C and t._C.length > 0) or
       (t.P and t.P.length > 0)
     )) or
-    ( root and t.C and t.C.length == 1)
+    ( @root.Id == t.Id and t.C and t.C.length == 1)
+  hasChildren: (t)->
+    (t.C and t.C.length > 0) or (t._C and t._C.length > 0)
 
 
 NodeCtrl= ($scope, $log, $modalInstance, node, title)->

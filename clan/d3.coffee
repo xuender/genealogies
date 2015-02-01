@@ -32,6 +32,7 @@ app.directive('clan', ->
   nw = 120
   nh = 56
   nt = {}
+  cn = {}
   {
     restrict: 'E'
     scope:
@@ -54,7 +55,6 @@ app.directive('clan', ->
         else
           scope.svgw = if tt.x + 200 > scope.svgw then tt.x + 200 else scope.svgw
         scope.svgh = if tt.y + 160 > scope.svgh then tt.y + 160 else scope.svgh
-        console.info scope.svgw
         tt['mx'] = tt.x
         if t.C
           console.debug '排序 [ %s ] 的子女', t.N
@@ -106,8 +106,15 @@ app.directive('clan', ->
           .attr('y', 18)
           .attr('font-size', 11)
           .attr('fill', '#666666')
-          .append('tspan')
-          .text("#{ t.E }: #{ t.N }")
+        tsp = text.append('tspan')
+        tsp.attr('cursor', 'pointer')
+          .attr('text-decoration', 'underline')
+        tsp.text("#{ t.E }: #{ t.N }")
+          .on('click', (n)->
+            scope.edit(
+              node: t
+            )
+          )
         if t.L
           text.append('tspan')
             .attr('x', 5)
@@ -159,9 +166,9 @@ app.directive('clan', ->
           .attr('font-family', 'FontAwesome')
           .attr('font-weight', 'normal')
           .attr('font-size', '16')
-          .html('&#xf007')
+          .html('&#xf1ae')
           .on('click', (n)->
-            scope.edit(
+            scope.addc(
               node: t
             )
           )
@@ -169,18 +176,6 @@ app.directive('clan', ->
           st.attr('x', 5).attr('dy', 16)
         else
           st.attr('dx', 4)
-        text.append('tspan')
-          .attr('dx', 4)
-          .attr('cursor', 'pointer')
-          .attr('font-family', 'FontAwesome')
-          .attr('font-weight', 'normal')
-          .attr('font-size', '16')
-          .html('&#xf1ae')
-          .on('click', (n)->
-            scope.addc(
-              node: t
-            )
-          )
         text.append('tspan')
           .attr('dx', 4)
           .attr('cursor', 'pointer')
@@ -206,7 +201,8 @@ app.directive('clan', ->
                 node: t
               )
             )
-        if Node.isRemove(t, not nt[t.Id].f)
+        console.info cn
+        if cn.isRemove(t)
           text.append('tspan')
             .attr('dx', 4)
             .attr('cursor', 'pointer')
@@ -264,8 +260,17 @@ app.directive('clan', ->
           .attr('y', 18)
           .attr('font-size', 11)
           .attr('fill', '#666666')
-          .append('tspan')
+        sp = ptext.append('tspan')
           .text("#{ p.E }: #{ p.N }")
+          .attr('cursor', 'pointer')
+          .attr('text-decoration', 'underline')
+        sp.on('click', (d, i)->
+            console.info d
+            console.info p.Id
+            scope.edit(
+              node: p
+            )
+          )
         if p.L
           ptext.append('tspan')
             .attr('x', 5)
@@ -277,38 +282,26 @@ app.directive('clan', ->
             .attr('x', 5)
             .attr('dy', 16)
             .text("忌日: #{ Date2Str(p.D) }")
-        ptext.append('tspan')
-          .attr('x', 5)
-          .attr('dy', 16)
-          .attr('cursor', 'pointer')
-          .attr('font-family', 'FontAwesome')
-          .attr('font-weight', 'normal')
-          .attr('font-size', '16')
-          .html('&#xf007')
-          .on('click', (d, i)->
-            console.info d
-            console.info p.Id
-            scope.edit(
-              node: p
-            )
-          )
-        ptext.append('tspan')
-          .attr('dx', 4)
-          .attr('cursor', 'pointer')
-          .attr('font-family', 'FontAwesome')
-          .attr('font-weight', 'normal')
-          .attr('font-size', '16')
-          .html('&#xf1ae')
-          .on('click', (n)->
-            scope.children(
-              t: t
-              p: p
-            )
-            #reset scope.node
-          )
-        if not ((p.C and p.C.length > 0))
+        pf = true
+        if cn.hasChildren t
+          pf = false
           ptext.append('tspan')
-            .attr('dx', 4)
+            .attr('x', 5)
+            .attr('dy', 16)
+            .attr('cursor', 'pointer')
+            .attr('font-family', 'FontAwesome')
+            .attr('font-weight', 'normal')
+            .attr('font-size', '16')
+            .html('&#xf1ae')
+            .on('click', (n)->
+              scope.children(
+                t: t
+                p: p
+              )
+              #reset scope.node
+            )
+        if not ((p.C and p.C.length > 0))
+          pr = ptext.append('tspan')
             .attr('cursor', 'pointer')
             .attr('font-family', 'FontAwesome')
             .attr('font-weight', 'normal')
@@ -319,6 +312,10 @@ app.directive('clan', ->
                 node: p
               )
             )
+          if pf
+            pr.attr('x', 5).attr('dy', 16)
+          else
+            pr.attr('dx', 4)
         if t.C and t.C.length > 0 and p.C and p.C.length > 0
           for c in p.C
             console.info '划线', c.N
@@ -343,8 +340,8 @@ app.directive('clan', ->
           y: 0
         scope.svgw = 600
         scope.svgh = 400
+        cn = new CheckNode n
         tree(n)
-        console.info scope.svgw
         d3.select(element[0]).select('svg').remove()
         svg = d3.select(element[0]).append("svg")
           .attr('width', scope.svgw)

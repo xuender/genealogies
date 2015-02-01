@@ -181,7 +181,10 @@ TreeCtrl = ($scope, $routeParams, $log, $http, $modal, lss)->
         t: ->
           t.N
         c: ->
-          ret = angular.copy t.C
+          if t.C
+            ret = angular.copy t.C
+          else if t._C
+            ret = angular.copy t._C
           if p.C
             for c in p.C
               for r in ret
