@@ -1,6 +1,9 @@
 package clan
 
-import "time"
+import (
+	"gopkg.in/mgo.v2/bson"
+	"time"
+)
 
 // 人员基本信息
 type Data struct {
@@ -18,4 +21,6 @@ type Data struct {
 	T string `bson:"t"`
 	// 称谓
 	E string `bson:"e,omitempty"`
+	// 用户标记
+	Uid bson.ObjectId `bson:"uid,omitempty"`
 }

@@ -32,7 +32,28 @@ func InfoRemove(session web.Session) error {
 	i := Info{
 		Id: session.Uid,
 	}
-	return i.Remove()
+	err := i.find()
+	if err == nil {
+		infoRemove(&i.T)
+		return i.Remove()
+	}
+	return err
+}
+
+// 递归删除info
+func infoRemove(t *Tree) {
+	if t.Uid.Valid() {
+		i := Info{
+			Id: t.Uid,
+		}
+		i.Remove()
+	}
+	for _, p := range t.P {
+		infoRemove(p)
+	}
+	for _, c := range t.C {
+		infoRemove(c)
+	}
 }
 
 // 保存
@@ -40,12 +61,17 @@ func (i *Info) Save() error {
 	return base.Save(i)
 }
 
+// 查找
+func (i *Info) find() error {
+	return base.Find(i)
+}
+
 // 查找用户信息
 func (i *Info) Find() (err error) {
 	//base.Remove(i)
 	if i.Id.Valid() {
 		//if true {
-		err = base.Find(i)
+		err = i.find()
 		if err != nil {
 			u := web.User{
 				Id: i.Id,
