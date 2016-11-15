@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{ familyTree.title }}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="info()">
+        详情
+        <ion-icon name="information-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <svg id="tree"></svg>
+  <ion-fab right bottom>
+    <button ion-fab>
+      <ion-icon name="checkmark-circle"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>

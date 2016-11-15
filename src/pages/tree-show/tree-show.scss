@@ -1,0 +1,27 @@
+page-tree-show {
+  .link {
+    fill: none;
+    stroke: rgb(173, 73, 74);
+    stroke-opacity: 0.7;
+    stroke-width: 1.5px;
+  }
+  .node circle {
+    fill: rgb(183, 83, 84)
+  }
+  .node text {
+    font: 10px sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  g.node.loaded {
+    cursor: ew-resize;
+  }
+  .node text.label-species {
+    opacity:0.3;
+  }
+  .node:hover text.label-species {
+    opacity:1;
+  }
+}

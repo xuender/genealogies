@@ -1,38 +1,42 @@
 {
-  "name": "family",
-  "version": "0.0.1",
-  "description": "家",
-  "main": "index.js",
+  "name": "ionic-hello-world",
+  "author": "Ionic Framework",
+  "homepage": "http://ionicframework.com/",
+  "private": true,
   "scripts": {
-    "test": "grunt travis --verbose"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/xuender/pen.git"
-  },
-  "keywords": [
-    "xpen"
-  ],
-  "author": "ender",
-  "license": "APACHE2",
-  "bugs": {
-    "url": "https://github.com/xuender/pen/issues"
-  },
-  "homepage": "https://github.com/xuender/pen",
-  "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-bumpx": "~0.1.5",
-    "grunt-contrib-uglify": "~0.6.*",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-coffeelint": "~0.0.7",
-    "grunt-contrib-coffee": "~0.7.0",
-    "grunt-contrib-cssmin": "~0.10.0",
-    "karma-phantomjs-launcher": "~0.1.1",
-    "grunt-karma": "~0.6.2"
+    "ionic:build": "ionic-app-scripts build",
+    "ionic:serve": "ionic-app-scripts serve"
   },
   "dependencies": {
-    "grunt-contrib-cssmin": "~0.10.0"
-  }
+    "@angular/common": "2.1.1",
+    "@angular/compiler": "2.1.1",
+    "@angular/compiler-cli": "2.1.1",
+    "@angular/core": "2.1.1",
+    "@angular/forms": "2.1.1",
+    "@angular/http": "2.1.1",
+    "@angular/platform-browser": "2.1.1",
+    "@angular/platform-browser-dynamic": "2.1.1",
+    "@angular/platform-server": "2.1.1",
+    "@ionic/storage": "1.1.6",
+    "d3": "^4.3.0",
+    "ionic-angular": "2.0.0-rc.2",
+    "ionic-native": "2.2.3",
+    "ionicons": "3.0.0",
+    "rxjs": "5.0.0-beta.12",
+    "zone.js": "0.6.21"
+  },
+  "devDependencies": {
+    "@ionic/app-scripts": "0.0.43",
+    "typescript": "2.0.6"
+  },
+  "cordovaPlugins": [
+    "ionic-plugin-keyboard",
+    "cordova-plugin-whitelist",
+    "cordova-plugin-console",
+    "cordova-plugin-statusbar",
+    "cordova-plugin-device",
+    "cordova-plugin-splashscreen"
+  ],
+  "cordovaPlatforms": [],
+  "description": "family: An Ionic project"
 }

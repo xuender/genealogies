@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>我的家</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content text-center padding>
+  <!--
+  <button ion-button secondary menuToggle>Toggle Menu</button>
+  -->
+  <button ion-button (click)="addTree()" block>创建家谱</button>
+  <ion-list>
+    <button ion-item *ngFor="let t of trees" (click)="show(t)">
+      {{ t.title }}
+      <div class="item-note" item-right>
+        {{ t.ca | date:'y-MM-dd'}}
+      </div>
+    </button>
+  </ion-list>
+  <button ion-button color="secondary" large (click)="addTree()" round>注册</button>
+  <button ion-button color="secondary" large (click)="addTree()" round>登录</button>
+</ion-content>
