@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"github.com/takama/daemon"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/takama/daemon"
 )
 
 var stdlog, errlog *log.Logger

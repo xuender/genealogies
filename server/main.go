@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"./safe"
 	"./utils"
 	"github.com/gin-gonic/gin"
 	"github.com/satori/go.uuid"
-	"log"
-	"os"
 )
 
 var stdlog, errlog *log.Logger
@@ -19,7 +20,7 @@ func init() {
 func run() {
 	r := gin.Default()
 	white := &safe.White{}
-	white.AddName = "/white"
+	white.Key = "xxx"
 	r.Use(white.Filter())
 	r.GET("/", func(c *gin.Context) {
 		m := []string{}
@@ -30,7 +31,6 @@ func run() {
 			"message": m,
 		})
 	})
-	r.GET(white.AddName, white.Add)
 	r.Run() // listen and server on 0.0.0.0:8080
 }
 
