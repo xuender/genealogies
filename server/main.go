@@ -1,19 +1,19 @@
 package main
 
 import (
+	"./safe"
+	"./utils"
 	"github.com/gin-gonic/gin"
 	"github.com/satori/go.uuid"
-	"./utils"
-	"./safe"
-	"os"
 	"log"
+	"os"
 )
 
 var stdlog, errlog *log.Logger
 
 func init() {
-	stdlog = log.New(os.Stdout, "", log.Ldate | log.Ltime)
-	errlog = log.New(os.Stderr, "", log.Ldate | log.Ltime)
+	stdlog = log.New(os.Stdout, "", log.Ldate|log.Ltime)
+	errlog = log.New(os.Stderr, "", log.Ldate|log.Ltime)
 }
 
 func run() {
@@ -35,7 +35,7 @@ func run() {
 }
 
 func main() {
-	service := &utils.Service{"dtest", "test service", run};
+	service := &utils.Service{"dtest", "test service", run}
 	status, err := service.Manage()
 	if err != nil {
 		errlog.Println(status, "\nError: ", err)
