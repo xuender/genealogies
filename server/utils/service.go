@@ -16,7 +16,9 @@ func init() {
 	errlog = log.New(os.Stderr, "", log.Ldate|log.Ltime)
 }
 
-// 如果服务 install 后 start 错误，则先remove，然后运行 sudo mv /sbin/initctl /sbin/initctl.bak 再 install、start
+// 如果服务 install 后 start 错误，则先remove，然后运行
+// sudo dpkg-divert --local --rename --add /sbin/initctl
+// 再 install、start
 type Service struct {
 	// 服务名称
 	Name string
