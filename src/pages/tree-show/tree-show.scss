@@ -1,4 +1,11 @@
 page-tree-show {
+  svg {
+    margin-top: 10px;
+  }
+  ion-scroll {
+    width: 100%;
+    height: 100%;
+  }
   .link {
     fill: none;
     stroke: rgb(173, 73, 74);

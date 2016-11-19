@@ -10,10 +10,26 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <svg id="tree"></svg>
-  <ion-fab right bottom>
+  <ion-scroll scrollX="true" scrollY="true">
+    <svg id="tree"></svg>
+  </ion-scroll>
+  <ion-fab left bottom #fat (click)="setFat(fat)">
     <button ion-fab>
-      <ion-icon name="checkmark-circle"></ion-icon>
+      <ion-icon name="brush"></ion-icon>
     </button>
+    <ion-fab-list side="top">
+      <button ion-fab (click)="editNode()">
+        <ion-icon name="contact"></ion-icon>
+      </button>
+      <button ion-fab (click)="addConsort()">
+        <ion-icon name="contacts"></ion-icon>
+      </button>
+      <button ion-fab (click)="addChildren()">
+        <ion-icon name="git-merge"></ion-icon>
+      </button>
+      <button ion-fab color="danger" (click)="removeNode()" *ngIf="!selectNode.children && selectNode.parent">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-fab-list>
   </ion-fab>
 </ion-content>

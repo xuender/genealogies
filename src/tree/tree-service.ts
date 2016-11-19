@@ -23,7 +23,21 @@ export class TreeService {
         id: `${i}`,
         title: `title-${i}`,
         note: `note-${i}`,
-        root: {name: `root${i}`, children: [{name: 'ff'}, {name: 'kk'}]},
+        root: {
+          name: `root${i}`,
+          children: [
+            {name: 'ff',
+              children:[
+                {name: 'ffa'},
+                {name: 'ffb'}
+              ]
+            },
+            {name: 'kk',
+              children:[
+                {name: 'kkb'}
+              ]
+            }
+          ]},
         ca: new Date(),
         ua: new Date(),
       })
