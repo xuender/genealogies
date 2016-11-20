@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, Platform, FabContainer, ModalController } from 'ionic-angular';
+import { LocalStorage } from "ng2-webstorage";
 
 import * as d3 from '../../tree/d3';
 
@@ -7,6 +8,7 @@ import { Tree } from "../../tree/tree";
 import { TreeService } from "../../tree/tree-service";
 import { find , remove } from "../../utils/array";
 import { NodeModal } from "../node-modal/node-modal";
+import { TreeNode } from "../../tree/tree-node";
 
 /**
  * 家谱编辑页面
@@ -23,6 +25,8 @@ export class TreeShow {
   selectNode: any;
   // 操作按钮
   fat: FabContainer;
+  @LocalStorage()
+  public maleFirst: boolean;
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
@@ -77,7 +81,7 @@ export class TreeShow {
     this.selectNode.data.children.push({
       name: `${this.selectNode.data.name}的儿子`,
       gender: true,
-      dob: new Date(),
+      dob: new Date().toISOString(),
       ca: new Date(),
       ua: new Date(),
     });
@@ -101,7 +105,7 @@ export class TreeShow {
     const root = {
       name: `${this.selectNode.data.name}的父亲`,
       gender: true,
-      dob: new Date(),
+      dob: new Date().toISOString(),
       children: [this.familyTree.root],
       ca: new Date(),
       ua: new Date(),
@@ -110,11 +114,28 @@ export class TreeShow {
     this.familyTree.ua = new Date();
     this.show();
   }
+  sort(node: TreeNode) {
+    if (node.children) {
+      for (const n of node.children){
+        this.sort(n);
+      }
+      node.children.sort((a: TreeNode, b: TreeNode) => {
+        console.debug('maleFirst', this.maleFirst);
+        if(this.maleFirst && a.gender !== b.gender) {
+          return a.gender ? -1 : 1;
+        } else {
+          return new Date(a.dob).getTime() - new Date(b.dob).getTime();
+        }
+      });
+    }
+  }
   // 显示家谱
   show() {
+    // 排序
+    this.sort(this.familyTree.root);
     // 树形数据
     const root = d3.hierarchy(this.familyTree.root);
-    console.debug(JSON.stringify(this.familyTree.root));
+    // console.debug(JSON.stringify(this.familyTree.root));
     if (this.selectNode.data) {
       this.selectNode = find(root.descendants(), (n: any)=> n.data == this.selectNode.data)
     } else {

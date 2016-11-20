@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { NavController, ModalController } from 'ionic-angular';
+import { LocalStorage } from "ng2-webstorage";
 import { TreeService } from "../../tree/tree-service";
 import { NodeModal } from "../node-modal/node-modal";
 
@@ -12,6 +13,8 @@ import { NodeModal } from "../node-modal/node-modal";
   templateUrl: 'setting.html'
 })
 export class Setting {
+  @LocalStorage()
+  public maleFirst: boolean;
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,

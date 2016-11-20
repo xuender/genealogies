@@ -40,7 +40,7 @@ export class TreeService {
       this.mySelf = {
         name: '本人',
         gender: true,
-        dob: new Date(),
+        dob: new Date().toISOString(),
         ca: new Date(),
         ua: new Date()
       };
