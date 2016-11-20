@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import { ModalController } from 'ionic-angular';
 import { Tree } from "./tree";
 import { TreeModal } from "../pages/tree-modal/tree-modal";
+import { TreeNode } from "./tree-node";
 
 /**
  * 家谱服务
@@ -10,6 +11,19 @@ import { TreeModal } from "../pages/tree-modal/tree-modal";
 @Injectable()
 export class TreeService {
   private _trees: Tree[];
+  private _mySelf: TreeNode;
+  // 本人
+  get mySelf(): TreeNode {
+    if (this._mySelf) {
+      return this._mySelf;
+    }
+    this._mySelf = {
+      name: '本人',
+      ca: new Date(),
+      ua: new Date(),
+    }
+    return this._mySelf;
+  }
   // 家谱列表
   get trees(): Tree[] {
     if (this._trees) {

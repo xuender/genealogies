@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { NavParams, ViewController, Platform, FabContainer } from 'ionic-angular';
+import { NavController, NavParams, ViewController, Platform, FabContainer, ModalController } from 'ionic-angular';
 
 import * as d3 from '../../tree/d3';
 
 import { Tree } from "../../tree/tree";
 import { TreeService } from "../../tree/tree-service";
-import { find } from "../../utils/array";
+import { find , remove } from "../../utils/array";
+import { NodeModal } from "../node-modal/node-modal";
 
 /**
  * 家谱编辑页面
@@ -25,6 +26,8 @@ export class TreeShow {
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
+    public navCtrl: NavController,
+    public modalCtrl: ModalController,
     private platform: Platform,
     private treeService: TreeService
   ) {
@@ -46,9 +49,20 @@ export class TreeShow {
   setFat(fat: FabContainer) {
     this.fat = fat;
   }
+  // 编辑节点
   editNode() {
     this.fat.close();
     console.debug('编辑节点:', this.selectNode.data.name);
+    const nm = this.modalCtrl.create(NodeModal, {
+      node: Object.assign({}, this.selectNode.data)
+    });
+    nm.present();
+    nm.onDidDismiss(node => {
+      if (node){
+        Object.assign(this.selectNode.data, node);
+        this.show();
+      }
+    });
   }
   addConsort() {
     this.fat.close();
@@ -64,14 +78,20 @@ export class TreeShow {
     });
     this.show();
   }
+  // 删除节点
   removeNode() {
     this.fat.close();
     console.debug('删除节点:', this.selectNode.data.name);
+    const c=remove(this.selectNode.parent.data.children, (n) => n==this.selectNode.data);
+    console.debug('remove:', c);
+    this.selectNode = {};
+    this.show();
   }
   // 显示家谱
   show() {
     // 树形数据
     const root = d3.hierarchy(this.familyTree.root);
+    console.debug(JSON.stringify(this.familyTree.root));
     if (this.selectNode.data) {
       this.selectNode = find(root.descendants(), (n: any)=> n.data == this.selectNode.data)
     } else {

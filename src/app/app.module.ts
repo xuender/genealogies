@@ -7,6 +7,7 @@ import { Setting } from '../pages/setting/setting';
 import { TreeService } from "../tree/tree-service";
 import { TreeModal } from "../pages/tree-modal/tree-modal";
 import { TreeShow } from "../pages/tree-show/tree-show";
+import { NodeModal } from "../pages/node-modal/node-modal";
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { TreeShow } from "../pages/tree-show/tree-show";
     TreeList,
     TreeModal,
     TreeShow,
+    NodeModal,
     Setting
   ],
   imports: [
@@ -27,6 +29,7 @@ import { TreeShow } from "../pages/tree-show/tree-show";
     TreeList,
     TreeModal,
     TreeShow,
+    NodeModal,
     Setting
   ],
   providers: [

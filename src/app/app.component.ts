@@ -13,6 +13,7 @@ import { Setting } from '../pages/setting/setting';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   rootPage: any = Home;
+  // rootPage: any = Setting;
   pages: Array<{title: string, component: any}>;
   constructor(public platform: Platform) {
     this.initializeApp();
