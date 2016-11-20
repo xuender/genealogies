@@ -42,7 +42,8 @@ export class TreeShow {
   }
   // 显示家谱信息
   public info(){
-    this.treeService.edit(this.familyTree);
+    this.treeService.edit(this.familyTree)
+    .then((tree: Tree) => this.show());
   }
   ionViewWillEnter() {
     this.viewCtrl.setBackButtonText('返回');

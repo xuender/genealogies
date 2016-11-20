@@ -72,28 +72,32 @@ export class TreeService {
     });
   }
   // 编辑家谱
-  public edit(tree: Tree){
+  public edit(tree: Tree): Promise<Tree>{
     console.debug('保存家谱:', tree.title);
-    const treeModal = this.modalCtrl.create(TreeModal, {tree: tree});
-    treeModal.onDidDismiss(data => {
-      if (data) {
-        if(this.isNew(data)){
-          console.debug('新增');
-          // TODO 远程调用
-          this.trees.push(data);
-        } else {
-          console.debug('修改');
-          // TODO 远程调用
-          data.ua = new Date();
-          this.trees.forEach(t => {
-            if (t.id == data.id){
-              Object.assign(t, data);
-            }
-          });
+    return new Promise((resolve, reject)=>{
+      const treeModal = this.modalCtrl.create(TreeModal, {tree: Object.assign({}, tree)});
+      treeModal.onDidDismiss(data => {
+        if (data) {
+          if(this.isNew(data)){
+            console.debug('新增');
+            // TODO 远程调用
+            this.trees.push(data);
+            resolve(data);
+          } else {
+            console.debug('修改');
+            // TODO 远程调用
+            data.ua = new Date();
+            this.trees.forEach(t => {
+              if (t.id == data.id){
+                Object.assign(t, data);
+                resolve(t);
+              }
+            });
+          }
         }
-      }
+      });
+      treeModal.present();
     });
-    treeModal.present();
   }
   private isNew(tree: Tree) {
     for(const t of this.trees){
