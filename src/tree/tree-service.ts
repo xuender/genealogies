@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { ModalController } from 'ionic-angular';
 
-import *  as uuid from 'uuid';
+import * as uuid from 'uuid';
 
 import { Tree } from "./tree";
 import { TreeModal } from "../pages/tree-modal/tree-modal";

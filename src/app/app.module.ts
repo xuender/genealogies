@@ -1,24 +1,25 @@
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { Home } from '../pages/home/home';
-import { TreeList } from '../pages/tree-list/tree-list';
-import { Setting } from '../pages/setting/setting';
 import { TreeService } from "../tree/tree-service";
+import { Home } from '../pages/home/home';
+import { NodeModal } from "../pages/node-modal/node-modal";
+import { Setting } from '../pages/setting/setting';
+import { TreeList } from '../pages/tree-list/tree-list';
 import { TreeModal } from "../pages/tree-modal/tree-modal";
 import { TreeShow } from "../pages/tree-show/tree-show";
-import { NodeModal } from "../pages/node-modal/node-modal";
-import {Ng2Webstorage} from 'ng2-webstorage';
+
+import { Ng2Webstorage } from 'ng2-webstorage';
 
 @NgModule({
   declarations: [
     MyApp,
     Home,
+    NodeModal,
+    Setting,
     TreeList,
     TreeModal,
-    TreeShow,
-    NodeModal,
-    Setting
+    TreeShow
   ],
   imports: [
     Ng2Webstorage.forRoot({ prefix: 'family', separator: '.'}),
@@ -28,14 +29,14 @@ import {Ng2Webstorage} from 'ng2-webstorage';
   entryComponents: [
     MyApp,
     Home,
+    NodeModal,
+    Setting,
     TreeList,
     TreeModal,
-    TreeShow,
-    NodeModal,
-    Setting
+    TreeShow
   ],
   providers: [
-     TreeService
+    TreeService
   ]
 })
 export class AppModule {}
