@@ -17,7 +17,7 @@ export class NodeModal {
   others: string[];
   // 父亲或母亲的称呼
   otherTitle: string;
-  parent: TreeNode; // 父亲或母亲
+  parentNode: TreeNode; // 父亲或母亲
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController
@@ -29,9 +29,9 @@ export class NodeModal {
       const old = this.params.get('old');
       if (tree){
         this.getParent(tree.root, old);
-        if (this.parent){
-          this.otherTitle = this.parent.gender ? '母亲' : '父亲';
-          for(const c of this.parent.children){
+        if (this.parentNode){
+          this.otherTitle = this.parentNode.gender ? '母亲' : '父亲';
+          for(const c of this.parentNode.children){
             if(c.nt != NodeType.DEFAULT){
               this.others.push(c.name);
             }
@@ -44,7 +44,7 @@ export class NodeModal {
     if(root.children){
       for(const c of root.children){
         if(c==node){
-          this.parent = root;
+          this.parentNode = root;
           return;
         }
         this.getParent(c, node);

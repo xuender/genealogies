@@ -9,7 +9,7 @@ import { TreeList } from '../pages/tree-list/tree-list';
 import { TreeModal } from "../pages/tree-modal/tree-modal";
 import { TreeShow } from "../pages/tree-show/tree-show";
 
-import { Ng2Webstorage } from 'ng2-webstorage';
+// import { Ng2Webstorage } from 'ng2-webstorage';
 
 @NgModule({
   declarations: [
@@ -22,8 +22,8 @@ import { Ng2Webstorage } from 'ng2-webstorage';
     TreeShow
   ],
   imports: [
-    Ng2Webstorage.forRoot({ prefix: 'family', separator: '.'}),
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    // Ng2Webstorage.forRoot({ prefix: 'family', separator: '.'}),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
