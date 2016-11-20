@@ -13,7 +13,7 @@
   -->
   <button ion-button (click)="addTree()" block>创建家谱</button>
   <ion-list>
-    <button ion-item *ngFor="let t of trees" (click)="show(t)">
+    <button ion-item *ngFor="let t of treeService.trees" (click)="show(t)">
       {{ t.title }}
       <div class="item-note" item-right>
         {{ t.ca | date:'y-MM-dd'}}

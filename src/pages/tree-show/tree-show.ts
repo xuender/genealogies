@@ -60,6 +60,7 @@ export class TreeShow {
     nm.onDidDismiss(node => {
       if (node){
         Object.assign(this.selectNode.data, node);
+        this.familyTree.ua = new Date();
         this.show();
       }
     });
@@ -76,6 +77,7 @@ export class TreeShow {
     this.selectNode.data.children.push({
       name: '新子女'
     });
+    this.familyTree.ua = new Date();
     this.show();
   }
   // 删除节点
@@ -85,6 +87,7 @@ export class TreeShow {
     const c=remove(this.selectNode.parent.data.children, (n) => n==this.selectNode.data);
     console.debug('remove:', c);
     this.selectNode = {};
+    this.familyTree.ua = new Date();
     this.show();
   }
   // 显示家谱

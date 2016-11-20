@@ -26,7 +26,8 @@ export class Setting {
     nm.present();
     nm.onDidDismiss(node => {
       if (node){
-        Object.assign(this.treeService.mySelf, node);
+        this.treeService.mySelf = node;
+        // Object.assign(this.treeService.mySelf, node);
       }
     });
   }

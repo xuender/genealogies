@@ -8,6 +8,7 @@ import { TreeService } from "../tree/tree-service";
 import { TreeModal } from "../pages/tree-modal/tree-modal";
 import { TreeShow } from "../pages/tree-show/tree-show";
 import { NodeModal } from "../pages/node-modal/node-modal";
+import {Ng2Webstorage} from 'ng2-webstorage';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { NodeModal } from "../pages/node-modal/node-modal";
     Setting
   ],
   imports: [
+    Ng2Webstorage,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],

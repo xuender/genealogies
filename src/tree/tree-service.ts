@@ -4,64 +4,56 @@ import { ModalController } from 'ionic-angular';
 import { Tree } from "./tree";
 import { TreeModal } from "../pages/tree-modal/tree-modal";
 import { TreeNode } from "./tree-node";
+import { LocalStorage } from "ng2-webstorage";
 
 /**
  * 家谱服务
  */
 @Injectable()
 export class TreeService {
-  private _trees: Tree[];
-  private _mySelf: TreeNode;
-  // 本人
-  get mySelf(): TreeNode {
-    if (this._mySelf) {
-      return this._mySelf;
-    }
-    this._mySelf = {
-      name: '本人',
-      ca: new Date(),
-      ua: new Date(),
-    }
-    return this._mySelf;
-  }
-  // 家谱列表
-  get trees(): Tree[] {
+  @LocalStorage()
+  public _trees: Tree[];
+  @LocalStorage()
+  public mySelf: TreeNode;
+  private loadTime: Date;
+  get trees() {
+    // 判断是否有变化，触发set 方法
     if (this._trees) {
-      return this._trees;
-    }
-    console.debug('网络获取家谱');
-    // TODO 网络获取
-    this._trees = [];
-    for (let i = 0; i < 5; i++) {
-      this._trees.push({
-        id: `${i}`,
-        title: `title-${i}`,
-        note: `note-${i}`,
-        root: {
-          name: `root${i}`,
-          children: [
-            {name: 'ff',
-              children:[
-                {name: 'ffa'},
-                {name: 'ffb'}
-              ]
-            },
-            {name: 'kk',
-              children:[
-                {name: 'kkb'}
-              ]
-            }
-          ]},
-        ca: new Date(),
-        ua: new Date(),
-      })
+      for(const t of this._trees){
+        if (t.ua > this.loadTime) {
+          this.loadTime = new Date();
+          this.trees = this._trees;
+          break;
+        }
+      }
     }
     return this._trees;
+  }
+  set trees(trees: Tree[]){
+    this._trees = trees;
   }
   constructor(
     private http: Http,
     private modalCtrl: ModalController
   ) {
+    if (!this.mySelf) {
+      this.mySelf = {
+        name: '本人',
+        ca: new Date(),
+        ua: new Date()
+      };
+    }
+    this.loadTime = new Date();
+    if (!this.trees){
+      this.trees = [{
+        id: 'sss',
+        title: '本人家谱',
+        note: 'xxx',
+        root: this.mySelf,
+        ca: new Date(),
+        ua: new Date(),
+      }];
+    }
   }
   // 增加家谱
   public add() {
@@ -70,7 +62,7 @@ export class TreeService {
       id: `${new Date()}`,
       title: '新家谱',
       note: '',
-      root: {name: '本人'},
+      root: this.mySelf,
       ca: new Date(),
       ua: new Date(),
     });
