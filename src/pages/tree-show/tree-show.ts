@@ -9,6 +9,7 @@ import { TreeService } from "../../tree/tree-service";
 import { find , remove } from "../../utils/array";
 import { NodeModal } from "../node-modal/node-modal";
 import { TreeNode } from "../../tree/tree-node";
+import { NodeType } from "../../tree/node-type";
 
 /**
  * 家谱编辑页面
@@ -58,7 +59,9 @@ export class TreeShow {
     this.fat.close();
     console.debug('编辑节点:', this.selectNode.data.name);
     const nm = this.modalCtrl.create(NodeModal, {
-      node: Object.assign({}, this.selectNode.data)
+      node: Object.assign({}, this.selectNode.data),
+      old: this.selectNode.data,
+      tree: this.familyTree,
     });
     nm.present();
     nm.onDidDismiss(node => {
@@ -72,15 +75,30 @@ export class TreeShow {
   addConsort() {
     this.fat.close();
     console.debug('增加伴侣:', this.selectNode.data.name);
+    if (!this.selectNode.data.children){
+      this.selectNode.data.children = [];
+    }
+    this.selectNode.data.children.push({
+      name: `${this.selectNode.data.name}的${this.selectNode.data.gender?'妻子':'丈夫'}`,
+      gender: !this.selectNode.data.gender,
+      nt: NodeType.CONSORT,
+      dob: new Date().toISOString(),
+      ca: new Date(),
+      ua: new Date(),
+    });
+    this.familyTree.ua = new Date();
+    this.show();
   }
   addChildren() {
     this.fat.close();
     console.debug('增加子女:', this.selectNode.data.name);
-    if (!this.selectNode.data.children)
+    if (!this.selectNode.data.children){
       this.selectNode.data.children = [];
+    }
     this.selectNode.data.children.push({
       name: `${this.selectNode.data.name}的儿子`,
       gender: true,
+      nt: NodeType.DEFAULT,
       dob: new Date().toISOString(),
       ca: new Date(),
       ua: new Date(),
@@ -105,6 +123,7 @@ export class TreeShow {
     const root = {
       name: `${this.selectNode.data.name}的父亲`,
       gender: true,
+      nt: NodeType.DEFAULT,
       dob: new Date().toISOString(),
       children: [this.familyTree.root],
       ca: new Date(),
@@ -121,7 +140,10 @@ export class TreeShow {
       }
       node.children.sort((a: TreeNode, b: TreeNode) => {
         console.debug('maleFirst', this.maleFirst);
-        if(this.maleFirst && a.gender !== b.gender) {
+        if(a.nt !== b.nt){  // 子女在前，伴侣在后
+           return a.nt - b.nt;
+        }
+        if(this.maleFirst && a.gender !== b.gender) { //男子在前女子在后
           return a.gender ? -1 : 1;
         } else {
           return new Date(a.dob).getTime() - new Date(b.dob).getTime();
@@ -150,8 +172,9 @@ export class TreeShow {
       }
     }
     // 计算节点宽度
+    const nodes = root.descendants();
     // console.debug('root.descendants', root.descendants());
-    for (const n of root.descendants().reverse()) {
+    for (const n of nodes.reverse()) {
       if (n.children) {
         n.w = 0;
         for (const c of n.children) {
@@ -161,6 +184,7 @@ export class TreeShow {
         n.w = 120;
       }
     }
+    // 树形图形
     const tree = d3.tree()
     .size([root.w, maxDepth * 150])
     .separation((a, b) => a.parent == b.parent ? 1 : 1.5);  // 父亲不同则拉开距离
@@ -176,20 +200,11 @@ export class TreeShow {
     .attr('dx', 10).attr('dy', 30)
     .text(this.familyTree.title);
     // 设置夫妻关系
-    //   nodes = tree.nodes data[0]
-    //   for n in nodes # 夫妻关系
-    //     n.y += 10
-    //     if n.Ctype > 0 then n.y -= 70
-    //   links = tree.links nodes
-    //   for n in nodes
-    //     if 'Other' of n and n.Other > 0
-    //       for m in nodes
-    //         if m.ID == n.Other
-    //           links.unshift(
-    //             source: m
-    //             target: n
-    //             other: true
-    //           )
+    for (const n of nodes){
+      if(n.data.nt !== NodeType.DEFAULT){
+        n.y -= 60;  // 夫妻关系位置上移
+      }
+    }
     // 家谱位置
     const g = this.svg.append("g")
     .attr("class", "part")
@@ -197,13 +212,39 @@ export class TreeShow {
     .attr("y", 30)
     .attr("transform", (d: Node) => `translate(${30}, ${30})`);
     // 线条
-    // console.debug('root.links', root.links());
+    const links = root.links();
+    for(const n of nodes){
+      if(n.data.other) {
+        for(const c of n.parent.children){
+          if(c.data.name == n.data.other){
+            links.unshift({
+              source: c,
+              target: n,
+              other: true,
+            });
+          }
+        }
+      }
+    }
+    // console.debug('root.links', links);
     g.selectAll('.link')
-    .data(root.links())
+    .data(links)
     .enter().append('path')
     .attr("class", "link")
     .attr('fill', 'none')
-    .attr('stroke', (d) => 'red') // 颜色 离婚后颜色变化 gray
+    .attr('stroke', (d) => {
+      console.debug('nt', d.target.data.nt);
+      switch(d.target.data.nt){
+        case NodeType.CONSORT:
+          return 'red';
+        case NodeType.EX:
+          return 'gray';
+      }
+      if(d.other){
+         return 'lightgreen';
+      }
+      return 'blue';
+    }) // 颜色
     .attr('stroke-width', (d) => '1.4px') // 宽度 离婚后宽度 0.8px
     .attr('d', (d, i) => `M${d.source.x},${d.source.y}C${d.source.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${d.target.y}`);
     //.attr('d', (d, i) => `M${d.target.x},${d.target.y}V${(d.source.y+10)}H${d.source.x}V${d.source.y}`);

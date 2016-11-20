@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavParams, ViewController  } from 'ionic-angular';
 
 import { TreeNode } from "../../tree/tree-node";
+import { NodeType } from "../../tree/node-type";
 
 /**
  * 节点编辑页面
@@ -12,11 +13,43 @@ import { TreeNode } from "../../tree/tree-node";
 })
 export class NodeModal {
   node: TreeNode;
+  // 可选择的父亲或母亲
+  others: string[];
+  // 父亲或母亲的称呼
+  otherTitle: string;
+  parent: TreeNode; // 父亲或母亲
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController
   ) {
     this.node = this.params.get('node');
+    this.others = [];
+    if (this.node.nt == NodeType.DEFAULT){ // 子女才需要设置父母
+      const tree = this.params.get('tree');
+      const old = this.params.get('old');
+      if (tree){
+        this.getParent(tree.root, old);
+        if (this.parent){
+          this.otherTitle = this.parent.gender ? '母亲' : '父亲';
+          for(const c of this.parent.children){
+            if(c.nt != NodeType.DEFAULT){
+              this.others.push(c.name);
+            }
+          }
+        }
+      }
+    }
+  }
+  getParent(root: TreeNode, node: TreeNode){
+    if(root.children){
+      for(const c of root.children){
+        if(c==node){
+          this.parent = root;
+          return;
+        }
+        this.getParent(c, node);
+      }
+    }
   }
   ionViewWillEnter() {
     this.viewCtrl.setBackButtonText('返回');

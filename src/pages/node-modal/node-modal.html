@@ -29,6 +29,21 @@
         <ion-option [value]="false">女</ion-option>
       </ion-select>
     </ion-item>
+    <ion-item *ngIf="others.length>0">
+      <ion-label>{{ otherTitle }}</ion-label>
+      <ion-select okText="确定" cancelText="取消"
+        [(ngModel)]="node.other" name="other">
+        <ion-option [value]="s" *ngFor="let s of others">{{ s }}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="node.nt">
+      <ion-label>婚姻关系</ion-label>
+      <ion-select okText="确定" cancelText="取消"
+        [(ngModel)]="node.nt" name="nt">
+        <ion-option [value]="1">配偶</ion-option>
+        <ion-option [value]="2">离异</ion-option>
+      </ion-select>
+    </ion-item>
     <ion-item>
       <ion-label>过世</ion-label>
       <ion-toggle [(ngModel)]="node.deda" name="deda"></ion-toggle>

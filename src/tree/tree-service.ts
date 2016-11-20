@@ -4,6 +4,7 @@ import { ModalController } from 'ionic-angular';
 import { Tree } from "./tree";
 import { TreeModal } from "../pages/tree-modal/tree-modal";
 import { TreeNode } from "./tree-node";
+import { NodeType } from "./node-type";
 import { LocalStorage } from "ng2-webstorage";
 
 /**
@@ -40,6 +41,7 @@ export class TreeService {
       this.mySelf = {
         name: '本人',
         gender: true,
+        nt: NodeType.DEFAULT,
         dob: new Date().toISOString(),
         ca: new Date(),
         ua: new Date()
