@@ -16,7 +16,7 @@
     <button ion-item *ngFor="let t of treeService.trees" (click)="show(t)">
       {{ t.title }}
       <div class="item-note" item-right>
-        {{ t.ca | date:'y-MM-dd'}}
+        {{ t.ua | date:'y-MM-dd'}}
       </div>
     </button>
   </ion-list>

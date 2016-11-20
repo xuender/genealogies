@@ -75,7 +75,11 @@ export class TreeShow {
     if (!this.selectNode.data.children)
       this.selectNode.data.children = [];
     this.selectNode.data.children.push({
-      name: '新子女'
+      name: `${this.selectNode.data.name}的儿子`,
+      gender: true,
+      dob: new Date(),
+      ca: new Date(),
+      ua: new Date(),
     });
     this.familyTree.ua = new Date();
     this.show();
@@ -187,15 +191,14 @@ export class TreeShow {
     .attr('width', 80).attr('height', 40)
     .attr('x', -40).attr('y', 0)
     .attr('rx', 20).attr('ry', 20)
-    .attr('fill', (d) => d == this.selectNode ? '#fdd' : '#dff')  // 颜色 性别不同颜色不公太 #fdf
-    .attr('stroke', (d) => '#aaa')  // 边框 在世与否 black
+    .attr('fill', (d) => d == this.selectNode ? '#fdd' : d.data.gender ? '#dff' : '#fdf')  // 颜色
+    .attr('stroke', (d) => d.data.deda ? 'black' :'#aaa')  // 边框
     .attr('stroke-width', 2);
     // 文字
     node.append('text')
-    .attr('font-size', '14px')
     .attr('text-anchor', 'middle')
     .attr('pointer-event', 'auto')
-    .attr('dx', 0).attr('dy', 20)
+    .attr('dx', 0).attr('dy', 23)
     .text((d) => d.data.name);
   }
 }

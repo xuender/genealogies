@@ -39,6 +39,8 @@ export class TreeService {
     if (!this.mySelf) {
       this.mySelf = {
         name: '本人',
+        gender: true,
+        dob: new Date(),
         ca: new Date(),
         ua: new Date()
       };

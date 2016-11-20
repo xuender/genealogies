@@ -10,12 +10,33 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-  <ion-list>
-    <form (ngSubmit)="ok()">
-      <ion-item>
-        <ion-label fixed>姓名</ion-label>
-        <ion-input type="text" [(ngModel)]="node.name" name="name"></ion-input>
-      </ion-item>
+  <form (ngSubmit)="ok()">
+    <ion-item>
+      <ion-label>姓名</ion-label>
+      <ion-input type="text" [(ngModel)]="node.name" name="name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>出生日期</ion-label>
+      <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD"
+        doneText="确定" cancelText="取消"
+        name="dob" [(ngModel)]="node.dob"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>性别</ion-label>
+      <ion-select okText="确定" cancelText="取消"
+        [(ngModel)]="node.gender" name="gender">
+        <ion-option [value]="true">男</ion-option>
+        <ion-option [value]="false">女</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>过世</ion-label>
+      <ion-toggle [(ngModel)]="node.deda" name="deda"></ion-toggle>
+    </ion-item>
+    <ion-list>
+      <ion-list-header>
+        时间
+      </ion-list-header>
       <ion-item>
         <ion-label fixed>修改时间</ion-label>
         <ion-label>{{ node.ua | date:"y-MM-dd HH:mm"}}</ion-label>
@@ -27,6 +48,6 @@
       <button ion-button type="submit" block>
         确定
       </button>
-    </form>
-  </ion-list>
+    </ion-list>
+  </form>
 </ion-content>
