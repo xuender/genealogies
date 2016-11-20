@@ -21,7 +21,7 @@ import {Ng2Webstorage} from 'ng2-webstorage';
     Setting
   ],
   imports: [
-    Ng2Webstorage,
+    Ng2Webstorage.forRoot({ prefix: 'family', separator: '.'}),
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
