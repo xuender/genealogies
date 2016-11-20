@@ -21,6 +21,9 @@
       <button ion-fab (click)="editNode()">
         <ion-icon name="contact"></ion-icon>
       </button>
+      <button ion-fab (click)="addParent()" *ngIf="!selectNode.parent">
+        <ion-icon name="git-pull-request"></ion-icon>
+      </button>
       <button ion-fab (click)="addConsort()">
         <ion-icon name="contacts"></ion-icon>
       </button>

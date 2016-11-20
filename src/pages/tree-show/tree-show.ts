@@ -94,6 +94,22 @@ export class TreeShow {
     this.familyTree.ua = new Date();
     this.show();
   }
+  // 增加父亲
+  addParent() {
+    this.fat.close();
+    console.debug('增加父亲:', this.selectNode.data.name);
+    const root = {
+      name: `${this.selectNode.data.name}的父亲`,
+      gender: true,
+      dob: new Date(),
+      children: [this.familyTree.root],
+      ca: new Date(),
+      ua: new Date(),
+    };
+    this.familyTree.root = root;
+    this.familyTree.ua = new Date();
+    this.show();
+  }
   // 显示家谱
   show() {
     // 树形数据
