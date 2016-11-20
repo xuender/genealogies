@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { ModalController } from 'ionic-angular';
+
+import *  as uuid from 'uuid';
+
 import { Tree } from "./tree";
 import { TreeModal } from "../pages/tree-modal/tree-modal";
 import { TreeNode } from "./tree-node";
@@ -39,7 +42,7 @@ export class TreeService {
   ) {
     if (!this.mySelf) {
       this.mySelf = {
-        name: '本人',
+        name: '无名氏',
         gender: true,
         nt: NodeType.DEFAULT,
         dob: new Date().toISOString(),
@@ -49,27 +52,23 @@ export class TreeService {
     }
     this.loadTime = new Date();
     if (!this.trees){
-      this.trees = [{
-        id: 'sss',
-        title: '本人家谱',
-        note: 'xxx',
+      this.trees = [this.getNewTree()];
+    }
+  }
+  getNewTree(){
+    return {
+        id: uuid(),
+        title: `${this.mySelf.name == '无名氏'?'无名':this.mySelf.name[0]}氏家谱`,
+        note: '',
         root: this.mySelf,
         ca: new Date(),
         ua: new Date(),
-      }];
-    }
+    };
   }
   // 增加家谱
   public add() {
     console.debug('增加家谱');
-    this.edit({
-      id: `${new Date()}`,
-      title: '新家谱',
-      note: '',
-      root: this.mySelf,
-      ca: new Date(),
-      ua: new Date(),
-    });
+    this.edit(this.getNewTree());
   }
   // 编辑家谱
   public edit(tree: Tree): Promise<Tree>{
