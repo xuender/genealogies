@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{ node.name }}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="cancel()">
+        取消
+        <ion-icon name="close-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <form (ngSubmit)="ok()">
+    <ion-item>
+      <ion-label>姓名</ion-label>
+      <ion-input type="text" [(ngModel)]="node.name" name="name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>出生日期</ion-label>
+      <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD"
+        doneText="确定" cancelText="取消"
+        name="dob" [(ngModel)]="node.dob"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>性别</ion-label>
+      <ion-select okText="确定" cancelText="取消"
+        [(ngModel)]="node.gender" name="gender">
+        <ion-option [value]="true">男</ion-option>
+        <ion-option [value]="false">女</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="others.length>0">
+      <ion-label>{{ otherTitle }}</ion-label>
+      <ion-select okText="确定" cancelText="取消"
+        [(ngModel)]="node.other" name="other">
+        <ion-option [value]="s" *ngFor="let s of others">{{ s }}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="node.nt">
+      <ion-label>婚姻关系</ion-label>
+      <ion-select okText="确定" cancelText="取消"
+        [(ngModel)]="node.nt" name="nt">
+        <ion-option [value]="1">配偶</ion-option>
+        <ion-option [value]="2">离异</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>过世</ion-label>
+      <ion-toggle [(ngModel)]="node.dead" name="dead"></ion-toggle>
+    </ion-item>
+    <ion-list>
+      <ion-list-header>
+        时间
+      </ion-list-header>
+      <ion-item>
+        <ion-label fixed>修改时间</ion-label>
+        <ion-label>{{ node.ua | date:"y-MM-dd HH:mm"}}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label fixed>创建时间</ion-label>
+        <ion-label>{{ node.ca | date:"y-MM-dd HH:mm"}}</ion-label>
+      </ion-item>
+      <button ion-button type="submit" block>
+        确定
+      </button>
+    </ion-list>
+  </form>
+</ion-content>

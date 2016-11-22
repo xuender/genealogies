@@ -13,13 +13,10 @@ import { TreeShow } from "../tree-show/tree-show";
   templateUrl: 'home.html'
 })
 export class Home {
-  trees: Tree[];
   constructor(
     public navCtrl: NavController,
-    private treeService: TreeService
+    public treeService: TreeService
   ) {
-    // this.trees = treeService.trees.slice(0, 3);
-    this.trees = treeService.trees;
   }
   // 增加家谱
   addTree() {

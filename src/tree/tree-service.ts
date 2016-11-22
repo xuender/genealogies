@@ -1,75 +1,102 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { ModalController } from 'ionic-angular';
+
+import * as uuid from 'uuid';
+
 import { Tree } from "./tree";
 import { TreeModal } from "../pages/tree-modal/tree-modal";
+import { TreeNode } from "./tree-node";
+import { NodeType } from "./node-type";
+import { LocalStorage } from "ng2-webstorage";
 
 /**
  * 家谱服务
  */
 @Injectable()
 export class TreeService {
-  private _trees: Tree[];
-  // 家谱列表
-  get trees(): Tree[] {
+  @LocalStorage()
+  public _trees: Tree[];
+  @LocalStorage()
+  public mySelf: TreeNode;
+  private loadTime: Date;
+  get trees() {
+    // 判断是否有变化，触发set 方法
     if (this._trees) {
-      return this._trees;
-    }
-    console.debug('网络获取家谱');
-    // TODO 网络获取
-    this._trees = [];
-    for (let i = 0; i < 5; i++) {
-      this._trees.push({
-        id: `${i}`,
-        title: `title-${i}`,
-        note: `note-${i}`,
-        root: {name: `root${i}`, children: [{name: 'ff'}, {name: 'kk'}]},
-        ca: new Date(),
-        ua: new Date(),
-      })
+      for(const t of this._trees){
+        if (t.ua > this.loadTime) {
+          this.loadTime = new Date();
+          this.trees = this._trees;
+          break;
+        }
+      }
     }
     return this._trees;
+  }
+  set trees(trees: Tree[]){
+    this._trees = trees;
   }
   constructor(
     private http: Http,
     private modalCtrl: ModalController
   ) {
+    if (!this.mySelf) {
+      this.mySelf = {
+        name: '无名氏',
+        gender: true,
+        nt: NodeType.DEFAULT,
+        dob: new Date().toISOString(),
+        ca: new Date(),
+        ua: new Date()
+      };
+    }
+    this.loadTime = new Date();
+    if (!this.trees){
+      this.trees = [this.getNewTree()];
+    }
+  }
+  getNewTree(){
+    return {
+        id: uuid(),
+        title: `${this.mySelf.name == '无名氏'?'无名':this.mySelf.name[0]}氏家谱`,
+        note: '',
+        root: this.mySelf,
+        ca: new Date(),
+        ua: new Date(),
+    };
   }
   // 增加家谱
   public add() {
     console.debug('增加家谱');
-    this.edit({
-      id: `${new Date()}`,
-      title: '新家谱',
-      note: '',
-      root: {name: '本人'},
-      ca: new Date(),
-      ua: new Date(),
-    });
+    this.edit(this.getNewTree());
   }
   // 编辑家谱
-  public edit(tree: Tree){
+  public edit(tree: Tree): Promise<Tree>{
     console.debug('保存家谱:', tree.title);
-    const treeModal = this.modalCtrl.create(TreeModal, {tree: tree});
-    treeModal.onDidDismiss(data => {
-      if (data) {
-        if(this.isNew(data)){
-          console.debug('新增');
-          // TODO 远程调用
-          this.trees.push(data);
-        } else {
-          console.debug('修改');
-          // TODO 远程调用
-          data.ua = new Date();
-          this.trees.forEach(t => {
-            if (t.id == data.id){
-              Object.assign(t, data);
-            }
-          });
+    return new Promise((resolve, reject)=>{
+      const treeModal = this.modalCtrl.create(TreeModal, {tree: Object.assign({}, tree)});
+      treeModal.onDidDismiss(data => {
+        if (data) {
+          if(this.isNew(data)){
+            console.debug('新增');
+            // TODO 远程调用
+            this.trees.push(data);
+            resolve(data);
+          } else {
+            console.debug('修改');
+            // TODO 远程调用
+            data.ua = new Date();
+            this.trees.forEach(t => {
+              if (t.id == data.id){
+                Object.assign(t, data);
+                resolve(t);
+              }
+            });
+          }
         }
-      }
+      });
+      treeModal.present();
     });
-    treeModal.present();
   }
   private isNew(tree: Tree) {
     for(const t of this.trees){

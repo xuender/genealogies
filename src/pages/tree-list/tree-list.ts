@@ -13,13 +13,11 @@ import { TreeShow } from "../tree-show/tree-show";
   templateUrl: 'tree-list.html'
 })
 export class TreeList {
-  trees: Tree[];
   isDel: boolean;
   constructor(
     public navCtrl: NavController,
-    private treeService: TreeService
+    public treeService: TreeService
   ) {
-    this.trees = treeService.trees;
     this.isDel = false;
   }
   // 增加家谱
