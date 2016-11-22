@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"./safe"
+	"./proxy"
 	"./utils"
 	"github.com/gin-gonic/gin"
 	"github.com/satori/go.uuid"
@@ -13,14 +13,14 @@ import (
 var stdlog, errlog *log.Logger
 
 func init() {
-	stdlog = log.New(os.Stdout, "", log.Ldate|log.Ltime)
-	errlog = log.New(os.Stderr, "", log.Ldate|log.Ltime)
+	stdlog = log.New(os.Stdout, "", log.Ldate | log.Ltime)
+	errlog = log.New(os.Stderr, "", log.Ldate | log.Ltime)
 }
 
 func run() {
 	r := gin.Default()
-	white := &safe.White{}
-	white.Key = "xxx"
+	white := &proxy.White{}        // 创建白名单
+	white.Key = "xxx"        // 白名单增加密钥
 	r.Use(white.Filter())
 	r.GET("/", func(c *gin.Context) {
 		m := []string{}
@@ -35,7 +35,7 @@ func run() {
 }
 
 func main() {
-	service := &utils.Service{"dtest", "test service", run}
+	service := &utils.Service{"hproxy", "Hexin proxy service", run}
 	status, err := service.Manage()
 	if err != nil {
 		errlog.Println(status, "\nError: ", err)

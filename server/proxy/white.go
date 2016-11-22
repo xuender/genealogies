@@ -56,6 +56,8 @@ func (w *White) Filter() gin.HandlerFunc {
 			cipherText := hash.Sum(nil)
 			hexText := make([]byte, 32)
 			hex.Encode(hexText, cipherText)
+			// 不管是否认证成功，都更换令牌
+			w.token = uuid.NewV4().String()
 			if strings.EqualFold(pass, string(hexText)) {
 				// 增加白名单
 				w.Ips = append(w.Ips, c.ClientIP())
