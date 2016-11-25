@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, Platform, FabContainer, ModalController } from 'ionic-angular';
-import { LocalStorage } from "ng2-webstorage";
+import { LocalStorage } from 'ng2-webstorage';
 
 import * as d3 from '../../tree/d3';
 
-import { Tree } from "../../tree/tree";
-import { TreeService } from "../../tree/tree-service";
-import { find , remove } from "../../utils/array";
-import { NodeModal } from "../node-modal/node-modal";
-import { TreeNode } from "../../tree/tree-node";
-import { NodeType } from "../../tree/node-type";
+import { Tree } from '../../tree/tree';
+import { TreeService } from '../../tree/tree-service';
+import { find , remove } from '../../utils/array';
+import { NodeModal } from '../node-modal/node-modal';
+import { TreeNode } from '../../tree/tree-node';
+import { NodeType } from '../../tree/node-type';
 
 /**
  * 家谱编辑页面
@@ -41,14 +41,14 @@ export class TreeShow {
     console.debug('tree show', this.familyTree.title);
   }
   // 显示家谱信息
-  public info(){
+  public info() {
     this.treeService.edit(this.familyTree)
     .then((tree: Tree) => this.show());
   }
   ionViewWillEnter() {
     this.viewCtrl.setBackButtonText('返回');
   }
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     this.svg = d3.select('#tree');
     this.show();
   }
@@ -60,7 +60,7 @@ export class TreeShow {
     // 没有子节点并且不是根节点
     return (!this.selectNode.children && this.selectNode.parent)
     // 根节点并且有1个子节点
-    || (!this.selectNode.parent && this.selectNode.children && this.selectNode.children.length == 1);
+      || (!this.selectNode.parent && this.selectNode.children && this.selectNode.children.length === 1);
   }
   // 编辑节点
   editNode() {
@@ -73,7 +73,7 @@ export class TreeShow {
     });
     nm.present();
     nm.onDidDismiss(node => {
-      if (node){
+      if (node) {
         Object.assign(this.selectNode.data, node);
         this.familyTree.ua = new Date();
         this.show();
@@ -83,11 +83,11 @@ export class TreeShow {
   addConsort() {
     this.fat.close();
     console.debug('增加伴侣:', this.selectNode.data.name);
-    if (!this.selectNode.data.children){
+    if (!this.selectNode.data.children) {
       this.selectNode.data.children = [];
     }
     this.selectNode.data.children.push({
-      name: `${this.selectNode.data.name}的${this.selectNode.data.gender?'妻子':'丈夫'}`,
+      name: `${this.selectNode.data.name}的${this.selectNode.data.gender ? '妻子' : '丈夫'}`,
       gender: !this.selectNode.data.gender,
       nt: NodeType.CONSORT,
       dob: new Date().toISOString(),
@@ -100,7 +100,7 @@ export class TreeShow {
   addChildren() {
     this.fat.close();
     console.debug('增加子女:', this.selectNode.data.name);
-    if (!this.selectNode.data.children){
+    if (!this.selectNode.data.children) {
       this.selectNode.data.children = [];
     }
     this.selectNode.data.children.push({
@@ -118,9 +118,9 @@ export class TreeShow {
   removeNode() {
     this.fat.close();
     console.debug('删除节点:', this.selectNode.data.name);
-    if(this.selectNode.parent) {  // 删除子节点
-      remove(this.selectNode.parent.data.children, (n) => n==this.selectNode.data);
-    } else if(this.selectNode.data.children && this.selectNode.data.children.length == 1) {  // 删除根节点
+    if (this.selectNode.parent) {  // 删除子节点
+      remove(this.selectNode.parent.data.children, (n) => n === this.selectNode.data);
+    } else if (this.selectNode.data.children && this.selectNode.data.children.length === 1) {  // 删除根节点
       this.familyTree.root = this.selectNode.data.children[0];
     }
     this.selectNode = {};
@@ -151,10 +151,11 @@ export class TreeShow {
       }
       node.children.sort((a: TreeNode, b: TreeNode) => {
         console.debug('maleFirst', this.maleFirst);
-        if(a.nt !== b.nt){  // 子女在前，伴侣在后
+        if (a.nt !== b.nt) {  // 子女在前，伴侣在后
           return a.nt - b.nt;
         }
-        if(this.maleFirst && a.gender !== b.gender) { //男子在前女子在后
+       // 男子在前女子在后
+        if (this.maleFirst && a.gender !== b.gender) {
           return a.gender ? -1 : 1;
         } else {
           return new Date(a.dob).getTime() - new Date(b.dob).getTime();
@@ -170,7 +171,7 @@ export class TreeShow {
     const root = d3.hierarchy(this.familyTree.root);
     // console.debug(JSON.stringify(this.familyTree.root));
     if (this.selectNode.data) {
-      this.selectNode = find(root.descendants(), (n: any)=> n.data == this.selectNode.data)
+      this.selectNode = find(root.descendants(), (n: any) => n.data === this.selectNode.data);
     } else {
       this.selectNode = root;
     }
@@ -198,7 +199,7 @@ export class TreeShow {
     // 树形图形
     const tree = d3.tree()
     .size([root.w, maxDepth * 150])
-    .separation((a, b) => a.parent == b.parent ? 1 : 1.5);  // 父亲不同则拉开距离
+    .separation((a, b) => a.parent === b.parent ? 1 : 1.5);  // 父亲不同则拉开距离
     tree(root);
     // 根据tree 计算高度宽度
     this.svg.attr('width', root.w + 60)
@@ -212,22 +213,22 @@ export class TreeShow {
     .text(this.familyTree.title);
     // 设置夫妻关系
     for (const n of nodes){
-      if(n.data.nt !== NodeType.DEFAULT){
+      if (n.data.nt !== NodeType.DEFAULT) {
         n.y -= 60;  // 夫妻关系位置上移
       }
     }
     // 家谱位置
-    const g = this.svg.append("g")
-    .attr("class", "part")
-    .attr("x", 30)
-    .attr("y", 30)
-    .attr("transform", (d: Node) => `translate(${30}, ${30})`);
+    const g = this.svg.append('g')
+    .attr('class', 'part')
+    .attr('x', 30)
+    .attr('y', 30)
+    .attr('transform', (d: Node) => `translate(${30}, ${30})`);
     // 线条
     const links = root.links();
-    for(const n of nodes){
-      if(n.data.other) {
-        for(const c of n.parent.children){
-          if(c.data.name == n.data.other){
+    for (const n of nodes) {
+      if (n.data.other) {
+        for (const c of n.parent.children) {
+          if (c.data.name === n.data.other) {
             links.unshift({
               source: c,
               target: n,
@@ -241,27 +242,26 @@ export class TreeShow {
     g.selectAll('.link')
     .data(links)
     .enter().append('path')
-    .attr("class", "link")
+    .attr('class', 'link')
     .attr('fill', 'none')
     .attr('stroke', (d) => {
       console.debug('nt', d.target.data.nt);
-      switch(d.target.data.nt){
+      switch (d.target.data.nt) {
         case NodeType.CONSORT:
           return 'red';
         case NodeType.EX:
           return 'gray';
       }
-      if(d.other){
+      if (d.other) {
         return 'lightgreen';
       }
       return 'blue';
     }) // 颜色
     .attr('stroke-width', (d) => '1.4px') // 宽度 离婚后宽度 0.8px
     .attr('d', (d, i) => `M${d.source.x},${d.source.y}C${d.source.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${d.target.y}`);
-    //.attr('d', (d, i) => `M${d.target.x},${d.target.y}V${(d.source.y+10)}H${d.source.x}V${d.source.y}`);
     this.updateNode(g, root);
   }
-  updateNode(g: any, root: any){
+  updateNode(g: any, root: any) {
     g.selectAll('.node').remove();
     // 节点
     const node = g.selectAll('.node')
@@ -270,18 +270,20 @@ export class TreeShow {
     .append('g')
     .attr('class', 'node')
     .on('click', (d) => {
-      if(this.fat) this.fat.close();
+      if (this.fat) {
+        this.fat.close();
+      }
       this.selectNode = d;
       this.updateNode(g, root);
     })
-    .attr("transform", d => `translate(${d.x},${d.y})`);
+    .attr('transform', d => `translate(${d.x},${d.y})`);
     // 方框
     node.append('rect')
     .attr('width', 80).attr('height', 40)
     .attr('x', -40).attr('y', 0)
     .attr('rx', 20).attr('ry', 20)
-    .attr('fill', (d) => d == this.selectNode ? '#fdd' : d.data.gender ? '#dff' : '#fdf')  // 颜色
-    .attr('stroke', (d) => d.data.deda ? 'black' :'#aaa')  // 边框
+    .attr('fill', (d) => d === this.selectNode ? '#fdd' : d.data.gender ? '#dff' : '#fdf')  // 颜色
+    .attr('stroke', (d) => d.data.deda ? 'black' : '#aaa')  // 边框
     .attr('stroke-width', 2);
     // 文字
     node.append('text')
