@@ -281,7 +281,7 @@ export class TreeShow {
     .attr('x', -40).attr('y', 0)
     .attr('rx', 20).attr('ry', 20)
     .attr('fill', (d) => d == this.selectNode ? '#fdd' : d.data.gender ? '#dff' : '#fdf')  // 颜色
-    .attr('stroke', (d) => d.data.deda ? 'black' :'#aaa')  // 边框
+    .attr('stroke', (d) => d.data.dead ? 'black' :'#aaa')  // 边框
     .attr('stroke-width', 2);
     // 文字
     node.append('text')
