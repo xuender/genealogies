@@ -30,7 +30,8 @@
       <button ion-fab (click)="addChildren()">
         <ion-icon name="git-merge"></ion-icon>
       </button>
-      <button ion-fab color="danger" (click)="removeNode()" *ngIf="!selectNode.children && selectNode.parent">
+      <button ion-fab color="danger" (click)="removeNode()"
+        *ngIf="showRemove()">
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-fab-list>

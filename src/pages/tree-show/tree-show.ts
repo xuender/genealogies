@@ -55,6 +55,13 @@ export class TreeShow {
   setFat(fat: FabContainer) {
     this.fat = fat;
   }
+  // 显示删除按钮
+  showRemove(): boolean {
+    // 没有子节点并且不是根节点
+    return (!this.selectNode.children && this.selectNode.parent)
+    // 根节点并且有1个子节点
+    || (!this.selectNode.parent && this.selectNode.children && this.selectNode.children.length == 1);
+  }
   // 编辑节点
   editNode() {
     this.fat.close();
@@ -111,8 +118,11 @@ export class TreeShow {
   removeNode() {
     this.fat.close();
     console.debug('删除节点:', this.selectNode.data.name);
-    const c=remove(this.selectNode.parent.data.children, (n) => n==this.selectNode.data);
-    console.debug('remove:', c);
+    if(this.selectNode.parent) {  // 删除子节点
+      remove(this.selectNode.parent.data.children, (n) => n==this.selectNode.data);
+    } else if(this.selectNode.data.children && this.selectNode.data.children.length == 1) {  // 删除根节点
+      this.familyTree.root = this.selectNode.data.children[0];
+    }
     this.selectNode = {};
     this.familyTree.ua = new Date();
     this.show();
@@ -142,7 +152,7 @@ export class TreeShow {
       node.children.sort((a: TreeNode, b: TreeNode) => {
         console.debug('maleFirst', this.maleFirst);
         if(a.nt !== b.nt){  // 子女在前，伴侣在后
-           return a.nt - b.nt;
+          return a.nt - b.nt;
         }
         if(this.maleFirst && a.gender !== b.gender) { //男子在前女子在后
           return a.gender ? -1 : 1;
@@ -242,7 +252,7 @@ export class TreeShow {
           return 'gray';
       }
       if(d.other){
-         return 'lightgreen';
+        return 'lightgreen';
       }
       return 'blue';
     }) // 颜色
