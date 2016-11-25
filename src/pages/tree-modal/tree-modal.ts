@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController  } from 'ionic-angular';
 
-import { Tree } from "../../tree/tree";
+import { Tree } from '../../tree/tree';
 
 /**
  * 家谱编辑页面

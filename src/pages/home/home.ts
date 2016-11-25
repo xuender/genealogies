@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 import { NavController } from 'ionic-angular';
-import { TreeService } from "../../tree/tree-service";
-import { Tree } from "../../tree/tree";
-import { TreeShow } from "../tree-show/tree-show";
+import { TreeService } from '../../tree/tree-service';
+import { Tree } from '../../tree/tree';
+import { TreeShow } from '../tree-show/tree-show';
 
 /**
  * 族谱、回忆录、照片、消息等汇总的地方

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController  } from 'ionic-angular';
 
-import { TreeNode } from "../../tree/tree-node";
-import { NodeType } from "../../tree/node-type";
+import { TreeNode } from '../../tree/tree-node';
+import { NodeType } from '../../tree/node-type';
 
 /**
  * 节点编辑页面
@@ -24,15 +24,15 @@ export class NodeModal {
   ) {
     this.node = this.params.get('node');
     this.others = [];
-    if (this.node.nt == NodeType.DEFAULT){ // 子女才需要设置父母
+    if (this.node.nt === NodeType.DEFAULT) { // 子女才需要设置父母
       const tree = this.params.get('tree');
       const old = this.params.get('old');
-      if (tree){
+      if (tree) {
         this.getParent(tree.root, old);
-        if (this.parentNode){
+        if (this.parentNode) {
           this.otherTitle = this.parentNode.gender ? '母亲' : '父亲';
-          for(const c of this.parentNode.children){
-            if(c.nt != NodeType.DEFAULT){
+          for (const c of this.parentNode.children) {
+            if (c.nt !== NodeType.DEFAULT) {
               this.others.push(c.name);
             }
           }
@@ -40,10 +40,10 @@ export class NodeModal {
       }
     }
   }
-  getParent(root: TreeNode, node: TreeNode){
-    if(root.children){
-      for(const c of root.children){
-        if(c==node){
+  getParent(root: TreeNode, node: TreeNode) {
+    if (root.children) {
+      for (const c of root.children) {
+        if (c === node) {
           this.parentNode = root;
           return;
         }

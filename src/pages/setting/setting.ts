@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 import { NavController, ModalController } from 'ionic-angular';
-import { LocalStorage } from "ng2-webstorage";
-import { TreeService } from "../../tree/tree-service";
-import { NodeModal } from "../node-modal/node-modal";
+import { LocalStorage } from 'ng2-webstorage';
+import { TreeService } from '../../tree/tree-service';
+import { NodeModal } from '../node-modal/node-modal';
 
 /**
  * 家谱
@@ -21,14 +21,15 @@ export class Setting {
     public treeService: TreeService
   ) {
   }
-  editMySelf(){
+  // 编辑个人信息
+  editMySelf() {
     console.log('myself');
     const nm = this.modalCtrl.create(NodeModal, {
       node: Object.assign({}, this.treeService.mySelf)
     });
     nm.present();
     nm.onDidDismiss(node => {
-      if (node){
+      if (node) {
         this.treeService.mySelf = node;
         // Object.assign(this.treeService.mySelf, node);
       }

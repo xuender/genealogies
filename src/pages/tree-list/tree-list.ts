@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 import { ItemSliding, NavController } from 'ionic-angular';
-import { Tree } from "../../tree/tree";
-import { TreeService } from "../../tree/tree-service";
-import { TreeShow } from "../tree-show/tree-show";
+import { Tree } from '../../tree/tree';
+import { TreeService } from '../../tree/tree-service';
+import { TreeShow } from '../tree-show/tree-show';
 
 /**
  * 家谱

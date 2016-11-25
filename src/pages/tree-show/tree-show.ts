@@ -154,7 +154,7 @@ export class TreeShow {
         if (a.nt !== b.nt) {  // 子女在前，伴侣在后
           return a.nt - b.nt;
         }
-       // 男子在前女子在后
+        // 男子在前女子在后
         if (this.maleFirst && a.gender !== b.gender) {
           return a.gender ? -1 : 1;
         } else {
@@ -283,7 +283,7 @@ export class TreeShow {
     .attr('x', -40).attr('y', 0)
     .attr('rx', 20).attr('ry', 20)
     .attr('fill', (d) => d === this.selectNode ? '#fdd' : d.data.gender ? '#dff' : '#fdf')  // 颜色
-    .attr('stroke', (d) => d.data.deda ? 'black' : '#aaa')  // 边框
+    .attr('stroke', (d) => d.data.dead ? 'black' : '#aaa')  // 边框
     .attr('stroke-width', 2);
     // 文字
     node.append('text')

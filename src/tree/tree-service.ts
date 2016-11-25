@@ -4,11 +4,11 @@ import { ModalController } from 'ionic-angular';
 
 import * as uuid from 'uuid';
 
-import { Tree } from "./tree";
-import { TreeModal } from "../pages/tree-modal/tree-modal";
-import { TreeNode } from "./tree-node";
-import { NodeType } from "./node-type";
-import { LocalStorage } from "ng2-webstorage";
+import { Tree } from './tree';
+import { TreeModal } from '../pages/tree-modal/tree-modal';
+import { TreeNode } from './tree-node';
+import { NodeType } from './node-type';
+import { LocalStorage } from 'ng2-webstorage';
 
 /**
  * 家谱服务
@@ -23,7 +23,7 @@ export class TreeService {
   get trees() {
     // 判断是否有变化，触发set 方法
     if (this._trees) {
-      for(const t of this._trees){
+      for (const t of this._trees) {
         if (t.ua > this.loadTime) {
           this.loadTime = new Date();
           this.trees = this._trees;
@@ -51,18 +51,18 @@ export class TreeService {
       };
     }
     this.loadTime = new Date();
-    if (!this.trees){
+    if (!this.trees) {
       this.trees = [this.getNewTree()];
     }
   }
-  getNewTree(){
+  getNewTree() {
     return {
-        id: uuid(),
-        title: `${this.mySelf.name == '无名氏'?'无名':this.mySelf.name[0]}氏家谱`,
-        note: '',
-        root: this.mySelf,
-        ca: new Date(),
-        ua: new Date(),
+      id: uuid(),
+      title: `${this.mySelf.name === '无名氏' ? '无名' : this.mySelf.name[0]}氏家谱`,
+      note: '',
+      root: this.mySelf,
+      ca: new Date(),
+      ua: new Date(),
     };
   }
   // 增加家谱
@@ -71,13 +71,13 @@ export class TreeService {
     this.edit(this.getNewTree());
   }
   // 编辑家谱
-  public edit(tree: Tree): Promise<Tree>{
+  public edit(tree: Tree): Promise<Tree> {
     console.debug('保存家谱:', tree.title);
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
       const treeModal = this.modalCtrl.create(TreeModal, {tree: Object.assign({}, tree)});
       treeModal.onDidDismiss(data => {
         if (data) {
-          if(this.isNew(data)){
+          if (this.isNew(data)) {
             console.debug('新增');
             // TODO 远程调用
             this.trees.push(data);
@@ -87,7 +87,7 @@ export class TreeService {
             // TODO 远程调用
             data.ua = new Date();
             this.trees.forEach(t => {
-              if (t.id == data.id){
+              if (t.id === data.id) {
                 Object.assign(t, data);
                 resolve(t);
               }
@@ -99,8 +99,8 @@ export class TreeService {
     });
   }
   private isNew(tree: Tree) {
-    for(const t of this.trees){
-      if (tree.id == t.id){
+    for (const t of this.trees) {
+      if (tree.id === t.id) {
         return false;
       }
     }
@@ -110,12 +110,12 @@ export class TreeService {
   public del(tree: Tree) {
     console.debug('删除家谱:', tree.title);
     const is: number[] = [];
-    for (let i=0;i<this.trees.length;i++){
-      if(this.trees[i].id === tree.id){
+    for (let i = 0; i < this.trees.length; i++) {
+      if (this.trees[i].id === tree.id) {
         is.push(i);
       }
     }
-    for(const i of is.reverse()){
+    for (const i of is.reverse()) {
       this.trees.splice(i, 1);
     }
   }
