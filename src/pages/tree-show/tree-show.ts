@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, Platform, FabContainer, ModalController } from 'ionic-angular';
+import { SocialSharing } from 'ionic-native';
 import { LocalStorage } from 'ng2-webstorage';
 
 import * as d3 from '../../tree/d3';
@@ -54,6 +55,14 @@ export class TreeShow {
   }
   setFat(fat: FabContainer) {
     this.fat = fat;
+  }
+  // 共享文字
+  shareText() {
+    SocialSharing.share(
+      this.treeService.toMsg(this.familyTree),
+      this.familyTree.title,
+      null,
+    );
   }
   // 显示删除按钮
   showRemove(): boolean {

@@ -13,6 +13,22 @@
   <ion-scroll scrollX="true" scrollY="true" zoom="true" maxZoom="5">
     <svg id="tree"></svg>
   </ion-scroll>
+  <ion-fab left bottom #sharing (click)="setFat(sharing)">
+    <button ion-fab color="secondary">
+      <ion-icon name="share-alt"></ion-icon>
+    </button>
+    <ion-fab-list side="right">
+      <button ion-fab (click)="shareImage()" *ngIf="false">
+        <ion-icon name="image"></ion-icon>
+      </button>
+      <button ion-fab (click)="shareText()">
+        <ion-icon name="text"></ion-icon>
+      </button>
+      <button ion-fab (click)="shareLink()" *ngIf="false">
+        <ion-icon name="link"></ion-icon>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
   <ion-fab right bottom #fat (click)="setFat(fat)">
     <button ion-fab>
       <ion-icon name="brush"></ion-icon>

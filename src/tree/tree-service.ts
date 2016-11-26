@@ -55,6 +55,37 @@ export class TreeService {
       this.trees = [this.getNewTree()];
     }
   }
+  private line(node: TreeNode, lines: string[], s: number) {
+    let ret = '';
+    for (let i = 0; i < s; i++) {
+      ret += '  ';
+    }
+    ret += node.dead ? `[${node.name}]` : node.name;
+    if (node.children) {
+      for (const c of node.children) {
+        if (c.nt === NodeType.CONSORT) {
+          ret += ' ' + (c.dead ? `[${c.name}]` : c.name);
+        }
+        if (c.nt  === NodeType.EX) {
+          ret += ' ' + (c.dead ? `([${c.name}])` : ` (${c.name})`);
+        }
+      }
+    }
+    lines.push(ret);
+    if (node.children) {
+      for (const c of node.children) {
+        if (c.nt === NodeType.DEFAULT) {
+          this.line(c, lines, s + 1);
+        }
+      }
+    }
+  }
+  toMsg(tree: Tree): string {
+    const lines: string[] = [tree.title];
+    this.line(tree.root, lines, 0);
+    return lines.join('\n');
+  }
+  // 新家谱
   getNewTree() {
     return {
       id: uuid(),
