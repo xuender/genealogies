@@ -4,7 +4,6 @@ import { MyApp } from './app.component';
 // import { Ng2Webstorage } from 'ng2-webstorage';
 
 import { TreeService } from '../tree/tree-service';
-import { NoticeService } from '../notice/notice-service';
 
 import { Home } from '../pages/home/home';
 import { NodeModal } from '../pages/node-modal/node-modal';
@@ -39,7 +38,6 @@ import { TreeShow } from '../pages/tree-show/tree-show';
     TreeShow
   ],
   providers: [
-    NoticeService,
     TreeService
   ]
 })

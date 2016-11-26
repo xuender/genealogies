@@ -45,28 +45,23 @@
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label>生日提醒</ion-label>
-      <ion-toggle [(ngModel)]="isDobn" name="isDobn"></ion-toggle>
-    </ion-item>
-    <ion-item>
       <ion-label>过世</ion-label>
       <ion-toggle [(ngModel)]="node.dead" name="dead"></ion-toggle>
     </ion-item>
-    <ion-list>
-      <ion-list-header>
-        时间
-      </ion-list-header>
-      <ion-item>
-        <ion-label fixed>修改时间</ion-label>
-        <ion-label>{{ node.ua | date:"y-MM-dd HH:mm"}}</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-label fixed>创建时间</ion-label>
-        <ion-label>{{ node.ca | date:"y-MM-dd HH:mm"}}</ion-label>
-      </ion-item>
-      <button ion-button type="submit" block>
-        确定
-      </button>
-    </ion-list>
+    <ion-item (click)="createCalendar()">
+      生日提醒
+      <ion-icon name="calendar" color="primary" item-right></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>修改时间</ion-label>
+      <ion-label>{{ node.ua | date:"y-MM-dd HH:mm"}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label fixed>创建时间</ion-label>
+      <ion-label>{{ node.ca | date:"y-MM-dd HH:mm"}}</ion-label>
+    </ion-item>
+    <button ion-button type="submit" block large>
+      确定
+    </button>
   </form>
 </ion-content>

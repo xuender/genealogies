@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController  } from 'ionic-angular';
 
+import { Calendar } from 'ionic-native';
 import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
-import { NoticeService } from '../../notice/notice-service';
 
 /**
  * 节点编辑页面
@@ -22,7 +22,6 @@ export class NodeModal {
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
-    private noticeService: NoticeService
   ) {
     this.node = this.params.get('node');
     this.others = [];
@@ -42,18 +41,28 @@ export class NodeModal {
       }
     }
   }
-  get isDobn(): boolean {
-    return this.node.dobn !== undefined && this.node.dobn !== '';
-  }
-  set isDobn(b: boolean) {
-    console.log('isdobn', b);
-    if (b) {
-      const n = this.noticeService.create(`${this.node.name}生日`, new Date(this.node.dob));
-      this.node.dobn = n.id;
-    } else {
-      this.noticeService.remove(this.node.dobn);
-      this.node.dobn = '';
+  // 创建日历提醒
+  createCalendar() {
+    const dob = new Date(this.node.dob);
+    const now = new Date();
+    const start = new Date(now.getTime());
+    start.setMonth(dob.getMonth());
+    start.setDate(dob.getDate());
+    if (start < now) {  // 已经过去，下年提醒
+       start.setMonth(start.getMonth() + 12);
     }
+    start.setHours(0);
+    start.setMinutes(0);
+    start.setSeconds(0);
+    const end = new Date(start.getTime());
+    end.setHours(24);
+    end.setMinutes(0);
+    end.setSeconds(0);
+    const title = `${this.node.name}生日`;
+    const note = title + ' by 家谱';
+    Calendar.createEventInteractivelyWithOptions(
+      title, null, note, start, end, {recurrence: 'yearly', recurrenceInterval: 1}
+    );
   }
   // 设置父节点
   setParent(root: TreeNode, node: TreeNode) {
