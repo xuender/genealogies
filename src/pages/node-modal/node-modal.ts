@@ -42,12 +42,19 @@ export class NodeModal {
     }
   }
   // 创建日历提醒
-  createCalendar() {
-    const dob = new Date(this.node.dob);
+  createDob() {
+    this.createCalendar(new Date(this.node.dob), `${this.node.name}生日`);
+  }
+  // 创建忌日提醒
+  createDod() {
+    this.createCalendar(new Date(this.node.dod), `${this.node.name}忌日`);
+  }
+  // 创建提醒
+  createCalendar(time: Date, title: string) {
     const now = new Date();
     const start = new Date(now.getTime());
-    start.setMonth(dob.getMonth());
-    start.setDate(dob.getDate());
+    start.setMonth(time.getMonth());
+    start.setDate(time.getDate());
     if (start < now) {  // 已经过去，下年提醒
        start.setMonth(start.getMonth() + 12);
     }
@@ -58,7 +65,6 @@ export class NodeModal {
     end.setHours(24);
     end.setMinutes(0);
     end.setSeconds(0);
-    const title = `${this.node.name}生日`;
     const note = title + ' by 家谱';
     Calendar.createEventInteractivelyWithOptions(
       title, null, note, start, end, {recurrence: 'yearly', recurrenceInterval: 1}

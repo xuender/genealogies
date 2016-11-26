@@ -44,13 +44,23 @@
         <ion-option [value]="2">离异</ion-option>
       </ion-select>
     </ion-item>
-    <ion-item>
+    <ion-item class="item-input">
       <ion-label>过世</ion-label>
       <ion-toggle [(ngModel)]="node.dead" name="dead"></ion-toggle>
     </ion-item>
-    <ion-item (click)="createCalendar()">
+    <ion-item (click)="createDob()" *ngIf="!node.dead">
       生日提醒
       <ion-icon name="calendar" color="primary" item-right></ion-icon>
+    </ion-item>
+    <ion-item *ngIf="node.dead">
+      <ion-label>忌日</ion-label>
+      <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD"
+        doneText="确定" cancelText="取消"
+        name="dod" [(ngModel)]="node.dod"></ion-datetime>
+    </ion-item>
+    <ion-item (click)="createDod()" *ngIf="node.dead && node.dod">
+      忌日提醒
+      <ion-icon name="calendar" color="dark" item-right></ion-icon>
     </ion-item>
     <ion-item>
       <ion-label fixed>修改时间</ion-label>

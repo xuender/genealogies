@@ -10,6 +10,7 @@ export interface TreeNode {
   nt: NodeType;  // 节点类型 0:默认, 1:配偶 2:前任
   children?: TreeNode[];  // 孩子们
   dead?: boolean;  // 死亡
+  dod?: string;     // 忌日
   other?: string;  // 父亲或母亲的名字
 
   ca?: Date;      // 创建时间
