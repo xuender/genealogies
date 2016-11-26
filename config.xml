@@ -48,5 +48,8 @@
   <feature name="StatusBar">
     <param name="ios-package" onload="true" value="CDVStatusBar"/>
   </feature>
+  <feature name="Calendar">
+    <param name="android-package" value="nl.xservices.plugins.Calendar" />
+  </feature>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>

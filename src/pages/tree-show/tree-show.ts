@@ -245,7 +245,6 @@ export class TreeShow {
     .attr('class', 'link')
     .attr('fill', 'none')
     .attr('stroke', (d) => {
-      console.debug('nt', d.target.data.nt);
       switch (d.target.data.nt) {
         case NodeType.CONSORT:
           return 'red';

@@ -3,6 +3,7 @@ import { NavParams, ViewController  } from 'ionic-angular';
 
 import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
+import { NoticeService } from '../../notice/notice-service';
 
 /**
  * 节点编辑页面
@@ -20,7 +21,8 @@ export class NodeModal {
   parentNode: TreeNode; // 父亲或母亲
   constructor(
     public params: NavParams,
-    public viewCtrl: ViewController
+    public viewCtrl: ViewController,
+    private noticeService: NoticeService
   ) {
     this.node = this.params.get('node');
     this.others = [];
@@ -28,7 +30,7 @@ export class NodeModal {
       const tree = this.params.get('tree');
       const old = this.params.get('old');
       if (tree) {
-        this.getParent(tree.root, old);
+        this.setParent(tree.root, old);
         if (this.parentNode) {
           this.otherTitle = this.parentNode.gender ? '母亲' : '父亲';
           for (const c of this.parentNode.children) {
@@ -40,14 +42,28 @@ export class NodeModal {
       }
     }
   }
-  getParent(root: TreeNode, node: TreeNode) {
+  get isDobn(): boolean {
+    return this.node.dobn !== undefined && this.node.dobn !== '';
+  }
+  set isDobn(b: boolean) {
+    console.log('isdobn', b);
+    if (b) {
+      const n = this.noticeService.create(`${this.node.name}生日`, new Date(this.node.dob));
+      this.node.dobn = n.id;
+    } else {
+      this.noticeService.remove(this.node.dobn);
+      this.node.dobn = '';
+    }
+  }
+  // 设置父节点
+  setParent(root: TreeNode, node: TreeNode) {
     if (root.children) {
       for (const c of root.children) {
         if (c === node) {
           this.parentNode = root;
           return;
         }
-        this.getParent(c, node);
+        this.setParent(c, node);
       }
     }
   }

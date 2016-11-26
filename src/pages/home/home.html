@@ -11,7 +11,7 @@
   <!--
   <button ion-button secondary menuToggle>Toggle Menu</button>
   -->
-  <button ion-button (click)="addTree()" block>创建家谱</button>
+  <button ion-button (click)="addTree()" large block>创建家谱</button>
   <ion-list>
     <button ion-item *ngFor="let t of treeService.trees" (click)="show(t)">
       {{ t.title }}
