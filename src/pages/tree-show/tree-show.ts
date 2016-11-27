@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController, Platform, FabContainer, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
 import { SocialSharing } from 'ionic-native';
 import { LocalStorage } from 'ng2-webstorage';
 
@@ -34,7 +34,6 @@ export class TreeShow {
     public viewCtrl: ViewController,
     public navCtrl: NavController,
     public modalCtrl: ModalController,
-    private platform: Platform,
     private treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
@@ -49,8 +48,20 @@ export class TreeShow {
   ionViewWillEnter() {
     this.viewCtrl.setBackButtonText('返回');
   }
+  de(a: any) {
+     console.log('a', a);
+  }
+  ngOnInit() {
+    console.log('init');
+  }
   ngAfterViewInit() {
-    this.svg = d3.select('#tree');
+    const svg = d3.select('#tree');
+    this.svg = svg.append('g').attr('transform', 'translate(10, 10)');
+    svg.call(
+      d3.zoom()
+      .scaleExtent([1 / 3, 2])
+      .on('zoom', () =>  this.svg.attr('transform', d3.event.transform))
+    );
     this.show();
   }
   setFat(fat: FabContainer) {
@@ -58,6 +69,7 @@ export class TreeShow {
   }
   // 共享文字
   shareText() {
+    this.fat.close();
     SocialSharing.share(
       this.treeService.toMsg(this.familyTree),
       this.familyTree.title,
@@ -184,7 +196,6 @@ export class TreeShow {
     } else {
       this.selectNode = root;
     }
-    console.debug('root', root);
     let maxDepth = 0;  // 叶子节点的最大深度
     console.debug('root.leaves', root.leaves());
     for (const l of root.leaves()) {
@@ -211,8 +222,8 @@ export class TreeShow {
     .separation((a, b) => a.parent === b.parent ? 1 : 1.5);  // 父亲不同则拉开距离
     tree(root);
     // 根据tree 计算高度宽度
-    this.svg.attr('width', root.w + 60)
-    .attr('height', maxDepth * 150 + 80);
+    // this.svg.attr('width', root.w + 60)
+    // .attr('height', maxDepth * 150 + 80);
     // 删除所有元素
     this.svg.selectAll('*').remove();
     // 家谱标题
@@ -284,6 +295,10 @@ export class TreeShow {
       this.selectNode = d;
       this.updateNode(g, root);
     })
+    // .call(d3.drag().on('drag'), (d) => {
+    //   console.log('d', d);
+    // //   d3.select(this).attr('cx', d.x = d3.event.x).attr('cy', d.y = d3.event.y);
+    // })
     .attr('transform', d => `translate(${d.x},${d.y})`);
     // 方框
     node.append('rect')
