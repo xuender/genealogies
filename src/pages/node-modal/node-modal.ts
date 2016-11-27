@@ -62,12 +62,12 @@ export class NodeModal {
     start.setMinutes(0);
     start.setSeconds(0);
     const end = new Date(start.getTime());
-    end.setHours(24);
+    end.setHours(0);
     end.setMinutes(0);
     end.setSeconds(0);
     const note = title + ' by 家谱';
     Calendar.createEventInteractivelyWithOptions(
-      title, null, note, start, end, {recurrence: 'yearly', recurrenceInterval: 1}
+      title, null, note, start, end, {firstReminderMinutes: 60 * 15, recurrence: 'yearly', recurrenceInterval: 1}
     );
   }
   // 设置父节点

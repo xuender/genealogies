@@ -48,7 +48,7 @@
       <ion-label>过世</ion-label>
       <ion-toggle [(ngModel)]="node.dead" name="dead"></ion-toggle>
     </ion-item>
-    <ion-item (click)="createDob()" *ngIf="!node.dead && node.dob">
+    <ion-item (click)="createDob()" *ngIf="!node.dead && node.dob != undefined">
       生日提醒
       <ion-icon name="calendar" color="primary" item-right></ion-icon>
     </ion-item>
