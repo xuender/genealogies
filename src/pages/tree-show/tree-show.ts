@@ -104,7 +104,6 @@ export class TreeShow {
   }
   // 增加伴侣
   addConsort() {
-    this.fat.close();
     console.debug('增加伴侣:', this.selectNode.name);
     if (!this.selectNode.children) {
       this.selectNode.children = [];
@@ -113,7 +112,6 @@ export class TreeShow {
       name: `${this.selectNode.name}的${this.selectNode.gender ? '妻子' : '丈夫'}`,
       gender: !this.selectNode.gender,
       nt: NodeType.CONSORT,
-      dob: new Date().toISOString(),
       ca: new Date(),
       ua: new Date(),
     });
@@ -122,7 +120,6 @@ export class TreeShow {
   }
   // 增加子女
   addChildren() {
-    this.fat.close();
     console.debug('增加子女:', this.selectNode.name);
     if (!this.selectNode.children) {
       this.selectNode.children = [];
@@ -131,7 +128,6 @@ export class TreeShow {
       name: `${this.selectNode.name}的儿子`,
       gender: true,
       nt: NodeType.DEFAULT,
-      dob: new Date().toISOString(),
       ca: new Date(),
       ua: new Date(),
     });
@@ -146,13 +142,11 @@ export class TreeShow {
   }
   // 增加父亲
   addParent() {
-    this.fat.close();
     console.debug('增加父亲:', this.selectNode.name);
     const root = {
       name: `${this.selectNode.name}的父亲`,
       gender: true,
       nt: NodeType.DEFAULT,
-      dob: new Date().toISOString(),
       children: [this.familyTree.root],
       ca: new Date(),
       ua: new Date(),

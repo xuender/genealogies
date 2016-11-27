@@ -63,6 +63,7 @@ export class DefaultStyle implements TreeStyle {
     } else {
       this.selectNode = root;
     }
+    this.onClickNode(this.selectNode.data);
     let maxDepth = 0;  // 叶子节点的最大深度
     // console.debug('root.leaves', root.leaves());
     for (const l of root.leaves()) {
@@ -192,7 +193,8 @@ export class DefaultStyle implements TreeStyle {
         if (this.maleFirst && a.gender !== b.gender) {
           return a.gender ? -1 : 1;
         } else {
-          return new Date(a.dob).getTime() - new Date(b.dob).getTime();
+          return (a.dob ? new Date(a.dob) : new Date()).getTime()
+          - (b.dob ? new Date(b.dob) : new Date()).getTime();
         }
       });
     }
