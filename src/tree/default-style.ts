@@ -12,6 +12,8 @@ export class DefaultStyle implements TreeStyle {
   selectNode: any;
   // 绘图区域
   svg: any;
+  // 工作区
+  work: any;
   // 男丁在前
   maleFirst: boolean;
   // 单击节点事件
@@ -20,12 +22,12 @@ export class DefaultStyle implements TreeStyle {
     this.selectNode = {};
     this.familyTree = tree;
     this.maleFirst = maleFirst;
-    const svg = d3.select(svgId);
-    this.svg = svg.append('g').attr('transform', 'translate(10, 10)');
-    svg.call(
+    this.svg = d3.select(svgId);
+    this.work = this.svg.append('g').attr('transform', 'translate(10, 10)');
+    this.svg.call(
       d3.zoom()
       .scaleExtent([1 / 3, 2])
-      .on('zoom', () =>  this.svg.attr('transform', d3.event.transform))
+      .on('zoom', () =>  this.work.attr('transform', d3.event.transform))
     );
   }
   // 是否选择根节点
@@ -90,11 +92,12 @@ export class DefaultStyle implements TreeStyle {
     .separation((a, b) => a.parent === b.parent ? 1 : 1.5);  // 父亲不同则拉开距离
     tree(root);
     // 删除所有元素
-    this.svg.selectAll('*').remove();
+    this.work.selectAll('*').remove();
+    this.svg.select('text').remove();
     // 家谱标题
     this.svg.append('text')
     .attr('font-size', '36px')
-    .attr('dx', 10).attr('dy', 30)
+    .attr('x', 20).attr('y', 50)
     .text(this.familyTree.title);
     // 设置夫妻关系
     for (const n of nodes){
@@ -103,7 +106,7 @@ export class DefaultStyle implements TreeStyle {
       }
     }
     // 家谱位置
-    const g = this.svg.append('g')
+    const g = this.work.append('g')
     .attr('class', 'part')
     .attr('x', 30)
     .attr('y', 30)

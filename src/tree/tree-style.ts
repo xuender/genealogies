@@ -2,14 +2,8 @@ import { Tree } from './tree';
 import { TreeNode } from './tree-node';
 // 家谱式样接口
 export interface TreeStyle {
-  // 家谱
-  familyTree: Tree;
   // 选择的节点
   selectNode: any;
-  // 绘图区域
-  svg: any;
-  // 男丁在前
-  maleFirst: boolean;
   // 显示家谱
   show(maleFirst: boolean): void;
   // 节点排序

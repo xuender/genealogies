@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
+import { ToastController, NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
 import { SocialSharing } from 'ionic-native';
 import { LocalStorage } from 'ng2-webstorage';
 
@@ -35,10 +35,51 @@ export class TreeShow {
     public viewCtrl: ViewController,
     public navCtrl: NavController,
     public modalCtrl: ModalController,
+    public toastCtrl: ToastController,
     private treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
     console.debug('tree show', this.familyTree.title);
+  }
+  paste1() {
+    this.paste(NodeType.DEFAULT);
+  }
+  paste2() {
+    this.paste(NodeType.CONSORT);
+  }
+  // 粘贴
+  paste(nt: NodeType) {
+     const node = this.treeService.copyNode;
+     node.nt = nt;
+     this.treeService.copyNode = undefined;
+     if (!this.selectNode.children) {
+       this.selectNode.children = [];
+     }
+     this.selectNode.children.push(node);
+     this.treeStyle.show(this.maleFirst);
+  }
+  // 复制
+  copy() {
+    this.fat.close();
+    // 复制节点
+    const cn = JSON.parse(JSON.stringify(this.selectNode));
+    if (cn.nt !== NodeType.DEFAULT) { // 如果是配偶则复制配偶的后裔
+      for (const c of this.treeStyle.selectNode.parent.data.children) {
+        if (c.other === cn.name) {
+          if (!cn.children) {
+            cn.children = [];
+          }
+          cn.children.push(JSON.parse(JSON.stringify(c)));
+        }
+      }
+    }
+    this.treeService.copyNode = cn;
+    const toast = this.toastCtrl.create({
+      message: `${this.selectNode.name}及其后裔已经复制，等待粘贴。`,
+      position: 'middle',
+      duration: 3000
+    });
+    toast.present();
   }
   // 是否选择根节点
   isRoot() {

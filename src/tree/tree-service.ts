@@ -20,6 +20,8 @@ export class TreeService {
   @LocalStorage()
   public mySelf: TreeNode;
   private loadTime: Date;
+  // 复制的节点
+  copyNode: TreeNode;
   get trees() {
     // 判断是否有变化，触发set 方法
     if (this._trees) {

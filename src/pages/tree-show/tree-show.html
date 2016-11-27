@@ -44,9 +44,18 @@
       <button ion-fab (click)="addChildren()">
         <ion-icon name="git-merge"></ion-icon>
       </button>
+      <button ion-fab (click)="copy()">
+        <ion-icon name="copy"></ion-icon>
+      </button>
+      <button ion-fab color="secondary" *ngIf="treeService.copyNode != undefined" (click)="paste1()">
+        {{ treeService.copyNode.gender ? '儿子' : '女儿' }}
+      </button>
+      <button ion-fab color="secondary" *ngIf="treeService.copyNode != undefined" (click)="paste2()">
+        {{ treeService.copyNode.gender ? '丈夫' : '妻子' }}
+      </button>
       <button ion-fab color="danger" (click)="removeNode()"
         *ngIf="showRemove()">
-        <ion-icon name="trash"></ion-icon>
+        <ion-icon name="cut"></ion-icon>
       </button>
     </ion-fab-list>
   </ion-fab>
