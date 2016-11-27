@@ -35,7 +35,7 @@
       <button ion-fab (click)="editNode()">
         <ion-icon name="contact"></ion-icon>
       </button>
-      <button ion-fab (click)="addParent()" *ngIf="!selectNode.parent">
+      <button ion-fab (click)="addParent()" *ngIf="isRoot()">
         <ion-icon name="git-pull-request"></ion-icon>
       </button>
       <button ion-fab (click)="addConsort()">
