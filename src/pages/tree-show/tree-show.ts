@@ -34,9 +34,9 @@ export class TreeShow {
     public params: NavParams,
     public viewCtrl: ViewController,
     public navCtrl: NavController,
-    public modalCtrl: ModalController,
-    public toastCtrl: ToastController,
-    private treeService: TreeService
+    private modalCtrl: ModalController,
+    private toastCtrl: ToastController,
+    public treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
     console.debug('tree show', this.familyTree.title);
