@@ -3,7 +3,7 @@ import { Tree } from './tree';
 import { NodeType } from './node-type';
 import { TreeNode } from './tree-node';
 import { TreeStyle } from './tree-style';
-import { find, remove } from '../utils/array';
+import { filter, find, remove } from '../utils/array';
 // 默认式样
 export class DefaultStyle implements TreeStyle {
   // 家谱
@@ -52,45 +52,80 @@ export class DefaultStyle implements TreeStyle {
     // 根节点并且有1个子节点
       || (!this.selectNode.parent && this.selectNode.children && this.selectNode.children.length === 1);
   }
+  rc(node: TreeNode) {
+    if (node.children) {
+      node.bak = filter(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
+      remove(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
+      for (const c of node.children) {
+        if (c.nt === NodeType.DEFAULT) {
+          this.rc(c);
+        }
+      }
+    }
+  }
   // 显示家谱
   show(maleFirst: boolean) {
     this.maleFirst = maleFirst;
     // 排序
     this.sort(this.familyTree.root);
+    // TODO 删除伴侣
+    this.rc(this.familyTree.root);
     // 树形数据
     const root = d3.hierarchy(this.familyTree.root);
     // console.debug(JSON.stringify(this.familyTree.root));
+    // 设置选择节点
     if (this.selectNode.data) {
       this.selectNode = find(root.descendants(), (n: any) => n.data === this.selectNode.data);
     } else {
       this.selectNode = root;
     }
+    // 点击节点事件
     this.onClickNode(this.selectNode.data);
-    let maxDepth = 0;  // 叶子节点的最大深度
-    // console.debug('root.leaves', root.leaves());
-    for (const l of root.leaves()) {
-      if (l.depth > maxDepth) {
-        maxDepth = l.depth;
-      }
-    }
     // 计算节点宽度
     const nodes = root.descendants();
-    // console.debug('root.descendants', root.descendants());
-    for (const n of nodes.reverse()) {
-      if (n.children) {
-        n.w = 0;
-        for (const c of n.children) {
-          n.w += c.w;
-        }
-      } else {
-        n.w = 120;
-      }
-    }
     // 树形图形
     const tree = d3.tree()
-    .size([root.w, maxDepth * 150])
-    .separation((a, b) => a.parent === b.parent ? 1 : 1.5);  // 父亲不同则拉开距离
+    .nodeSize([120, 120])
+    .separation((a, b) => {
+      // 根据伴侣数量决定夫妻宽度
+      let l = 0;
+      if (a.data.bak) {
+        l += a.data.bak.length;
+      }
+      if (b.data.bak) {
+        l += b.data.bak.length;
+      }
+      return l * 0.5 + 1;
+    });  // 父亲不同则拉开距离
     tree(root);
+    // 夫妻居中
+    for (const n of filter(nodes, (a: any) => a.data.bak && a.data.bak.length > 0)) {
+      n.x -= n.data.bak.length * 50;
+    }
+    // console.log('root', root);
+    // 增加伴侣
+    const nl = nodes.length;
+    for (let i = 0; i < nl; i++) {
+      const n = nodes[i];
+      if (n.data.bak && n.data.bak.length > 0) {
+        // console.log('bak', n.data.bak);
+        n.data.bak.forEach((c, f) => {
+          const b = d3.hierarchy(c).descendants()[0];
+          b.x = n.x + f * 100 + 100;
+          b.y = n.y;
+          b.height = n.height;
+          nodes.push(b);
+          b.parent = n;
+          if (!n.children) {
+            n.children = [];
+          }
+          n.children.push(b);
+          n.data.children.push(c);
+          delete n.data.bak;
+        });
+      }
+    }
+    // console.debug('nodes', nodes);
     // 删除所有元素
     this.work.selectAll('*').remove();
     this.svg.select('text').remove();
@@ -100,17 +135,21 @@ export class DefaultStyle implements TreeStyle {
     .attr('x', 20).attr('y', 50)
     .text(this.familyTree.title);
     // 设置夫妻关系
-    for (const n of nodes){
-      if (n.data.nt !== NodeType.DEFAULT) {
-        n.y -= 80;  // 夫妻关系位置上移
+    // for (const n of nodes){
+    //   if (n.data.nt !== NodeType.DEFAULT) {
+    //     n.y -= 80;  // 夫妻关系位置上移
+    //   }
+    // }
+    let max = 0;
+    for (const n of nodes) {
+      if (n.x > max) {
+        max = n.x;
       }
     }
     // 家谱位置
     const g = this.work.append('g')
     .attr('class', 'part')
-    .attr('x', 30)
-    .attr('y', 30)
-    .attr('transform', (d: Node) => `translate(${30}, ${30})`);
+    .attr('transform', (d: Node) => `translate(${max}, ${30})`);
     // 线条
     const links = root.links();
     for (const n of nodes) {
@@ -126,6 +165,8 @@ export class DefaultStyle implements TreeStyle {
         }
       }
     }
+    // 删除无用线条
+    remove(links, (l: any) => !('x' in l.source && 'x' in l.target));
     // console.debug('root.links', links);
     g.selectAll('.link')
     .data(links)
@@ -146,31 +187,31 @@ export class DefaultStyle implements TreeStyle {
     }) // 颜色
     .attr('stroke-width', (d) => '1.4px') // 宽度 离婚后宽度 0.8px
     .attr('d', (d, i) => `M${d.source.x},${d.source.y}C${d.source.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${d.target.y}`);
-    this.updateNode(g, root);
+    this.updateNode(g, nodes);
   }
   // 点击监听
   clickNodeListener(onClickNode: (node: TreeNode) => void) {
     this.onClickNode = onClickNode;
   }
   // 选择节点后刷新节点
-  updateNode(g: any, root: any) {
+  updateNode(g: any, nodes: any) {
     g.selectAll('.node').remove();
     // 节点
     const node = g.selectAll('.node')
-    .data(root.descendants())
+    .data(nodes)
     .enter()
     .append('g')
     .attr('class', 'node')
     .on('click', (d) => {
       this.onClickNode(d.data);
       this.selectNode = d;
-      this.updateNode(g, root);
+      this.updateNode(g, nodes);
     })
     .attr('transform', d => `translate(${d.x},${d.y})`);
     // 方框
     node.append('rect')
     .attr('width', 80).attr('height', 40)
-    .attr('x', -40).attr('y', 0)
+    .attr('x', -40).attr('y', -20)
     .attr('rx', 20).attr('ry', 20)
     .attr('fill', (d) => d === this.selectNode ? '#fdd' : d.data.gender ? '#dff' : '#fdf')  // 颜色
     .attr('stroke', (d) => d.data.dead ? 'black' : '#aaa')  // 边框
@@ -179,7 +220,7 @@ export class DefaultStyle implements TreeStyle {
     node.append('text')
     .attr('text-anchor', 'middle')
     .attr('pointer-event', 'auto')
-    .attr('dx', 0).attr('dy', 23)
+    .attr('dx', 0).attr('dy', 3)
     .text((d) => d.data.name);
   }
   // 排序

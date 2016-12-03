@@ -4,6 +4,18 @@
 export function shallowProperty(obj: any, key: string): any {
   return obj == null ? void 0 : obj[key];
 }
+// 过滤
+export function filter<T>(array: T[], com: (a: T) => boolean): T[] {
+  const ret: T[] = [];
+  if (array && array.length > 0) {
+    for (const a of array) {
+      if (com(a)) {
+        ret.push(a);
+      }
+    }
+  }
+  return ret;
+}
 /**
  * 查找
  */
@@ -18,7 +30,7 @@ export function find(array: any[], com: (a: any) => boolean): any {
   }
   return null;
 }
-export function remove(array: any[], com: (a: any) => boolean): number {
+export function remove<T>(array: T[], com: (a: T) => boolean): number {
   if (!array || array.length === 0) {
     return 0;
   }

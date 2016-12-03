@@ -8,6 +8,7 @@ export interface TreeNode {
   gender: boolean;  // 性别
   nt: NodeType;  // 节点类型 0:默认, 1:配偶 2:前任
   children?: TreeNode[];  // 孩子们
+  bak?: TreeNode[]; // 备份
   dob?: string;  // 出生日期
   dead?: boolean;  // 死亡
   dod?: string;     // 忌日
