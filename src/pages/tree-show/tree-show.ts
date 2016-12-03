@@ -63,12 +63,18 @@ export class TreeShow {
     this.fat.close();
     // 复制节点
     const cn = JSON.parse(JSON.stringify(this.selectNode));
-    if (cn.nt !== NodeType.DEFAULT) { // 如果是配偶则复制配偶的后裔
+    if (cn.nt !== NodeType.DEFAULT) {
+      // 复制伴侣
+      if (!cn.children) {
+        cn.children = [];
+      }
+      const b = JSON.parse(JSON.stringify(this.treeStyle.selectNode.parent.data));
+      delete b.children;
+      b.nt = cn.nt;
+      cn.children.push(b);
+      // 如果是配偶则复制配偶的后裔
       for (const c of this.treeStyle.selectNode.parent.data.children) {
         if (c.other === cn.name) {
-          if (!cn.children) {
-            cn.children = [];
-          }
           cn.children.push(JSON.parse(JSON.stringify(c)));
         }
       }
@@ -84,6 +90,11 @@ export class TreeShow {
   // 是否选择根节点
   isRoot() {
     return this.selectNode && this.treeStyle && this.treeStyle.isRoot();
+  }
+  // 默认节点
+  isDefault() {
+     return this.selectNode
+     && (!('nt' in this.selectNode) || this.selectNode.nt === NodeType.DEFAULT);
   }
   // 显示家谱信息
   info() {

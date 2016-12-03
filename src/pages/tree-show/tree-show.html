@@ -38,10 +38,10 @@
       <button ion-fab (click)="addParent()" *ngIf="isRoot()">
         <ion-icon name="git-pull-request"></ion-icon>
       </button>
-      <button ion-fab (click)="addConsort()">
+      <button ion-fab (click)="addConsort()" *ngIf="isDefault()">
         <ion-icon name="contacts"></ion-icon>
       </button>
-      <button ion-fab (click)="addChildren()">
+      <button ion-fab (click)="addChildren()" *ngIf="isDefault()">
         <ion-icon name="git-merge"></ion-icon>
       </button>
       <button ion-fab (click)="copy()">
