@@ -221,7 +221,7 @@ export class DefaultStyle implements TreeStyle {
     .attr('text-anchor', 'middle')
     .attr('pointer-event', 'auto')
     .attr('dx', 0).attr('dy', 3)
-    .text((d) => d.data.name);
+    .text((d) => d.data.name.substr(0, 6));
   }
   // 排序
   sort(node: TreeNode) {
