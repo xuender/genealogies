@@ -26,7 +26,7 @@ export class DefaultStyle implements TreeStyle {
     this.work = this.svg.append('g').attr('transform', 'translate(10, 10)');
     this.svg.call(
       d3.zoom()
-      .scaleExtent([1 / 3, 2])
+      .scaleExtent([1 / 4, 2])
       .on('zoom', () =>  this.work.attr('transform', d3.event.transform))
     );
   }
