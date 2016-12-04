@@ -17,8 +17,9 @@
       <ion-item detail-push (click)="show(t)">
         {{ t.title }}
         <div class="item-note" item-right>
-          {{ t.note }}
+          {{ t.ua | date:'y-MM-dd'}}
         </div>
+      <ion-badge item-right>{{ t.aliveNum }} / {{ t.totalNum }}</ion-badge>
       </ion-item>
       <ion-item-options side="right">
         <button ion-button (click)="edit(t, item)">

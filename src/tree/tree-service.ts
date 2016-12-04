@@ -35,7 +35,24 @@ export class TreeService {
     }
     return this._trees;
   }
+  count(node: TreeNode, tree: Tree) {
+    // console.debug('count', node);
+    tree.totalNum += 1;
+    if (!node.dead) {
+      tree.aliveNum += 1;
+    }
+    if (node.children) {
+      for (const n of node.children) {
+        this.count(n, tree);
+      }
+    }
+  }
   set trees(trees: Tree[]){
+    for (const t of trees) {
+       t.totalNum = 0;
+       t.aliveNum = 0;
+       this.count(t.root, t);
+    }
     this._trees = trees;
   }
   constructor(

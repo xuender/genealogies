@@ -32,7 +32,7 @@ export class DefaultStyle implements TreeStyle {
   }
   // 是否选择根节点
   isRoot() {
-    return !this.selectNode.parent;
+    return this.selectNode && !this.selectNode.parent;
   }
   // 删除选择节点
   removeNode() {
@@ -47,6 +47,9 @@ export class DefaultStyle implements TreeStyle {
   }
   // 节点是可以被删除的
   isDeleted(): boolean {
+    if (!this.selectNode) {
+       return false;
+    }
     // 没有子节点并且不是根节点
     return (!this.selectNode.children && this.selectNode.parent)
     // 根节点并且有1个子节点
@@ -73,14 +76,6 @@ export class DefaultStyle implements TreeStyle {
     // 树形数据
     const root = d3.hierarchy(this.familyTree.root);
     // console.debug(JSON.stringify(this.familyTree.root));
-    // 设置选择节点
-    if (this.selectNode.data) {
-      this.selectNode = find(root.descendants(), (n: any) => n.data === this.selectNode.data);
-    } else {
-      this.selectNode = root;
-    }
-    // 点击节点事件
-    this.onClickNode(this.selectNode.data);
     // 计算节点宽度
     const nodes = root.descendants();
     // 树形图形
@@ -125,6 +120,15 @@ export class DefaultStyle implements TreeStyle {
         });
       }
     }
+    // 设置选择节点
+    if (this.selectNode.data) {
+      this.selectNode = find(nodes, (n: any) => n.data === this.selectNode.data);
+    } else {
+      this.selectNode = root;
+    }
+    // console.debug('selectNode', this.selectNode);
+    // 点击节点事件
+    this.onClickNode(this.selectNode.data);
     // console.debug('nodes', nodes);
     // 删除所有元素
     this.work.selectAll('*').remove();

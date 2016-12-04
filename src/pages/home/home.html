@@ -18,6 +18,7 @@
       <div class="item-note" item-right>
         {{ t.ua | date:'y-MM-dd'}}
       </div>
+      <ion-badge item-right>{{ t.aliveNum }} / {{ t.totalNum }}</ion-badge>
     </button>
   </ion-list>
   <button ion-button color="secondary" large (click)="addTree()" round>注册</button>
