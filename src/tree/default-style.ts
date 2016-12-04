@@ -208,12 +208,18 @@ export class DefaultStyle implements TreeStyle {
       this.updateNode(g, nodes);
     })
     .attr('transform', d => `translate(${d.x},${d.y})`);
+    node.filter((d: any) => d === this.selectNode)
+    .append('rect')
+    .attr('width', 90).attr('height', 50)
+    .attr('x', -45).attr('y', -25)
+    .attr('rx', 20).attr('ry', 20)
+    .attr('fill', 'gold');
     // 方框
     node.append('rect')
     .attr('width', 80).attr('height', 40)
     .attr('x', -40).attr('y', -20)
     .attr('rx', 20).attr('ry', 20)
-    .attr('fill', (d) => d === this.selectNode ? '#fdd' : d.data.gender ? '#dff' : '#fdf')  // 颜色
+    .attr('fill', (d) => d.data.gender ? '#dff' : '#fdf')  // 颜色
     .attr('stroke', (d) => d.data.dead ? 'black' : '#aaa')  // 边框
     .attr('stroke-width', 2);
     // 文字
