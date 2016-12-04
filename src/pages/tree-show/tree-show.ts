@@ -118,6 +118,7 @@ export class TreeShow {
     });
     // 显示家谱
     this.treeStyle.show(this.maleFirst);
+    console.log(this.treeStyle.getText());
   }
   // 设置浮动按钮
   setFat(fat: FabContainer) {
@@ -127,7 +128,7 @@ export class TreeShow {
   shareText() {
     this.fat.close();
     SocialSharing.share(
-      this.treeService.toMsg(this.familyTree),
+      this.treeStyle.getText(),
       this.familyTree.title,
       null,
     );

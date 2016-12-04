@@ -16,6 +16,8 @@ export interface TreeStyle {
   removeNode(): void;
   // 是否是根节点
   isRoot(): boolean;
+  // 家谱文字
+  getText(): string;
 }
 // 式样构造器
 interface StyleConstructor {
