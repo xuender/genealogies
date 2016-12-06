@@ -24,7 +24,7 @@ import { TreeShow } from '../pages/tree-show/tree-show';
     TreeShow
   ],
   imports: [
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp)
     // Ng2Webstorage.forRoot({ prefix: 'family', separator: '.'}),
   ],
   bootstrap: [IonicApp],
