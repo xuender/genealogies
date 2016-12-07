@@ -9,6 +9,7 @@ import { TreeModal } from '../pages/tree-modal/tree-modal';
 import { TreeNode } from './tree-node';
 import { NodeType } from './node-type';
 import { LocalStorage } from 'ng2-webstorage';
+import { Unknown } from './unknown';
 
 /**
  * 家谱服务
@@ -34,6 +35,23 @@ export class TreeService {
       }
     }
     return this._trees;
+  }
+  query(node: TreeNode, unknowns: Unknown[]) {
+      unknowns.push({
+          node: node,
+          unknown: ['xxx', 'fff']
+      })
+      if (node.children) {
+          for (const c of node.children) {
+              this.query(c, unknowns);
+          }
+      }
+  }
+  // 家谱问题
+  unknown(tree: Tree): Unknown[] {
+      const us: Unknown[] = [];
+      this.query(tree.root, us);
+      return us;
   }
   count(node: TreeNode, tree: Tree) {
     // console.debug('count', node);

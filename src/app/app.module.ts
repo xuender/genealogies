@@ -12,6 +12,7 @@ import { TreeList } from '../pages/tree-list/tree-list';
 import { TreeModal } from '../pages/tree-modal/tree-modal';
 import { TreeShow } from '../pages/tree-show/tree-show';
 import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
+import { UnknownList } from '../pages/unknown-list/unknown-list';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
     TreeList,
     TreeModal,
     UnknownTree,
+    UnknownList,
     TreeShow
   ],
   imports: [
@@ -38,6 +40,7 @@ import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
     TreeList,
     TreeModal,
     UnknownTree,
+    UnknownList,
     TreeShow
   ],
   providers: [

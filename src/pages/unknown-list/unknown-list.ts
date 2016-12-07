@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
-import { NavController } from 'ionic-angular';
+import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { Tree } from '../../tree/tree';
 import { TreeService } from '../../tree/tree-service';
+import { Unknown } from '../../tree/unknown';
 
 /**
  * 家谱问题列表
@@ -12,16 +13,17 @@ import { TreeService } from '../../tree/tree-service';
   templateUrl: 'unknown-list.html'
 })
 export class UnknownList {
+  // 家谱
+  familyTree: Tree;
+  // 问题列表
+  unknowns: Unknown[];
   constructor(
+    public params: NavParams,
     public navCtrl: NavController,
+    private modalCtrl: ModalController,
     public treeService: TreeService
   ) {
-  }
-  // 打开树
-  show(tree: Tree) {
-    console.debug('展示:', tree.title);
-    // this.navCtrl.push(TreeShow, {
-    //   tree: tree
-    // });
+    this.familyTree = this.params.get('tree');
+    this.unknowns = this.treeService.unknown(this.familyTree);
   }
 }
