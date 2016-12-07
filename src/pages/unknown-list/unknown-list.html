@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>家谱问题列表</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="add()">
+        <ion-icon name="add-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ion-list>
+    <ion-item-sliding #item *ngFor="let t of treeService.trees">
+      <ion-item detail-push (click)="show(t)">
+        {{ t.title }}
+        <div class="item-note" item-right>
+          {{ t.ua | date:'y-MM-dd'}}
+        </div>
+      <ion-badge item-right>{{ t.aliveNum }} / {{ t.totalNum }}</ion-badge>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button (click)="edit(t, item)">
+          详情
+        </button>
+        <button ion-button color="danger" (click)="del(t)">
+          删除
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

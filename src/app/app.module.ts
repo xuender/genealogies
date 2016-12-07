@@ -11,6 +11,7 @@ import { Setting } from '../pages/setting/setting';
 import { TreeList } from '../pages/tree-list/tree-list';
 import { TreeModal } from '../pages/tree-modal/tree-modal';
 import { TreeShow } from '../pages/tree-show/tree-show';
+import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { TreeShow } from '../pages/tree-show/tree-show';
     Setting,
     TreeList,
     TreeModal,
+    UnknownTree,
     TreeShow
   ],
   imports: [
@@ -35,6 +37,7 @@ import { TreeShow } from '../pages/tree-show/tree-show';
     Setting,
     TreeList,
     TreeModal,
+    UnknownTree,
     TreeShow
   ],
   providers: [
