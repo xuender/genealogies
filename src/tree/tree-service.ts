@@ -82,8 +82,6 @@ export class TreeService {
         name: '无名氏',
         gender: true,
         nt: NodeType.DEFAULT,
-        ca: new Date(),
-        ua: new Date()
       };
     }
     this.loadTime = new Date();

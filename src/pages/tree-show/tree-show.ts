@@ -165,8 +165,6 @@ export class TreeShow {
       name: `${this.selectNode.name}的${this.selectNode.gender ? '妻子' : '丈夫'}`,
       gender: !this.selectNode.gender,
       nt: NodeType.CONSORT,
-      ca: new Date(),
-      ua: new Date(),
     });
     this.familyTree.ua = new Date();
     this.treeStyle.show(this.maleFirst);
@@ -181,8 +179,6 @@ export class TreeShow {
       name: `${this.selectNode.name}的儿子`,
       gender: true,
       nt: NodeType.DEFAULT,
-      ca: new Date(),
-      ua: new Date(),
     });
     this.familyTree.ua = new Date();
     this.treeStyle.show(this.maleFirst);
@@ -201,8 +197,6 @@ export class TreeShow {
       gender: true,
       nt: NodeType.DEFAULT,
       children: [this.familyTree.root],
-      ca: new Date(),
-      ua: new Date(),
     };
     this.familyTree.root = root;
     this.familyTree.ua = new Date();

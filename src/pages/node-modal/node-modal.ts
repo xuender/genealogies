@@ -97,7 +97,6 @@ export class NodeModal {
    */
   ok() {
     console.debug('ok');
-    this.node.ua = new Date();
     this.viewCtrl.dismiss(this.node);
   }
 }
