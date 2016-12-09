@@ -75,7 +75,9 @@ export class TreeShow {
       // 如果是配偶则复制配偶的后裔
       for (const c of this.treeStyle.selectNode.parent.data.children) {
         if (c.other === cn.name) {
-          cn.children.push(JSON.parse(JSON.stringify(c)));
+          const o = JSON.parse(JSON.stringify(c));
+          o.other = b.name;
+          cn.children.push(o);
         }
       }
     }
