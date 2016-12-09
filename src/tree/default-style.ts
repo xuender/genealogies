@@ -52,7 +52,7 @@ export class DefaultStyle implements TreeStyle {
       }
       if (ns.length > 0) {
         ts.push('，');
-        ts.push('生子：');
+        ts.push(`生子${ns.length}人：`);
         ts.push(ns.join('、'));
       }
       const vs: string[] = [];
@@ -61,7 +61,7 @@ export class DefaultStyle implements TreeStyle {
       }
       if (vs.length > 0) {
         ts.push('，');
-        ts.push('生女：');
+        ts.push(`生女${vs.length}人：`);
         ts.push(vs.join('、'));
       }
       ts.push('；');

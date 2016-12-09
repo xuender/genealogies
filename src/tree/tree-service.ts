@@ -40,7 +40,7 @@ export class TreeService {
       unknowns.push({
           node: node,
           unknown: ['xxx', 'fff']
-      })
+      });
       if (node.children) {
           for (const c of node.children) {
               this.query(c, unknowns);
