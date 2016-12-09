@@ -13,17 +13,24 @@ import { NodeType } from '../../tree/node-type';
   templateUrl: 'node-modal.html'
 })
 export class NodeModal {
+  // 节点
   node: TreeNode;
   // 可选择的父亲或母亲
   others: string[];
   // 父亲或母亲的称呼
   otherTitle: string;
+  // 标题
+  title: string;
+  // 没有关闭按钮
+  noClose: boolean;
   parentNode: TreeNode; // 父亲或母亲
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
   ) {
     this.node = this.params.get('node');
+    this.title = this.params.get('title');
+    this.noClose = this.params.get('noClose');
     this.others = [];
     if (this.node.nt === NodeType.DEFAULT) { // 子女才需要设置父母
       const tree = this.params.get('tree');

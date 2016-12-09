@@ -25,7 +25,8 @@ export class Setting {
   editMySelf() {
     console.log('myself');
     const nm = this.modalCtrl.create(NodeModal, {
-      node: Object.assign({}, this.treeService.mySelf)
+      node: Object.assign({}, this.treeService.mySelf),
+      title: '个人信息设置'
     });
     nm.present();
     nm.onDidDismiss(node => {

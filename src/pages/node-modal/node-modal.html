@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{ node.name }}</ion-title>
-    <ion-buttons end>
+    <ion-title>{{ title ? title : node.name }}</ion-title>
+    <ion-buttons end *ngIf="!noClose">
       <button ion-button icon-only (click)="cancel()">
         取消
         <ion-icon name="close-circle"></ion-icon>

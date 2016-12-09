@@ -10,6 +10,7 @@ import { TreeNode } from './tree-node';
 import { NodeType } from './node-type';
 import { LocalStorage } from 'ng2-webstorage';
 import { Unknown } from './unknown';
+import { NodeModal } from '../pages/node-modal/node-modal';
 
 /**
  * 家谱服务
@@ -23,6 +24,38 @@ export class TreeService {
   private loadTime: Date;
   // 复制的节点
   copyNode: TreeNode;
+  constructor(
+    private http: Http,
+    private modalCtrl: ModalController
+  ) {
+    if (!this.mySelf) {
+      this.mySelf = {
+        name: '无名氏',
+        gender: true,
+        nt: NodeType.DEFAULT,
+      };
+      this.init();
+    }
+  }
+  // 首次初始化
+  init() {
+    console.log('init');
+    const nm = this.modalCtrl.create(NodeModal, {
+      node: Object.assign({}, this.mySelf),
+      title: '个人信息设置',
+      noClose: true
+    });
+    nm.present();
+    nm.onDidDismiss(node => {
+      if (node) {
+        this.mySelf = node;
+      }
+      this.loadTime = new Date();
+      if (!this.trees) {
+        this.trees = [this.getNewTree()];
+      }
+    });
+  }
   get trees() {
     // 判断是否有变化，触发set 方法
     if (this._trees) {
@@ -37,21 +70,21 @@ export class TreeService {
     return this._trees;
   }
   query(node: TreeNode, unknowns: Unknown[]) {
-      unknowns.push({
-          node: node,
-          unknown: ['xxx', 'fff']
-      });
-      if (node.children) {
-          for (const c of node.children) {
-              this.query(c, unknowns);
-          }
+    unknowns.push({
+      node: node,
+      unknown: ['xxx', 'fff']
+    });
+    if (node.children) {
+      for (const c of node.children) {
+        this.query(c, unknowns);
       }
+    }
   }
   // 家谱问题
   unknown(tree: Tree): Unknown[] {
-      const us: Unknown[] = [];
-      this.query(tree.root, us);
-      return us;
+    const us: Unknown[] = [];
+    this.query(tree.root, us);
+    return us;
   }
   count(node: TreeNode, tree: Tree) {
     // console.debug('count', node);
@@ -67,27 +100,11 @@ export class TreeService {
   }
   set trees(trees: Tree[]){
     for (const t of trees) {
-       t.totalNum = 0;
-       t.aliveNum = 0;
-       this.count(t.root, t);
+      t.totalNum = 0;
+      t.aliveNum = 0;
+      this.count(t.root, t);
     }
     this._trees = trees;
-  }
-  constructor(
-    private http: Http,
-    private modalCtrl: ModalController
-  ) {
-    if (!this.mySelf) {
-      this.mySelf = {
-        name: '无名氏',
-        gender: true,
-        nt: NodeType.DEFAULT,
-      };
-    }
-    this.loadTime = new Date();
-    if (!this.trees) {
-      this.trees = [this.getNewTree()];
-    }
   }
   // 新家谱
   getNewTree() {
