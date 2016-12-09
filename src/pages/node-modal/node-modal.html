@@ -10,10 +10,10 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-  <form (ngSubmit)="ok()">
+  <form #f="ngForm" (ngSubmit)="ok()">
     <ion-item>
       <ion-label>姓名</ion-label>
-      <ion-input type="text" [(ngModel)]="node.name" name="name"></ion-input>
+      <ion-input type="text" [(ngModel)]="node.name" minlength="1" name="name" required></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>出生日期</ion-label>
@@ -70,7 +70,7 @@
       <ion-label fixed>创建时间</ion-label>
       <ion-label>{{ node.ca | date:"y-MM-dd HH:mm"}}</ion-label>
     </ion-item>
-    <button ion-button type="submit" block large>
+    <button ion-button [disabled]="!f.valid" type="submit" block large>
       确定
     </button>
   </form>
