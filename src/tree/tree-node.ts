@@ -13,4 +13,6 @@ export interface TreeNode {
   dead?: boolean;  // 死亡
   dod?: string;     // 忌日
   other?: string;  // 父亲或母亲的名字
+  unknown?: number; // 未知数量
+  star?: boolean;   // 关注
 }

@@ -19,7 +19,7 @@ export function filter<T>(array: T[], com: (a: T) => boolean): T[] {
 /**
  * 查找
  */
-export function find(array: any[], com: (a: any) => boolean): any {
+export function find<T>(array: T[], com: (a: T) => boolean): T {
   if (!array || array.length === 0) {
     return null;
   }

@@ -1,20 +1,21 @@
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
     <ion-title>{{ familyTree.title }}问题列表</ion-title>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="add()">
-        <ion-icon name="add-circle"></ion-icon>
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-  <ion-list>
-      <ion-item *ngFor="let u of unknowns">
-        {{ u.node.name }}
-      </ion-item>
-  </ion-list>
+  <ion-card *ngFor="let u of unknowns">
+    <ion-card-header [ngClass]="{'dead': u.node.dead}" (click)="star(u.node)">
+      {{ u.node.name }}
+      <ion-badge color="danger">
+        {{ u.node.unknown }}
+      </ion-badge>
+      <ion-icon color="secondary" name="star" *ngIf="u.node.star"></ion-icon>
+    </ion-card-header>
+    <ion-list>
+      <button ion-item *ngFor="let s of u.unknown" (click)="editNode(u.node)" >
+        {{ s }}
+      </button>
+    </ion-list>
+  </ion-card>
 </ion-content>

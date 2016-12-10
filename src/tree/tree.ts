@@ -9,6 +9,7 @@ export interface Tree {
   root: TreeNode;     // 根节点
   aliveNum?:  number;   // 活着的人数
   totalNum?:  number;   // 总人数
+  unknown?: number;     // 未知问题
 
   ca?: Date;      // 创建时间
   ua?: Date;      // 修改时间

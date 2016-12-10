@@ -6,7 +6,6 @@ import { LocalStorage } from 'ng2-webstorage';
 import { Tree } from '../../tree/tree';
 import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
-import { NodeModal } from '../node-modal/node-modal';
 import { TreeService } from '../../tree/tree-service';
 import { DefaultStyle } from '../../tree/default-style';
 import { TreeStyle , createStyle } from '../../tree/tree-style';
@@ -142,20 +141,8 @@ export class TreeShow {
   // 编辑节点
   editNode() {
     this.fat.close();
-    console.debug('编辑节点:', this.selectNode.name);
-    const nm = this.modalCtrl.create(NodeModal, {
-      node: Object.assign({}, this.selectNode),
-      old: this.selectNode,
-      tree: this.familyTree,
-    });
-    nm.present();
-    nm.onDidDismiss(node => {
-      if (node) {
-        Object.assign(this.selectNode, node);
-        this.familyTree.ua = new Date();
-        this.treeStyle.show(this.maleFirst);
-      }
-    });
+    this.treeService.editNode(this.selectNode, this.familyTree)
+    .then((node) => this.treeStyle.show(this.maleFirst));
   }
   // 增加伴侣
   addConsort() {

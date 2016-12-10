@@ -11,6 +11,7 @@ import { NodeType } from './node-type';
 import { LocalStorage } from 'ng2-webstorage';
 import { Unknown } from './unknown';
 import { NodeModal } from '../pages/node-modal/node-modal';
+// import { find } from '../utils/array';
 
 /**
  * 家谱服务
@@ -36,31 +37,53 @@ export class TreeService {
       };
       this.init();
     }
+    this.loadTime = new Date();
+  }
+  // 编辑节点
+  editNode(node: TreeNode, tree: Tree): Promise<TreeNode> {
+    return new Promise<TreeNode>((resolve, reject) => {
+      console.debug('编辑节点:', node.name);
+      const nm = this.modalCtrl.create(NodeModal, {
+        node: Object.assign({}, node),
+        old: node,
+        tree: tree
+      });
+      nm.present();
+      nm.onDidDismiss(newNode => {
+        if (newNode) {
+          Object.assign(node, newNode);
+          if (tree) {
+            tree.ua = new Date();
+          }
+          resolve(node);
+        }
+      });
+    });
   }
   // 首次初始化
   init() {
-    console.log('init');
+    console.log('用户初始化');
     const nm = this.modalCtrl.create(NodeModal, {
       node: Object.assign({}, this.mySelf),
       title: '个人信息设置',
       noClose: true
     });
-    nm.present();
     nm.onDidDismiss(node => {
       if (node) {
         this.mySelf = node;
       }
-      this.loadTime = new Date();
       if (!this.trees) {
         this.trees = [this.getNewTree()];
       }
     });
+    nm.present();
   }
+  // 判断是否有变化，触发set 方法
   get trees() {
-    // 判断是否有变化，触发set 方法
     if (this._trees) {
       for (const t of this._trees) {
         if (t.ua > this.loadTime) {
+          console.log('保存：', t.ua, this.loadTime);
           this.loadTime = new Date();
           this.trees = this._trees;
           break;
@@ -69,23 +92,46 @@ export class TreeService {
     }
     return this._trees;
   }
-  query(node: TreeNode, unknowns: Unknown[]) {
-    unknowns.push({
-      node: node,
-      unknown: ['xxx', 'fff']
-    });
-    if (node.children) {
-      for (const c of node.children) {
-        this.query(c, unknowns);
-      }
-    }
+  // 遍历节点
+  nodeEach(node: TreeNode, run: (n: TreeNode) => void) {
+     run(node);
+     if (node.children) {
+       for (const c of node.children) {
+         this.nodeEach(c, run);
+       }
+     }
   }
   // 家谱问题
   unknown(tree: Tree): Unknown[] {
     const us: Unknown[] = [];
-    this.query(tree.root, us);
+    tree.unknown = 0;
+    this.nodeEach(tree.root, (n: TreeNode) => {
+      const unknowns: string[] = [];
+      for (const s of ['无名', '妻子', '丈夫', '父亲', '奶奶', '祖母', '儿子', '妈妈', '女儿', '姐姐', '哥哥', '爷爷', '祖父']) {
+        if (n.name.indexOf(s) >= 0) {
+          unknowns.push('姓名不确定');
+          break;
+        }
+      }
+      if (!n.dob) {
+        unknowns.push('出生日期未知');
+      }
+      if (n.dead && !n.dod) {
+        unknowns.push('忌日未知');
+      }
+      if (unknowns.length > 0) {
+        n.unknown = unknowns.length;
+        tree.unknown += n.unknown;
+        us.push({
+          node: n,
+          unknown: unknowns
+        });
+      }
+    });
+    us.sort((a: Unknown, b: Unknown) => a.node.star === b.node.star ? 0 : a.node.star ? -1 : 1);
     return us;
   }
+  // 家谱统计
   count(node: TreeNode, tree: Tree) {
     // console.debug('count', node);
     tree.totalNum += 1;

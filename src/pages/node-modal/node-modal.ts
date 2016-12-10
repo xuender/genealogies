@@ -34,8 +34,8 @@ export class NodeModal {
     this.others = [];
     if (this.node.nt === NodeType.DEFAULT) { // 子女才需要设置父母
       const tree = this.params.get('tree');
-      const old = this.params.get('old');
       if (tree) {
+        const old = this.params.get('old');
         this.setParent(tree.root, old);
         if (this.parentNode) {
           this.otherTitle = this.parentNode.gender ? '母亲' : '父亲';
