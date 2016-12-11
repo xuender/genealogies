@@ -42,6 +42,7 @@ export function find<T>(array: T[], com: (a: T) => boolean): T {
   }
   return null;
 }
+// 删除
 export function remove<T>(array: T[], com: (a: T) => boolean): number {
   if (!array || array.length === 0) {
     return 0;

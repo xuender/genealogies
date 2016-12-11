@@ -47,7 +47,7 @@ function ext(node: TreeNode, p: TreeNode, ts: string[], d: number): boolean {
     b = true;
   }
   if (node.dob || (node.dead && node.dod)) {
-    ks.push(`${node.dob ? node.dob : '?'}~${node.dead ? (node.dod ? node.dod : '?') : ''}`);
+    ks.push(`${node.dob ? node.dob.substr(0, 10) : '?'}~${node.dead ? (node.dod ? node.dod.substr(0, 10) : '?') : ''}`);
     b = true;
   }
   if (node.nt === NodeType.EX) {

@@ -80,7 +80,6 @@ export class TreeShow {
         }
       }
     }
-    this.treeService.copyNode = cn;
     const toast = this.toastCtrl.create({
       message: `${this.selectNode.name}及其后裔已经复制，等待粘贴。`,
       position: 'middle',

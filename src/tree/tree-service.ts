@@ -22,8 +22,6 @@ export class TreeService {
   @LocalStorage()
   public mySelf: TreeNode;
   private loadTime: Date;
-  // 复制的节点
-  copyNode: TreeNode;
   constructor(
     private http: Http,
     private modalCtrl: ModalController
