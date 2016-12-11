@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { ToastController, NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
-import { SocialSharing } from 'ionic-native';
+import { SocialSharing, Clipboard } from 'ionic-native';
 import { LocalStorage } from 'ng2-webstorage';
 
 import { Tree } from '../../tree/tree';
-import { TreeNode } from '../../tree/tree-node';
+import { TreeNode, nodeToStr, strToNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
 import { TreeService } from '../../tree/tree-service';
 import { DefaultStyle } from '../../tree/default-style';
@@ -29,6 +29,8 @@ export class TreeShow {
   treeStyle: TreeStyle;
   @LocalStorage()
   public maleFirst: boolean;
+  // 复制节点
+  copyNode: TreeNode;
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
@@ -48,14 +50,12 @@ export class TreeShow {
   }
   // 粘贴
   paste(nt: NodeType) {
-     const node = this.treeService.copyNode;
-     node.nt = nt;
-     this.treeService.copyNode = undefined;
-     if (!this.selectNode.children) {
-       this.selectNode.children = [];
-     }
-     this.selectNode.children.push(node);
-     this.treeStyle.show(this.maleFirst);
+    this.copyNode.nt = nt;
+    if (!this.selectNode.children) {
+      this.selectNode.children = [];
+    }
+    this.selectNode.children.push(this.copyNode);
+    this.treeStyle.show(this.maleFirst);
   }
   // 复制
   copy() {
@@ -87,6 +87,7 @@ export class TreeShow {
       duration: 3000
     });
     toast.present();
+    Clipboard.copy(nodeToStr(cn));
   }
   // 是否选择根节点
   isRoot() {
@@ -94,8 +95,8 @@ export class TreeShow {
   }
   // 默认节点
   isDefault() {
-     return this.selectNode
-     && (!('nt' in this.selectNode) || this.selectNode.nt === NodeType.DEFAULT);
+    return this.selectNode
+    && (!('nt' in this.selectNode) || this.selectNode.nt === NodeType.DEFAULT);
   }
   // 显示家谱信息
   info() {
@@ -119,17 +120,19 @@ export class TreeShow {
     });
     // 显示家谱
     this.treeStyle.show(this.maleFirst);
-    console.log(this.treeStyle.getText());
+    console.log(nodeToStr(this.selectNode));
   }
   // 设置浮动按钮
   setFat(fat: FabContainer) {
     this.fat = fat;
+    Clipboard.paste()
+    .then((str: string) => this.copyNode = strToNode(str));
   }
   // 共享文字
   shareText() {
     this.fat.close();
     SocialSharing.share(
-      this.treeStyle.getText(),
+      nodeToStr(this.selectNode),
       this.familyTree.title,
       null,
     );

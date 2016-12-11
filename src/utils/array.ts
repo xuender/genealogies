@@ -16,6 +16,18 @@ export function filter<T>(array: T[], com: (a: T) => boolean): T[] {
   }
   return ret;
 }
+// 统计数量
+export function count<T>(array: T[], com: (a: T) => boolean): number {
+  let ret: number = 0;
+  if (array && array.length > 0) {
+    for (const a of array) {
+      if (com(a)) {
+        ret += 1;
+      }
+    }
+  }
+  return ret;
+}
 /**
  * 查找
  */

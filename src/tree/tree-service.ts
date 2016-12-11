@@ -6,12 +6,11 @@ import * as uuid from 'uuid';
 
 import { Tree } from './tree';
 import { TreeModal } from '../pages/tree-modal/tree-modal';
-import { TreeNode } from './tree-node';
+import { TreeNode, nodeEach } from './tree-node';
 import { NodeType } from './node-type';
 import { LocalStorage } from 'ng2-webstorage';
 import { Unknown } from './unknown';
 import { NodeModal } from '../pages/node-modal/node-modal';
-// import { find } from '../utils/array';
 
 /**
  * 家谱服务
@@ -92,20 +91,11 @@ export class TreeService {
     }
     return this._trees;
   }
-  // 遍历节点
-  nodeEach(node: TreeNode, run: (n: TreeNode) => void) {
-     run(node);
-     if (node.children) {
-       for (const c of node.children) {
-         this.nodeEach(c, run);
-       }
-     }
-  }
   // 家谱问题
   unknown(tree: Tree): Unknown[] {
     const us: Unknown[] = [];
     tree.unknown = 0;
-    this.nodeEach(tree.root, (n: TreeNode) => {
+    nodeEach(tree.root, (n: TreeNode) => {
       const unknowns: string[] = [];
       for (const s of ['无名', '妻子', '丈夫', '父亲', '奶奶', '祖母', '儿子', '妈妈', '女儿', '姐姐', '哥哥', '爷爷', '祖父']) {
         if (n.name.indexOf(s) >= 0) {
@@ -119,6 +109,8 @@ export class TreeService {
       if (n.dead && !n.dod) {
         unknowns.push('忌日未知');
       }
+      // TODO 妻子未知
+      // TODO other未知
       if (unknowns.length > 0) {
         n.unknown = unknowns.length;
         tree.unknown += n.unknown;

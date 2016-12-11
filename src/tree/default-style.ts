@@ -30,54 +30,6 @@ export class DefaultStyle implements TreeStyle {
       .on('zoom', () =>  this.work.attr('transform', d3.event.transform))
     );
   }
-  // 节点文字
-  private nodeText(node: TreeNode, texts: string[], d: number) {
-    const ts: string[] = [];
-    if (d > 1) {
-      ts.push(`${d}代${node.gender ? '男' : '女'}`);
-    }
-    ts.push(node.dead ? `【${node.name}】` : node.name);
-    if (node.children && node.children.length > 0) {
-      const q: string[] = [];
-      for (const c of filter(node.children, (f: any) => f.nt > NodeType.DEFAULT)) {
-        q.push(c.dead ? `【${c.name}】` : c.name);
-      }
-      if (q.length > 0) {
-        ts.push(node.gender ? '娶妻' : '嫁予');
-        ts.push(q.join('、'));
-      }
-      const ns: string[] = [];
-      for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && f.gender)) {
-        ns.push(c.dead ? `【${c.name}】` : c.name);
-      }
-      if (ns.length > 0) {
-        ts.push('，');
-        ts.push(`生子${ns.length}人：`);
-        ts.push(ns.join('、'));
-      }
-      const vs: string[] = [];
-      for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && !f.gender)) {
-        vs.push(c.dead ? `【${c.name}】` : c.name);
-      }
-      if (vs.length > 0) {
-        ts.push('，');
-        ts.push(`生女${vs.length}人：`);
-        ts.push(vs.join('、'));
-      }
-      ts.push('；');
-       texts.push(ts.join(''));
-      for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT)) {
-         this.nodeText(c, texts, d + 1);
-       }
-    }
-  }
-  // 家谱信息
-  getText(): string {
-    const texts: string[] = [];
-    texts.push(this.familyTree.title);
-    this.nodeText(this.familyTree.root, texts, 1);
-    return texts.join('\n');
-  }
   // 是否选择根节点
   isRoot() {
     return this.selectNode && !this.selectNode.parent;
