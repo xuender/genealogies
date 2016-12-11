@@ -40,6 +40,7 @@ export class TreeShow {
     public treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
+    this.copyNode = null;
     console.debug('tree show', this.familyTree.title);
   }
   paste1() {

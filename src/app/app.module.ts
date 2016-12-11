@@ -5,7 +5,7 @@ import { MyApp } from './app.component';
 
 import { TreeService } from '../tree/tree-service';
 
-import { Home } from '../pages/home/home';
+// import { Home } from '../pages/home/home';
 import { NodeModal } from '../pages/node-modal/node-modal';
 import { Setting } from '../pages/setting/setting';
 import { TreeList } from '../pages/tree-list/tree-list';
@@ -18,7 +18,7 @@ import { UnknownList } from '../pages/unknown-list/unknown-list';
 @NgModule({
   declarations: [
     MyApp,
-    Home,
+    // Home,
     NodeModal,
     Setting,
     TreeList,
@@ -34,7 +34,7 @@ import { UnknownList } from '../pages/unknown-list/unknown-list';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    Home,
+    // Home,
     NodeModal,
     Setting,
     TreeList,

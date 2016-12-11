@@ -4,14 +4,10 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>家谱</ion-title>
-    <ion-buttons end>
-      <button ion-button icon-only (click)="add()">
-        <ion-icon name="add-circle"></ion-icon>
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content padding>
+  <button ion-button (click)="add()" large block>创建家谱</button>
   <ion-list>
     <ion-item-sliding #item *ngFor="let t of treeService.trees">
       <ion-item detail-push (click)="show(t)">

@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
-import { Home } from '../pages/home/home';
+// import { Home } from '../pages/home/home';
 import { TreeList } from '../pages/tree-list/tree-list';
 import { Setting } from '../pages/setting/setting';
 import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
@@ -13,14 +13,14 @@ import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  rootPage: any = Home;
+  rootPage: any = TreeList;
   // rootPage: any = Setting;
   pages: Array<{title: string, component: any}>;
   constructor(public platform: Platform) {
     this.initializeApp();
     // 左侧导航菜单页面
     this.pages = [
-      { title: '我的家', component: Home },
+      // { title: '我的家', component: Home },
       { title: '家谱', component: TreeList },
       { title: '问题列表', component: UnknownTree},
       { title: '设置', component: Setting }

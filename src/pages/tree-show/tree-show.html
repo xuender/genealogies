@@ -12,7 +12,7 @@
 <ion-content>
   <svg id="tree" width="100%" height="100%"></svg>
   <ion-fab left bottom #sharing (click)="setFat(sharing)">
-    <button ion-fab color="secondary">
+    <button ion-fab color="secondary" mini>
       <ion-icon name="share-alt"></ion-icon>
     </button>
     <ion-fab-list side="right">
@@ -28,7 +28,7 @@
     </ion-fab-list>
   </ion-fab>
   <ion-fab right bottom #fat (click)="setFat(fat)">
-    <button ion-fab>
+    <button ion-fab mini>
       <ion-icon name="brush"></ion-icon>
     </button>
     <ion-fab-list side="top">
@@ -47,13 +47,13 @@
       <button ion-fab (click)="copy()">
         <ion-icon name="copy"></ion-icon>
       </button>
-      <button ion-fab color="secondary" *ngIf="copyNode != undefined" (click)="paste1()">
+      <button ion-fab color="secondary" *ngIf="copyNode" (click)="paste1()">
         {{ copyNode.gender ? '儿子' : '女儿' }}
       </button>
-      <button ion-fab color="secondary" *ngIf="copyNode != undefined" (click)="paste2()">
+      <button ion-fab color="secondary" *ngIf="copyNode" (click)="paste2()">
         {{ copyNode.gender ? '丈夫' : '妻子' }}
       </button>
-      <button ion-fab color="danger" (click)="removeNode()"
+      <button color="danger" ion-fab (click)="removeNode()"
         *ngIf="showRemove()">
         <ion-icon name="cut"></ion-icon>
       </button>
