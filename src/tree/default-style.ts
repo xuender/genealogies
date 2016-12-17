@@ -1,3 +1,4 @@
+import { Vibration } from 'ionic-native';
 import * as d3 from './d3';
 import { Tree } from './tree';
 import { NodeType } from './node-type';
@@ -207,9 +208,12 @@ export class DefaultStyle implements TreeStyle {
     .append('g')
     .attr('class', 'node')
     .on('click', (d) => {
-      this.onClickNode(d.data);
-      this.selectNode = d;
-      this.updateNode(g, nodes);
+      if (this.selectNode !== d) {
+        this.onClickNode(d.data);
+        this.selectNode = d;
+        this.updateNode(g, nodes);
+        Vibration.vibrate(50);
+      }
     })
     .attr('transform', d => `translate(${d.x},${d.y})`);
     node.filter((d: any) => d === this.selectNode)
