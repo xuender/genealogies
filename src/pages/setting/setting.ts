@@ -4,6 +4,7 @@ import { NavController, ModalController } from 'ionic-angular';
 // import { LocalStorage } from 'ng2-webstorage';
 import { TreeService } from '../../tree/tree-service';
 import { NodeModal } from '../node-modal/node-modal';
+import { BackService } from '../../utils/back-service';
 
 /**
  * 家谱
@@ -16,8 +17,10 @@ export class Setting {
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
+    private backService: BackService,
     public treeService: TreeService
   ) {
+    this.backService.trackView('Setting');
   }
   // 编辑个人信息
   editMySelf() {

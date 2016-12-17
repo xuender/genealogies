@@ -5,6 +5,7 @@ import { Tree } from '../../tree/tree';
 import { TreeService } from '../../tree/tree-service';
 import { Unknown, findUnknowns } from '../../tree/unknown';
 import { TreeNode } from '../../tree/tree-node';
+import { BackService } from '../../utils/back-service';
 
 /**
  * 家谱问题列表
@@ -23,10 +24,12 @@ export class UnknownList {
     public params: NavParams,
     public navCtrl: NavController,
     private modalCtrl: ModalController,
+    private backService: BackService,
     public treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
     this.unknowns = findUnknowns(this.familyTree);
+    this.backService.trackView('UnknownList');
   }
   editNode(node: TreeNode) {
     this.treeService.editNode(node, this.familyTree)

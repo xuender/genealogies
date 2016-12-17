@@ -212,7 +212,7 @@ export class DefaultStyle implements TreeStyle {
         this.onClickNode(d.data);
         this.selectNode = d;
         this.updateNode(g, nodes);
-        Vibration.vibrate(50);
+        Vibration.vibrate(20);
       }
     })
     .attr('transform', d => `translate(${d.x},${d.y})`);

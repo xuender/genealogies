@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastController, NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
-import { SocialSharing, Clipboard } from 'ionic-native';
+import { SocialSharing } from 'ionic-native';
 // import { LocalStorage } from 'ng2-webstorage';
 import { TreeService } from '../../tree/tree-service';
 
@@ -9,6 +9,7 @@ import { TreeNode, nodeToStr, strToNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
 import { DefaultStyle } from '../../tree/default-style';
 import { TreeStyle , createStyle } from '../../tree/tree-style';
+import { BackService } from '../../utils/back-service';
 
 /**
  * 家谱编辑页面
@@ -35,17 +36,21 @@ export class TreeShow {
     public navCtrl: NavController,
     private modalCtrl: ModalController,
     private toastCtrl: ToastController,
+    private backService: BackService,
     public treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
     console.debug('tree show', this.familyTree.title);
     this.copyNode = null;
+    this.backService.trackView('TreeShow');
   }
   paste1() {
     this.paste(NodeType.DEFAULT);
+    this.backService.trackAction('node', 'paste1');
   }
   paste2() {
     this.paste(NodeType.CONSORT);
+    this.backService.trackAction('node', 'paste2');
   }
   // 粘贴
   paste(nt: NodeType) {
@@ -78,6 +83,7 @@ export class TreeShow {
           this.copyNode.children.push(o);
         }
       }
+      this.backService.touch();
     }
     const toast = this.toastCtrl.create({
       message: `${this.selectNode.name}及其后裔已经复制，等待粘贴。`,
@@ -85,7 +91,8 @@ export class TreeShow {
       duration: 3000
     });
     toast.present();
-    Clipboard.copy(nodeToStr(this.copyNode));
+    this.backService.copy(nodeToStr(this.copyNode));
+    this.backService.trackAction('node', 'copy');
   }
   // 是否选择根节点
   isRoot() {
@@ -101,10 +108,6 @@ export class TreeShow {
     this.treeService.edit(this.familyTree)
     .then((tree: Tree) => this.treeStyle.show(this.treeService.maleFirst));
   }
-  // 修改返回按钮
-  ionViewDidEnter() {
-    console.log('进入页面');
-  }
   // 初始化之后
   ngAfterViewInit() {
     // 创建家谱默认式样
@@ -114,6 +117,7 @@ export class TreeShow {
       this.selectNode = node;
       if (this.fat) {
         this.fat.close();
+        this.backService.touch();
       }
     });
     // 显示家谱
@@ -123,17 +127,20 @@ export class TreeShow {
   // 设置浮动按钮
   setFat(fat: FabContainer) {
     this.fat = fat;
-    Clipboard.paste()
+    this.backService.paste()
     .then((str: string) => this.copyNode = strToNode(str));
+    this.backService.touch();
   }
   // 共享文字
   shareText() {
     this.fat.close();
+    this.backService.touch();
     SocialSharing.share(
       nodeToStr(this.selectNode),
       this.familyTree.title,
       null,
     );
+    this.backService.trackAction('node', 'share');
   }
   // 显示删除按钮
   showRemove(): boolean {
@@ -144,6 +151,7 @@ export class TreeShow {
     this.fat.close();
     this.treeService.editNode(this.selectNode, this.familyTree)
     .then((node) => this.treeStyle.show(this.treeService.maleFirst));
+    this.backService.touch();
   }
   // 增加伴侣
   addConsort() {
@@ -158,6 +166,7 @@ export class TreeShow {
     });
     this.familyTree.ua = new Date();
     this.treeStyle.show(this.treeService.maleFirst);
+    this.backService.trackAction('node', 'addConsort');
   }
   // 增加子女
   addChildren() {
@@ -172,12 +181,15 @@ export class TreeShow {
     });
     this.familyTree.ua = new Date();
     this.treeStyle.show(this.treeService.maleFirst);
+    this.backService.trackAction('node', 'addChildren');
   }
   // 删除节点
   removeNode() {
     this.fat.close();
     console.debug('删除节点:', this.selectNode.name);
     this.treeStyle.removeNode();
+    this.backService.trackAction('node', 'removeNode');
+    this.backService.touch();
   }
   // 增加父亲
   addParent() {
@@ -191,5 +203,6 @@ export class TreeShow {
     this.familyTree.root = root;
     this.familyTree.ua = new Date();
     this.treeStyle.show(this.treeService.maleFirst);
+    this.backService.trackAction('node', 'addParent');
   }
 }

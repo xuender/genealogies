@@ -4,6 +4,7 @@ import { ItemSliding, NavController } from 'ionic-angular';
 import { Tree } from '../../tree/tree';
 import { TreeService } from '../../tree/tree-service';
 import { TreeShow } from '../tree-show/tree-show';
+import { BackService } from '../../utils/back-service';
 
 /**
  * 家谱
@@ -16,9 +17,11 @@ export class TreeList {
   isDel: boolean;
   constructor(
     public navCtrl: NavController,
+    private backService: BackService,
     public treeService: TreeService
   ) {
     this.isDel = false;
+    this.backService.trackView('TreeList');
   }
   // 增加家谱
   add() {

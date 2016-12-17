@@ -4,6 +4,7 @@ import { NavParams, ViewController  } from 'ionic-angular';
 import { Calendar } from 'ionic-native';
 import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
+import { BackService } from '../../utils/back-service';
 
 /**
  * 节点编辑页面
@@ -27,6 +28,7 @@ export class NodeModal {
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
+    private backService: BackService
   ) {
     this.node = this.params.get('node');
     this.title = this.params.get('title');
@@ -47,6 +49,7 @@ export class NodeModal {
         }
       }
     }
+    this.backService.trackView('NodeModal');
   }
   // 创建日历提醒
   createDob() {

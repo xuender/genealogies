@@ -79,5 +79,21 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "cordova-plugin-nativeaudio": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-nativeaudio"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-google-analytics": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-google-analytics@1.6.0"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

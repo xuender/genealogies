@@ -4,6 +4,7 @@ import { NavController } from 'ionic-angular';
 import { Tree } from '../../tree/tree';
 import { TreeService } from '../../tree/tree-service';
 import { UnknownList } from '../unknown-list/unknown-list';
+import { BackService } from '../../utils/back-service';
 
 /**
  * 未知问题家谱
@@ -15,8 +16,10 @@ import { UnknownList } from '../unknown-list/unknown-list';
 export class UnknownTree {
   constructor(
     public navCtrl: NavController,
+    private backService: BackService,
     public treeService: TreeService
   ) {
+    this.backService.trackView('UnknownTree');
   }
   // 打开树
   show(tree: Tree) {

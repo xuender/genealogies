@@ -7,11 +7,12 @@ import * as uuid from 'uuid';
 
 import { Tree } from './tree';
 import { TreeModal } from '../pages/tree-modal/tree-modal';
-import { TreeNode } from './tree-node';
+import { TreeNode , nodeEach } from './tree-node';
 import { NodeType } from './node-type';
 import { NodeModal } from '../pages/node-modal/node-modal';
 import { StorageService } from '../utils/storage-service';
-
+import { BackService } from '../utils/back-service';
+import { remove } from '../utils/array';
 /**
  * 家谱服务
  */
@@ -44,7 +45,12 @@ export class TreeService {
     for (const t of trees) {
       t.totalNum = 0;
       t.aliveNum = 0;
-      this.count(t.root, t);
+      nodeEach(t.root, (n: TreeNode) => {
+        t.totalNum += 1;
+        if (!n.dead) {
+           t.aliveNum += 1;
+        }
+      });
     }
     this._trees = trees;
     this.storageService.setItem('_trees', trees);
@@ -59,6 +65,7 @@ export class TreeService {
   constructor(
     private http: Http,
     private modalCtrl: ModalController,
+    private backService: BackService,
     private storageService: StorageService
   ) {
     if (!this.mySelf) {
@@ -110,19 +117,6 @@ export class TreeService {
     });
     nm.present();
   }
-  // 家谱统计
-  count(node: TreeNode, tree: Tree) {
-    // console.debug('count', node);
-    tree.totalNum += 1;
-    if (!node.dead) {
-      tree.aliveNum += 1;
-    }
-    if (node.children) {
-      for (const n of node.children) {
-        this.count(n, tree);
-      }
-    }
-  }
   // 新家谱
   getNewTree() {
     return {
@@ -138,6 +132,7 @@ export class TreeService {
   public add() {
     console.debug('增加家谱');
     this.edit(this.getNewTree());
+    this.backService.trackAction('tree', 'add');
   }
   // 编辑家谱
   public edit(tree: Tree): Promise<Tree> {
@@ -178,14 +173,7 @@ export class TreeService {
   // 删除家谱
   public del(tree: Tree) {
     console.debug('删除家谱:', tree.title);
-    const is: number[] = [];
-    for (let i = 0; i < this.trees.length; i++) {
-      if (this.trees[i].id === tree.id) {
-        is.push(i);
-      }
-    }
-    for (const i of is.reverse()) {
-      this.trees.splice(i, 1);
-    }
+    remove(this.trees, (t: Tree) => tree.id === t.id);
+    this.backService.trackAction('tree', 'del');
   }
 }
