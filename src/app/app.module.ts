@@ -29,7 +29,10 @@ import { UnknownList } from '../pages/unknown-list/unknown-list';
     TreeShow
   ],
   imports: [
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp, {
+      backButtonText: '后退',
+      // mode: 'ios'
+    })
     // Ng2Webstorage.forRoot({ prefix: 'family', separator: '.'}),
   ],
   bootstrap: [IonicApp],
