@@ -7,9 +7,8 @@ import * as uuid from 'uuid';
 
 import { Tree } from './tree';
 import { TreeModal } from '../pages/tree-modal/tree-modal';
-import { TreeNode, nodeEach } from './tree-node';
+import { TreeNode } from './tree-node';
 import { NodeType } from './node-type';
-import { Unknown } from './unknown';
 import { NodeModal } from '../pages/node-modal/node-modal';
 import { StorageService } from '../utils/storage-service';
 
@@ -110,38 +109,6 @@ export class TreeService {
       }
     });
     nm.present();
-  }
-  // 家谱问题
-  unknown(tree: Tree): Unknown[] {
-    const us: Unknown[] = [];
-    tree.unknown = 0;
-    nodeEach(tree.root, (n: TreeNode) => {
-      const unknowns: string[] = [];
-      for (const s of ['无名', '妻子', '丈夫', '父亲', '奶奶', '祖母', '儿子', '妈妈', '女儿', '姐姐', '哥哥', '爷爷', '祖父']) {
-        if (n.name.indexOf(s) >= 0) {
-          unknowns.push('姓名不确定');
-          break;
-        }
-      }
-      if (!n.dob) {
-        unknowns.push('出生日期未知');
-      }
-      if (n.dead && !n.dod) {
-        unknowns.push('忌日未知');
-      }
-      // TODO 妻子未知
-      // TODO other未知
-      if (unknowns.length > 0) {
-        n.unknown = unknowns.length;
-        tree.unknown += n.unknown;
-        us.push({
-          node: n,
-          unknown: unknowns
-        });
-      }
-    });
-    us.sort((a: Unknown, b: Unknown) => a.node.star === b.node.star ? 0 : a.node.star ? -1 : 1);
-    return us;
   }
   // 家谱统计
   count(node: TreeNode, tree: Tree) {
