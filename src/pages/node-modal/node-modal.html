@@ -1,10 +1,14 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{ title ? title : node.name }}</ion-title>
-    <ion-buttons end *ngIf="!noClose">
-      <button ion-button icon-only (click)="cancel()">
+    <ion-buttons start *ngIf="!noClose">
+      <button ion-button (click)="cancel()">
         取消
-        <ion-icon name="close-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>{{ title ? title : node.name }}</ion-title>
+    <ion-buttons end>
+      <button class="default-button" [disabled]="!f.valid" ion-button (click)="f.onSubmit()">
+        确定
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -66,8 +70,5 @@
       <ion-icon name="star" color="{{ node.star ? 'secondary' : 'light' }}" item-left></ion-icon>
       <ion-toggle [(ngModel)]="node.star" name="star"></ion-toggle>
     </ion-item>
-    <button ion-button [disabled]="!f.valid" type="submit" block large>
-      确定
-    </button>
   </form>
 </ion-content>

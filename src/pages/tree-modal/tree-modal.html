@@ -1,20 +1,25 @@
 <ion-header>
   <ion-navbar>
+    <ion-buttons start>
+      <button ion-button (click)="cancel()">
+        取消
+      </button>
+    </ion-buttons>
     <ion-title>{{ tree.title }}</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="cancel()">
-        取消
-        <ion-icon name="close-circle"></ion-icon>
+      <button class="default-button" [disabled]="!f.valid" ion-button (click)="f.onSubmit()">
+        确定
       </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content padding>
   <ion-list>
-    <form (ngSubmit)="ok()">
+    <form #f="ngForm" (ngSubmit)="ok()">
       <ion-item>
         <ion-label fixed>标题</ion-label>
-        <ion-input type="text" [(ngModel)]="tree.title" name="title"></ion-input>
+        <ion-input type="text" [(ngModel)]="tree.title" name="title"
+          minlength="3" required></ion-input>
       </ion-item>
       <ion-item>
         <ion-label fixed>说明</ion-label>
@@ -28,9 +33,6 @@
         <ion-label fixed>创建时间</ion-label>
         <ion-label>{{ tree.ca | date:"y-MM-dd HH:mm"}}</ion-label>
       </ion-item>
-      <button ion-button type="submit" block>
-        确定
-      </button>
     </form>
   </ion-list>
 </ion-content>

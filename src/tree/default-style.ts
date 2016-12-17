@@ -216,7 +216,7 @@ export class DefaultStyle implements TreeStyle {
     .append('rect')
     .attr('width', 90).attr('height', 50)
     .attr('x', -45).attr('y', -25)
-    .attr('rx', 20).attr('ry', 20)
+    .attr('rx', 25).attr('ry', 25)
     .attr('fill', 'gold');
     // 方框
     node.append('rect')

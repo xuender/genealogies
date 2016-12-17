@@ -2,9 +2,8 @@
   <ion-navbar>
     <ion-title>{{ familyTree.title }}</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="info()">
+      <button ion-button (click)="info()">
         详情
-        <ion-icon name="information-circle"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -44,7 +43,7 @@
       <button ion-fab (click)="addChildren()" *ngIf="isDefault()">
         <ion-icon name="git-merge"></ion-icon>
       </button>
-      <button ion-fab (click)="copy()">
+      <button ion-fab color="secondary" (click)="copy()">
         <ion-icon name="copy"></ion-icon>
       </button>
       <button ion-fab color="secondary" *ngIf="copyNode" (click)="paste1()">
