@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ToastController, NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
 import { SocialSharing, Clipboard } from 'ionic-native';
-import { LocalStorage } from 'ng2-webstorage';
+// import { LocalStorage } from 'ng2-webstorage';
+import { TreeService } from '../../tree/tree-service';
 
 import { Tree } from '../../tree/tree';
 import { TreeNode, nodeToStr, strToNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
-import { TreeService } from '../../tree/tree-service';
 import { DefaultStyle } from '../../tree/default-style';
 import { TreeStyle , createStyle } from '../../tree/tree-style';
 
@@ -27,10 +27,8 @@ export class TreeShow {
   fat: FabContainer;
   // 家谱式样
   treeStyle: TreeStyle;
-  @LocalStorage()
-  public maleFirst: boolean;
   // 复制节点
-  copyNode: TreeNode;
+  public copyNode: TreeNode;
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
@@ -40,8 +38,8 @@ export class TreeShow {
     public treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
-    this.copyNode = null;
     console.debug('tree show', this.familyTree.title);
+    this.copyNode = null;
   }
   paste1() {
     this.paste(NodeType.DEFAULT);
@@ -56,28 +54,28 @@ export class TreeShow {
       this.selectNode.children = [];
     }
     this.selectNode.children.push(this.copyNode);
-    this.treeStyle.show(this.maleFirst);
+    this.treeStyle.show(this.treeService.maleFirst);
   }
   // 复制
   copy() {
     this.fat.close();
     // 复制节点
-    const cn = JSON.parse(JSON.stringify(this.selectNode));
-    if (cn.nt !== NodeType.DEFAULT) {
+    this.copyNode = JSON.parse(JSON.stringify(this.selectNode));
+    if (this.copyNode.nt !== NodeType.DEFAULT) {
       // 复制伴侣
-      if (!cn.children) {
-        cn.children = [];
+      if (!this.copyNode.children) {
+        this.copyNode.children = [];
       }
       const b = JSON.parse(JSON.stringify(this.treeStyle.selectNode.parent.data));
       delete b.children;
-      b.nt = cn.nt;
-      cn.children.push(b);
+      b.nt = this.copyNode.nt;
+      this.copyNode.children.push(b);
       // 如果是配偶则复制配偶的后裔
       for (const c of this.treeStyle.selectNode.parent.data.children) {
-        if (c.other === cn.name) {
+        if (c.other === this.copyNode.name) {
           const o = JSON.parse(JSON.stringify(c));
           o.other = b.name;
-          cn.children.push(o);
+          this.copyNode.children.push(o);
         }
       }
     }
@@ -87,7 +85,7 @@ export class TreeShow {
       duration: 3000
     });
     toast.present();
-    Clipboard.copy(nodeToStr(cn));
+    Clipboard.copy(nodeToStr(this.copyNode));
   }
   // 是否选择根节点
   isRoot() {
@@ -101,16 +99,16 @@ export class TreeShow {
   // 显示家谱信息
   info() {
     this.treeService.edit(this.familyTree)
-    .then((tree: Tree) => this.treeStyle.show(this.maleFirst));
+    .then((tree: Tree) => this.treeStyle.show(this.treeService.maleFirst));
   }
   // 修改返回按钮
-  ionViewWillEnter() {
-    this.viewCtrl.setBackButtonText('返回');
+  ionViewDidEnter() {
+    console.log('进入页面');
   }
   // 初始化之后
   ngAfterViewInit() {
     // 创建家谱默认式样
-    this.treeStyle = createStyle(DefaultStyle, this.familyTree, '#tree', this.maleFirst);
+    this.treeStyle = createStyle(DefaultStyle, this.familyTree, '#tree', this.treeService.maleFirst);
     // 绑定点击节点动作
     this.treeStyle.clickNodeListener((node: TreeNode) => {
       this.selectNode = node;
@@ -119,7 +117,7 @@ export class TreeShow {
       }
     });
     // 显示家谱
-    this.treeStyle.show(this.maleFirst);
+    this.treeStyle.show(this.treeService.maleFirst);
     console.log(nodeToStr(this.selectNode));
   }
   // 设置浮动按钮
@@ -145,7 +143,7 @@ export class TreeShow {
   editNode() {
     this.fat.close();
     this.treeService.editNode(this.selectNode, this.familyTree)
-    .then((node) => this.treeStyle.show(this.maleFirst));
+    .then((node) => this.treeStyle.show(this.treeService.maleFirst));
   }
   // 增加伴侣
   addConsort() {
@@ -159,7 +157,7 @@ export class TreeShow {
       nt: NodeType.CONSORT,
     });
     this.familyTree.ua = new Date();
-    this.treeStyle.show(this.maleFirst);
+    this.treeStyle.show(this.treeService.maleFirst);
   }
   // 增加子女
   addChildren() {
@@ -173,7 +171,7 @@ export class TreeShow {
       nt: NodeType.DEFAULT,
     });
     this.familyTree.ua = new Date();
-    this.treeStyle.show(this.maleFirst);
+    this.treeStyle.show(this.treeService.maleFirst);
   }
   // 删除节点
   removeNode() {
@@ -192,6 +190,6 @@ export class TreeShow {
     };
     this.familyTree.root = root;
     this.familyTree.ua = new Date();
-    this.treeStyle.show(this.maleFirst);
+    this.treeStyle.show(this.treeService.maleFirst);
   }
 }

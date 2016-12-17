@@ -3,6 +3,7 @@ import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 // import { Ng2Webstorage } from 'ng2-webstorage';
 
+import { StorageService } from '../utils/storage-service';
 import { TreeService } from '../tree/tree-service';
 
 // import { Home } from '../pages/home/home';
@@ -44,6 +45,7 @@ import { UnknownList } from '../pages/unknown-list/unknown-list';
     TreeShow
   ],
   providers: [
+    StorageService,
     TreeService
   ]
 })

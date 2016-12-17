@@ -3,28 +3,64 @@ import { Http } from '@angular/http';
 import { ModalController } from 'ionic-angular';
 
 import * as uuid from 'uuid';
+// import { LocalStorage } from 'ng2-webstorage';
 
 import { Tree } from './tree';
 import { TreeModal } from '../pages/tree-modal/tree-modal';
 import { TreeNode, nodeEach } from './tree-node';
 import { NodeType } from './node-type';
-import { LocalStorage } from 'ng2-webstorage';
 import { Unknown } from './unknown';
 import { NodeModal } from '../pages/node-modal/node-modal';
+import { StorageService } from '../utils/storage-service';
 
 /**
  * 家谱服务
  */
 @Injectable()
 export class TreeService {
-  @LocalStorage()
-  public _trees: Tree[];
-  @LocalStorage()
-  public mySelf: TreeNode;
+  public set maleFirst(v: boolean) {
+    this.storageService.setItem('maleFirst', v);
+  }
+  public get maleFirst(): boolean {
+    return this.storageService.getItem('maleFirst', true);
+  }
+  private _trees: Tree[];
+  // 判断是否有变化，触发set 方法
+  get trees() {
+    if (this._trees) {
+      for (const t of this._trees) {
+        if (t.ua > this.loadTime) {
+          console.log('保存：', t.ua, this.loadTime);
+          this.loadTime = new Date();
+          this.trees = this._trees;
+          break;
+        }
+      }
+    } else {
+      this._trees = this.storageService.getItem('_trees', []);
+    }
+    return this._trees;
+  }
+  set trees(trees: Tree[]){
+    for (const t of trees) {
+      t.totalNum = 0;
+      t.aliveNum = 0;
+      this.count(t.root, t);
+    }
+    this._trees = trees;
+    this.storageService.setItem('_trees', trees);
+  }
+  public get mySelf(): TreeNode {
+    return this.storageService.getItem('myself');
+  }
+  public set mySelf(v: TreeNode) {
+    this.storageService.setItem('myself', v);
+  }
   private loadTime: Date;
   constructor(
     private http: Http,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private storageService: StorageService
   ) {
     if (!this.mySelf) {
       this.mySelf = {
@@ -75,20 +111,6 @@ export class TreeService {
     });
     nm.present();
   }
-  // 判断是否有变化，触发set 方法
-  get trees() {
-    if (this._trees) {
-      for (const t of this._trees) {
-        if (t.ua > this.loadTime) {
-          console.log('保存：', t.ua, this.loadTime);
-          this.loadTime = new Date();
-          this.trees = this._trees;
-          break;
-        }
-      }
-    }
-    return this._trees;
-  }
   // 家谱问题
   unknown(tree: Tree): Unknown[] {
     const us: Unknown[] = [];
@@ -133,14 +155,6 @@ export class TreeService {
         this.count(n, tree);
       }
     }
-  }
-  set trees(trees: Tree[]){
-    for (const t of trees) {
-      t.totalNum = 0;
-      t.aliveNum = 0;
-      this.count(t.root, t);
-    }
-    this._trees = trees;
   }
   // 新家谱
   getNewTree() {
