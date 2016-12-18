@@ -34,29 +34,28 @@ export class MyApp {
   initializeApp() {
     this.platform.setLang('zh', true);
     this.platform.ready().then(() => {
-      // TODO 修改状态栏颜色
       StatusBar.styleDefault();
       Splashscreen.hide();
+      /*
+      if (this.platform.is('android')) {
+        this.platform.registerBackButtonAction(() => {
+          this.alertController.create({
+            title: '退出应用',
+            message: '您确定退出家谱应用么？',
+            buttons: [
+              {
+                text: '退出',
+                handler: () => this.platform.exitApp()
+              },
+              {
+                text: '取消'
+              }
+            ]
+          }).present();
+        }, 100);
+      }
+        */
     });
-    /*
-    if (this.platform.is('android')) {
-      this.platform.registerBackButtonAction(() => {
-        this.alertController.create({
-          title: '退出应用',
-          message: '您确定退出家谱应用么？',
-          buttons: [
-            {
-              text: '退出',
-              handler: () => this.platform.exitApp()
-            },
-            {
-              text: '取消'
-            }
-          ]
-        }).present();
-      }, 100);
-    }
-    */
   }
 
   openPage(page) {

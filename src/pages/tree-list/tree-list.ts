@@ -23,6 +23,9 @@ export class TreeList {
     this.isDel = false;
     this.backService.trackView('TreeList');
   }
+  ngAfterViewInit() {
+    // 初始化
+  }
   // 增加家谱
   add() {
     this.treeService.add();
