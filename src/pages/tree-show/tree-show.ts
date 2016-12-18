@@ -25,11 +25,12 @@ export class TreeShow {
   // 选择的节点数据
   selectNode: TreeNode;
   // 操作按钮
-  fat: FabContainer;
+  fab: FabContainer;
   // 家谱式样
   treeStyle: TreeStyle;
   // 复制节点
   public copyNode: TreeNode;
+  private copyStr: string;
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
@@ -63,7 +64,7 @@ export class TreeShow {
   }
   // 复制
   copy() {
-    this.fat.close();
+    this.fab.close();
     // 复制节点
     this.copyNode = JSON.parse(JSON.stringify(this.selectNode));
     if (this.copyNode.nt !== NodeType.DEFAULT) {
@@ -91,7 +92,8 @@ export class TreeShow {
       duration: 3000
     });
     toast.present();
-    this.backService.copy(nodeToStr(this.copyNode));
+    this.copyStr = nodeToStr(this.copyNode);
+    this.backService.copy(this.copyStr);
     this.backService.trackAction('node', 'copy');
   }
   // 是否选择根节点
@@ -115,8 +117,8 @@ export class TreeShow {
     // 绑定点击节点动作
     this.treeStyle.clickNodeListener((node: TreeNode) => {
       this.selectNode = node;
-      if (this.fat) {
-        this.fat.close();
+      if (this.fab) {
+        this.fab.close();
         this.backService.touch();
       }
     });
@@ -125,15 +127,22 @@ export class TreeShow {
     console.log(nodeToStr(this.selectNode));
   }
   // 设置浮动按钮
-  setFat(fat: FabContainer) {
-    this.fat = fat;
+  setFab(fab: FabContainer) {
+    this.fab = fab;
     this.backService.paste()
-    .then((str: string) => this.copyNode = strToNode(str));
-    this.backService.touch();
+    .then((str: string) => {
+      if (str && str !== this.copyStr) {
+        this.copyNode = strToNode(str);
+        this.copyStr = str;
+        this.fab.close();
+      } else {
+        this.backService.touch();
+      }
+    });
   }
   // 共享文字
   shareText() {
-    this.fat.close();
+    this.fab.close();
     this.backService.touch();
     SocialSharing.share(
       nodeToStr(this.selectNode),
@@ -148,7 +157,7 @@ export class TreeShow {
   }
   // 编辑节点
   editNode() {
-    this.fat.close();
+    this.fab.close();
     this.treeService.editNode(this.selectNode, this.familyTree)
     .then((node) => this.treeStyle.show(this.treeService.maleFirst));
     this.backService.touch();
@@ -185,7 +194,7 @@ export class TreeShow {
   }
   // 删除节点
   removeNode() {
-    this.fat.close();
+    this.fab.close();
     console.debug('删除节点:', this.selectNode.name);
     this.treeStyle.removeNode();
     this.backService.trackAction('node', 'removeNode');

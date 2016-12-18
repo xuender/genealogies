@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.family933064" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>family</name>
-  <description>家族应用</description>
-  <author email="xuender@gmail.com" href="http://ionicframework.com/">徐晨阳</author>
+  <name>家谱</name>
+  <description>家谱应用</description>
+  <author email="xuender@gmail.com" href="http://ionicframework.com/">妙音</author>
   <content src="index.html"/>
   <access origin="*"/>
   <allow-intent href="http://*/*"/>

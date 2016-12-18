@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content>
   <svg id="tree" width="100%" height="100%"></svg>
-  <ion-fab left bottom #sharing (click)="setFat(sharing)">
+  <ion-fab left bottom #sharing (click)="setFab(sharing)">
     <button ion-fab color="secondary" mini>
       <ion-icon name="share-alt"></ion-icon>
     </button>
@@ -26,7 +26,7 @@
       </button>
     </ion-fab-list>
   </ion-fab>
-  <ion-fab right bottom #fat (click)="setFat(fat)">
+  <ion-fab right bottom #fab (click)="setFab(fab)">
     <button ion-fab mini>
       <ion-icon name="brush"></ion-icon>
     </button>
