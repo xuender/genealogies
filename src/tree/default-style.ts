@@ -5,6 +5,9 @@ import { NodeType } from './node-type';
 import { TreeNode } from './tree-node';
 import { TreeStyle } from './tree-style';
 import { filter, find, remove } from '../utils/array';
+import * as Crypto from 'crypto-js';
+
+
 // 默认式样
 export class DefaultStyle implements TreeStyle {
   // 家谱
@@ -19,6 +22,9 @@ export class DefaultStyle implements TreeStyle {
   maleFirst: boolean;
   // 单击节点事件
   onClickNode: (node: TreeNode) => void;
+  // 家谱尺寸
+  private width: number;
+  private height: number;
   constructor(tree: Tree, svgId: string, maleFirst: boolean) {
     this.selectNode = {};
     this.familyTree = tree;
@@ -28,8 +34,28 @@ export class DefaultStyle implements TreeStyle {
     this.svg.call(
       d3.zoom()
       .scaleExtent([1 / 4, 2])
-      .on('zoom', () =>  this.work.attr('transform', d3.event.transform))
+      .on('zoom', () => {
+        this.work.attr('transform', d3.event.transform);
+      })
     );
+  }
+  // 转换成图片
+  toImage(): string {
+    const html = this.work.html();
+    const svg = `<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">${html}</svg>`;
+    const words = Crypto.enc.Utf8.parse(svg);
+    const data = Crypto.enc.Base64.stringify(words);
+    const image = new Image();
+    image.src = `data:image/svg+xml;base64,${data}`;
+    const canvas = document.createElement('canvas');
+    canvas.width = this.width;
+    canvas.height = this.height;
+    const context = canvas.getContext('2d');
+    context.fillStyle = '#FFF';
+    context.fillRect(0, 0, this.width, this.height);
+    context.drawImage(image, 0, 0);
+    // console.log(canvas.toDataURL('image/png'));
+    return canvas.toDataURL('image/png');
   }
   // 是否选择根节点
   isRoot() {
@@ -49,7 +75,7 @@ export class DefaultStyle implements TreeStyle {
   // 节点是可以被删除的
   isDeleted(): boolean {
     if (!this.selectNode) {
-       return false;
+      return false;
     }
     // 没有子节点并且不是根节点
     return (!this.selectNode.children && this.selectNode.parent)
@@ -69,10 +95,12 @@ export class DefaultStyle implements TreeStyle {
   }
   // 显示家谱
   show(maleFirst: boolean) {
+    this.width = 333;
+    this.height = 333;
     this.maleFirst = maleFirst;
     // 排序
     this.sort(this.familyTree.root);
-    // TODO 删除伴侣
+    // 删除伴侣
     this.rc(this.familyTree.root);
     // 树形数据
     const root = d3.hierarchy(this.familyTree.root);
@@ -92,7 +120,7 @@ export class DefaultStyle implements TreeStyle {
         l += b.data.bak.length;
       }
       return l * 0.5 + 1;
-    });  // 父亲不同则拉开距离
+    });
     tree(root);
     // 夫妻居中
     for (const n of filter(nodes, (a: any) => a.data.bak && a.data.bak.length > 0)) {
@@ -145,16 +173,39 @@ export class DefaultStyle implements TreeStyle {
     //     n.y -= 80;  // 夫妻关系位置上移
     //   }
     // }
-    let max = 300;
+    // 计算家谱宽高
+    let minW = 0;
+    let minH = 0;
     for (const n of nodes) {
-      if (n.x > max) {
+      if (n.x < minW) {
+        minW = n.x;
+      }
+      if (n.y < minH) {
+        minH = n.y;
+      }
+      if (n.x > this.width) {
+        this.width = n.x;
+      }
+      if (n.y > this.height) {
+        this.height = n.y;
+      }
+    }
+    this.width -= minW;
+    this.width += 100;
+    this.height -= minH;
+    this.height += 50;
+    // 居中
+    let max = 0;
+    for (const n of nodes) {
+      if (n.x < max) {
         max = n.x;
       }
     }
+    max = max * -1 + 50;
     // 家谱位置
     const g = this.work.append('g')
     .attr('class', 'part')
-    .attr('transform', (d: Node) => `translate(${max}, ${30})`);
+    .attr('transform', (d: Node) => `translate(${max}, ${80})`);
     // 线条
     const links = root.links();
     for (const n of nodes) {

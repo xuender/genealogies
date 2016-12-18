@@ -47,11 +47,14 @@ export class TreeShow {
   }
   // 粘贴
   paste() {
-    this.copyNode.nt = NodeType.DEFAULT;
+    this.fab.close();
+    const n = JSON.parse(JSON.stringify(this.copyNode));
+    n.nt = NodeType.DEFAULT;
     if (!this.selectNode.children) {
       this.selectNode.children = [];
     }
-    this.selectNode.children.push(this.copyNode);
+    this.selectNode.children.push(n);
+    this.familyTree.ua = new Date();
     this.treeStyle.show(this.treeService.maleFirst);
     this.backService.trackAction('node', 'paste');
   }
@@ -115,7 +118,6 @@ export class TreeShow {
       this.selectNode = node;
       if (this.fab) {
         this.fab.close();
-        this.backService.touch();
       }
     });
     // 显示家谱
@@ -139,13 +141,25 @@ export class TreeShow {
   // 共享文字
   shareText() {
     this.fab.close();
+    const toast = this.toastCtrl.create({
+      message: `到微信、QQ、邮件等应用中粘贴，即可分享${this.selectNode.name}及其后裔的家谱信息`,
+      position: 'middle',
+      duration: 3000
+    });
+    toast.present();
+    this.nodeCopy();
     this.backService.touch();
+    this.backService.trackAction('node', 'shareText');
+  }
+  shareImage() {
+    this.fab.close();
     SocialSharing.share(
-      nodeToStr(this.selectNode),
-      this.familyTree.title,
       null,
+      this.familyTree.title,
+      this.treeStyle.toImage(),
+      null
     );
-    this.backService.trackAction('node', 'share');
+    this.backService.trackAction('node', 'shareImage');
   }
   // 显示删除按钮
   showRemove(): boolean {
