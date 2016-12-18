@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform } from 'ionic-angular';
+import { Nav, Platform, AlertController } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
 // import { Home } from '../pages/home/home';
@@ -16,7 +16,10 @@ export class MyApp {
   rootPage: any = TreeList;
   // rootPage: any = Setting;
   pages: Array<{title: string, component: any}>;
-  constructor(public platform: Platform) {
+  constructor(
+    public platform: Platform,
+    private alertController: AlertController
+  ) {
     this.initializeApp();
     // 左侧导航菜单页面
     this.pages = [
@@ -30,11 +33,30 @@ export class MyApp {
 
   initializeApp() {
     this.platform.setLang('zh', true);
-    // console.debug(this.platform.lang());
     this.platform.ready().then(() => {
+      // TODO 修改状态栏颜色
       StatusBar.styleDefault();
       Splashscreen.hide();
     });
+    /*
+    if (this.platform.is('android')) {
+      this.platform.registerBackButtonAction(() => {
+        this.alertController.create({
+          title: '退出应用',
+          message: '您确定退出家谱应用么？',
+          buttons: [
+            {
+              text: '退出',
+              handler: () => this.platform.exitApp()
+            },
+            {
+              text: '取消'
+            }
+          ]
+        }).present();
+      }, 100);
+    }
+    */
   }
 
   openPage(page) {
