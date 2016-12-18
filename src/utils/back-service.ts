@@ -1,12 +1,34 @@
 import { Injectable } from '@angular/core';
 import { Clipboard, NativeAudio, Vibration, GoogleAnalytics } from 'ionic-native';
 import { Platform } from 'ionic-angular';
+import { StorageService } from './storage-service';
 /**
  * 反馈服务
  */
 @Injectable()
 export class BackService {
-  constructor(private platform: Platform) {
+  private _vibration: boolean;
+  private _audio: boolean;
+  public get vibration(): boolean {
+    return this._vibration;
+  }
+  public set vibration(v: boolean) {
+    this._vibration = v;
+    this.storageService.setItem('vibration', v);
+  }
+  public get audio(): boolean {
+    return this._audio;
+  }
+  public set audio(v: boolean) {
+    this._audio = v;
+    this.storageService.setItem('audio', v);
+  }
+  constructor(
+    private platform: Platform,
+    private storageService: StorageService
+  ) {
+    this._audio = this.storageService.getItem('audio', true);
+    this._vibration = this.storageService.getItem('vibration', true);
     this.platform.ready().then(() => {
       try {
         GoogleAnalytics.startTrackerWithId('UA-64143538-11');
@@ -31,14 +53,18 @@ export class BackService {
   // 触摸
   touch() {
     try {
-      NativeAudio.play('touch');
+      if (this.audio) {
+        NativeAudio.play('touch');
+      }
     } catch (error) {
       console.debug('touch', error);
     }
   }
   hold() {
     try {
-      Vibration.vibrate(10);
+      if (this.vibration) {
+        Vibration.vibrate(20);
+      }
     } catch (error) {
       console.debug('hold', error);
     }

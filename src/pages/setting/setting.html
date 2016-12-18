@@ -8,15 +8,28 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-item detail-push (click)="editMySelf()">
-    <ion-icon name="contact" item-left></ion-icon>
-    个人信息
-  </ion-item>
-  <ion-list>
-    <ion-item>
-      <ion-label>男子在前</ion-label>
-      <ion-icon name="male" item-left></ion-icon>
-      <ion-toggle name="maleFirst" [(ngModel)]="treeService.maleFirst"></ion-toggle>
+    <ion-item detail-push (click)="editMySelf()">
+      <ion-icon name="contact" item-left></ion-icon>
+      个人信息
     </ion-item>
-  </ion-list>
-</ion-content>
+    <ion-list>
+      <ion-list-header>
+        选项
+      </ion-list-header>
+      <ion-item>
+        <ion-label>男子在前</ion-label>
+        <ion-icon name="male" item-left></ion-icon>
+        <ion-toggle name="maleFirst" [(ngModel)]="treeService.maleFirst"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>音效</ion-label>
+        <ion-icon [name]="backService.audio ? 'volume-up' : 'volume-off'" item-left></ion-icon>
+        <ion-toggle name="audio" [(ngModel)]="backService.audio"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>震动</ion-label>
+        <ion-icon [name]="backService.vibration ? 'notifications' : 'notifications-off'" item-left></ion-icon>
+        <ion-toggle name="vibration" [(ngModel)]="backService.vibration"></ion-toggle>
+      </ion-item>
+    </ion-list>
+  </ion-content>

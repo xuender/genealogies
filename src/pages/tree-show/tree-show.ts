@@ -119,6 +119,7 @@ export class TreeShow {
       if (this.fab) {
         this.fab.close();
       }
+      this.backService.hold();
     });
     // 显示家谱
     this.treeStyle.show(this.treeService.maleFirst);

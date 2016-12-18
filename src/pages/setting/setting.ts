@@ -17,7 +17,7 @@ export class Setting {
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
-    private backService: BackService,
+    public backService: BackService,
     public treeService: TreeService
   ) {
     this.backService.trackView('Setting');
