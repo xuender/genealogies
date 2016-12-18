@@ -66,9 +66,10 @@
       忌日提醒
       <ion-icon name="calendar" color="dark" item-right></ion-icon>
     </ion-item>
-    <ion-item class="item-input">
-      <ion-icon name="star" color="{{ node.star ? 'secondary' : 'light' }}" item-left></ion-icon>
-      <ion-toggle [(ngModel)]="node.star" name="star"></ion-toggle>
-    </ion-item>
   </form>
+  <ion-item class="center">
+    <button ion-button icon-only color="secondary" round large (click)="node.star = !node.star">
+      <ion-icon [name]="node.star ? 'star' : 'star-outline'"></ion-icon>
+    </button>
+  </ion-item>
 </ion-content>

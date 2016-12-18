@@ -12,7 +12,7 @@
       </ion-badge>
       <ion-icon color="secondary" name="star" *ngIf="u.node.star"></ion-icon>
     </ion-card-header>
-    <ion-list>
+    <ion-list inset>
       <button ion-item *ngFor="let s of u.unknown" (click)="editNode(u.node)" >
         {{ s }}
       </button>
