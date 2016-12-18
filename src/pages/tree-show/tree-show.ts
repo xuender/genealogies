@@ -45,27 +45,18 @@ export class TreeShow {
     this.copyNode = null;
     this.backService.trackView('TreeShow');
   }
-  paste1() {
-    this.paste(NodeType.DEFAULT);
-    this.backService.trackAction('node', 'paste1');
-  }
-  paste2() {
-    this.paste(NodeType.CONSORT);
-    this.backService.trackAction('node', 'paste2');
-  }
   // 粘贴
-  paste(nt: NodeType) {
-    this.copyNode.nt = nt;
+  paste() {
+    this.copyNode.nt = NodeType.DEFAULT;
     if (!this.selectNode.children) {
       this.selectNode.children = [];
     }
     this.selectNode.children.push(this.copyNode);
     this.treeStyle.show(this.treeService.maleFirst);
+    this.backService.trackAction('node', 'paste');
   }
-  // 复制
-  copy() {
-    this.fab.close();
-    // 复制节点
+  // 复制节点
+  private nodeCopy() {
     this.copyNode = JSON.parse(JSON.stringify(this.selectNode));
     if (this.copyNode.nt !== NodeType.DEFAULT) {
       // 复制伴侣
@@ -86,14 +77,19 @@ export class TreeShow {
       }
       this.backService.touch();
     }
+    this.copyStr = nodeToStr(this.copyNode);
+    this.backService.copy(this.copyStr);
+  }
+  // 复制
+  copy() {
+    this.fab.close();
     const toast = this.toastCtrl.create({
       message: `${this.selectNode.name}及其后裔已经复制，等待粘贴。`,
       position: 'middle',
       duration: 3000
     });
     toast.present();
-    this.copyStr = nodeToStr(this.copyNode);
-    this.backService.copy(this.copyStr);
+    this.nodeCopy();
     this.backService.trackAction('node', 'copy');
   }
   // 是否选择根节点
@@ -196,6 +192,7 @@ export class TreeShow {
   removeNode() {
     this.fab.close();
     console.debug('删除节点:', this.selectNode.name);
+    this.nodeCopy();
     this.treeStyle.removeNode();
     this.backService.trackAction('node', 'removeNode');
     this.backService.touch();

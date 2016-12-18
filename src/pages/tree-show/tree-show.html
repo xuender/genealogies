@@ -46,11 +46,8 @@
       <button ion-fab color="secondary" (click)="copy()">
         <ion-icon name="copy"></ion-icon>
       </button>
-      <button ion-fab color="secondary" *ngIf="copyNode" (click)="paste1()">
-        {{ copyNode.gender ? '儿子' : '女儿' }}
-      </button>
-      <button ion-fab color="secondary" *ngIf="copyNode" (click)="paste2()">
-        {{ copyNode.gender ? '丈夫' : '妻子' }}
+      <button ion-fab color="secondary" *ngIf="copyNode" (click)="paste()">
+        <ion-icon name="create"></ion-icon>
       </button>
       <button color="danger" ion-fab (click)="removeNode()"
         *ngIf="showRemove()">
