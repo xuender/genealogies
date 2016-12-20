@@ -17,7 +17,7 @@ export interface TreeStyle {
   // 是否是根节点
   isRoot(): boolean;
   // 转换图片
-  toImage(): string;
+  toImage(): Promise<String>;
 }
 // 式样构造器
 interface StyleConstructor {
