@@ -139,19 +139,18 @@ export class TreeShow {
       }
     });
   }
-  // 共享文字
+  // 分享文字
   shareText() {
-    this.fab.close();
-    const toast = this.toastCtrl.create({
-      message: `到微信、QQ、邮件等应用中粘贴，即可分享${this.selectNode.name}及其后裔的家谱信息`,
-      position: 'middle',
-      duration: 3000
-    });
-    toast.present();
-    this.nodeCopy();
-    this.backService.touch();
-    this.backService.trackAction('node', 'shareText');
+      this.fab.close();
+      SocialSharing.share(
+          nodeToStr(this.selectNode),
+          this.familyTree.title,
+          null
+      );
+      this.backService.touch();
+      this.backService.trackAction('node', 'shareText');
   }
+  // 分享截图
   shareImage() {
       this.fab.close();
       this.treeStyle.toImage()
@@ -162,6 +161,7 @@ export class TreeShow {
               img,
               null
           );
+          this.backService.touch();
           this.backService.trackAction('node', 'shareImage');
       });
   }
