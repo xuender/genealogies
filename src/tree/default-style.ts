@@ -55,7 +55,7 @@ export class DefaultStyle implements TreeStyle {
           image.src = `data:image/svg+xml;base64,${data}`;
           image.onload = function() {
               context.drawImage(image, 0, 0);
-              console.debug(canvas.toDataURL('image/png'));
+              // console.debug(canvas.toDataURL('image/png'));
               resolve(canvas.toDataURL('image/png'));
           };
       });
