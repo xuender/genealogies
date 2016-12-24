@@ -42,7 +42,7 @@ export class DefaultStyle implements TreeStyle {
   toImage(): Promise<String> {
       return new Promise((resolve, reject) => {
           const html = this.work.html();
-          const svg = `<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">${html}</svg>`;
+          const svg = `<svg width="${this.width}px" height="${this.height}px" version="1.1" xmlns="http://www.w3.org/2000/svg">${html}</svg>`;
           const words = Crypto.enc.Utf8.parse(svg);
           const data = Crypto.enc.Base64.stringify(words);
           const canvas = document.createElement('canvas');
@@ -55,6 +55,7 @@ export class DefaultStyle implements TreeStyle {
           image.src = `data:image/svg+xml;base64,${data}`;
           image.onload = function() {
               context.drawImage(image, 0, 0);
+              console.debug(canvas.toDataURL('image/png'));
               resolve(canvas.toDataURL('image/png'));
           };
       });
@@ -287,6 +288,7 @@ export class DefaultStyle implements TreeStyle {
       .attr('text-anchor', 'middle')
       .attr('pointer-event', 'auto')
       .attr('dx', 0).attr('dy', 3)
+      .attr('font-size', '12')
       .text((d) => d.data.name.substr(0, 6));
   }
   // 排序
