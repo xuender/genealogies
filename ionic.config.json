@@ -1,6 +1,6 @@
 {
-  "name": "family",
-  "app_id": "cn.oldbean.family",
+  "name": "genealogies",
+  "app_id": "cn.genealogies",
   "v2": true,
   "typescript": true
 }

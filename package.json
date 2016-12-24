@@ -1,7 +1,7 @@
 {
-  "name": "family",
-  "author": "xuender@gmail.com",
-  "homepage": "http://ionicframework.com/",
+  "name": "genealogies",
+  "author": "xuender@139.com",
+  "homepage": "http://genealogies.cn/",
   "private": true,
   "scripts": {
     "test": "karma start",

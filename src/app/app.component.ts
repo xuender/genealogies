@@ -25,7 +25,7 @@ export class MyApp {
     this.pages = [
       // { title: '我的家', component: Home },
       { title: '家谱', component: TreeList },
-      { title: '问题列表', component: UnknownTree},
+      { title: '问题', component: UnknownTree},
       { title: '设置', component: Setting }
     ];
 
