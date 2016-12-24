@@ -1,7 +1,9 @@
-import { Tree } from './tree';
 import { TreeNode } from './tree-node';
+import { Tree } from './tree';
 // 家谱式样接口
 export interface TreeStyle {
+  // 初始化
+  init(tree: Tree, svgId: string, maleFirst: boolean): void;
   // 选择的节点
   selectNode: any;
   // 显示家谱
@@ -18,13 +20,6 @@ export interface TreeStyle {
   isRoot(): boolean;
   // 转换图片
   toImage(): Promise<String>;
-}
-// 式样构造器
-interface StyleConstructor {
-  new (tree: Tree, svgId: string, maleFirst: boolean): TreeStyle;
-}
-
-// 创建式样
-export function createStyle(ctor: StyleConstructor, tree: Tree, svgId: string, maleFirst: boolean): TreeStyle {
-  return new ctor(tree, svgId, maleFirst);
+  // 居中
+  toCenter(): void;
 }

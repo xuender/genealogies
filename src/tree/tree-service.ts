@@ -13,9 +13,7 @@ import { NodeModal } from '../pages/node-modal/node-modal';
 import { StorageService } from '../utils/storage-service';
 import { BackService } from '../utils/back-service';
 import { remove } from '../utils/array';
-/**
- * 家谱服务
- */
+
 @Injectable()
 export class TreeService {
   public set maleFirst(v: boolean) {

@@ -15,6 +15,7 @@ import { TreeModal } from '../pages/tree-modal/tree-modal';
 import { TreeShow } from '../pages/tree-show/tree-show';
 import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
 import { UnknownList } from '../pages/unknown-list/unknown-list';
+import { DefaultStyle } from '../providers/default-style';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { UnknownList } from '../pages/unknown-list/unknown-list';
   providers: [
     StorageService,
     BackService,
+    DefaultStyle,
     TreeService
   ]
 })

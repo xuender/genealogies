@@ -7,8 +7,7 @@ import { TreeService } from '../../tree/tree-service';
 import { Tree } from '../../tree/tree';
 import { TreeNode, nodeToStr, strToNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
-import { DefaultStyle } from '../../tree/default-style';
-import { TreeStyle , createStyle } from '../../tree/tree-style';
+import { DefaultStyle } from '../../providers/default-style';
 import { BackService } from '../../utils/back-service';
 
 /**
@@ -26,8 +25,6 @@ export class TreeShow {
   selectNode: TreeNode;
   // 操作按钮
   fab: FabContainer;
-  // 家谱式样
-  treeStyle: TreeStyle;
   // 复制节点
   public copyNode: TreeNode;
   private copyStr: string;
@@ -38,6 +35,7 @@ export class TreeShow {
     private modalCtrl: ModalController,
     private toastCtrl: ToastController,
     private backService: BackService,
+    public treeStyle: DefaultStyle,
     public treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
@@ -112,7 +110,7 @@ export class TreeShow {
   // 初始化之后
   ngAfterViewInit() {
     // 创建家谱默认式样
-    this.treeStyle = createStyle(DefaultStyle, this.familyTree, '#tree', this.treeService.maleFirst);
+    this.treeStyle.init(this.familyTree, '#tree', this.treeService.maleFirst);
     // 绑定点击节点动作
     this.treeStyle.clickNodeListener((node: TreeNode) => {
       this.selectNode = node;
@@ -123,6 +121,7 @@ export class TreeShow {
     });
     // 显示家谱
     this.treeStyle.show(this.treeService.maleFirst);
+    this.treeStyle.toCenter();
     console.log(nodeToStr(this.selectNode));
   }
   // 设置浮动按钮
