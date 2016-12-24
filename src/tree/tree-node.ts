@@ -17,10 +17,112 @@ export interface TreeNode {
   unknown?: number; // 未知数量
   star?: boolean;   // 关注
 }
+
 // 逗号分割
 const D_REG = /,\s*/;
 // 句号分割
 const J_REG = /\.\s*/;
+
+// 节点转换文字
+export function nodeToStr(node: TreeNode): string {
+  const texts: string[] = [];
+  nodeText(node, null, texts, 1);
+  texts.push('--复制粘贴到《微家谱》可以生成方便编辑查看的树形家谱');
+  // console.log('node:', strToNode(texts.join('\n')));
+  return texts.join('\n');
+}
+
+// 文字转换节点
+export function strToNode(str: string): TreeNode {
+  const lines: string[] = str.split('\n');
+  if (lines.length < 2) {
+    throw 'line num error';
+  }
+  if (lines[lines.length - 1].indexOf('微家谱') < 0) {
+    throw '应用校验错误';
+  }
+  remove(lines, (s: string) => !s || s.indexOf('--') === 0);
+  // 代数及其他正则表达式
+  const cReg = /^([1-9]+[\d]*)代([\s\S]+)/;
+  // 返回节点
+  let ret: TreeNode = null;
+  // 代数节点关系
+  const nodes: TreeNode[][] = [];
+  // 遍历每一行
+  for (const l of lines) {
+    let node: TreeNode = null;
+    if (ret === null) { // 创建根节点
+      node = {
+        name: '',
+        gender: true,
+        nt: NodeType.DEFAULT,
+      };
+      ret = node;
+    }
+    // 子女数组
+    const zn: string[] = l.split(J_REG);
+    // 夫妻数组
+    const fq: string[] = zn[0].split(/娶妻|嫁予/);
+    // 姓名处理
+    let name = fq[0];
+    const cr = cReg.exec(name);
+    name = cr[2];
+    // console.log('name', name);
+    const tmp: TreeNode = {
+      name: '',
+      gender: true,
+      nt: NodeType.DEFAULT,
+    };
+    // 解码姓名
+    decodeExt(name, tmp);
+    // 代数
+    const num: number = parseInt(cr[1], 10);
+    if (node === null) {
+      for (const pn of nodes[num - 1]) {
+        if (pn.children) {
+          // TODO 这里需要考虑处理重名
+          node = find(pn.children, (n: TreeNode) => n.name === tmp.name && n.gender === tmp.gender);
+          if (node) {
+            break;
+          }
+        }
+      }
+    }
+    Object.assign(node, tmp);
+    if (nodes[num]) {
+      nodes[num].push(node);
+    } else {
+      nodes[num] = [node];
+    }
+    // 解码夫妻关系
+    decodeFq(fq[1], node);
+    // 解码子女关系
+    if (zn.length > 1) {
+      if (zn[1]) {
+        decodeZn(zn[1], node);
+      }
+      if (zn[2]) {
+        decodeZn(zn[2], node);
+      }
+    }
+    // console.log('name', name, node);
+  }
+  // 只有一个伴侣时
+  nodeEach(ret, (n: TreeNode) => {
+    if (n.children && n.children.length > 1) {
+      if (count(n.children, (w: TreeNode) => w.nt > NodeType.DEFAULT) === 1) {
+        const other = find(n.children, (w: TreeNode) => w.nt > NodeType.DEFAULT);
+        for (const c of filter(n.children, (w: TreeNode) => w.nt === NodeType.DEFAULT)){
+          c.other = other.name;
+        }
+      }
+    }
+  });
+  // console.debug('nodes', nodes);
+  // console.log(lines);
+  return ret;
+}
+
 // 遍历节点
 export function nodeEach(node: TreeNode, run: (n: TreeNode) => void) {
   run(node);
@@ -29,14 +131,6 @@ export function nodeEach(node: TreeNode, run: (n: TreeNode) => void) {
       nodeEach(c, run);
     }
   }
-}
-// 节点转换文字
-export function nodeToStr(node: TreeNode): string {
-  const texts: string[] = [];
-  nodeText(node, null, texts, 1);
-  texts.push('--复制到《家谱》可以生成方便编辑查看的树形家谱。');
-  // console.log('node:', strToNode(texts.join('\n')));
-  return texts.join('\n');
 }
 // 生成扩展属性
 function ext(node: TreeNode, p: TreeNode, ts: string[], d: number): boolean {
@@ -190,93 +284,5 @@ function decodeFq(str: string, node: TreeNode) {
         node.children = [fq];
       }
     }
-  }
-}
-// 文字转换节点
-export function strToNode(str: string): TreeNode {
-  try {
-    const lines: string[] = str.split('\n');
-    remove(lines, (s: string) => !s || s.indexOf('--') === 0);
-    // 代数及其他正则表达式
-    const cReg = /^([1-9]+[\d]*)代([\s\S]+)/;
-    // 返回节点
-    let ret: TreeNode = null;
-    // 代数节点关系
-    const nodes: TreeNode[][] = [];
-    // 遍历每一行
-    for (const l of lines) {
-      let node: TreeNode = null;
-      if (ret === null) { // 创建根节点
-        node = {
-          name: '',
-          gender: true,
-          nt: NodeType.DEFAULT,
-        };
-        ret = node;
-      }
-      // 子女数组
-      const zn: string[] = l.split(J_REG);
-      // 夫妻数组
-      const fq: string[] = zn[0].split(/娶妻|嫁予/);
-      // 姓名处理
-      let name = fq[0];
-      const cr = cReg.exec(name);
-      name = cr[2];
-      // console.log('name', name);
-      const tmp: TreeNode = {
-        name: '',
-        gender: true,
-        nt: NodeType.DEFAULT,
-      };
-      // 解码姓名
-      decodeExt(name, tmp);
-      // 代数
-      const num: number = parseInt(cr[1], 10);
-      if (node === null) {
-        for (const pn of nodes[num - 1]) {
-          if (pn.children) {
-            // TODO 这里需要考虑处理重名
-            node = find(pn.children, (n: TreeNode) => n.name === tmp.name && n.gender === tmp.gender);
-            if (node) {
-              break;
-            }
-          }
-        }
-      }
-      Object.assign(node, tmp);
-      if (nodes[num]) {
-        nodes[num].push(node);
-      } else {
-        nodes[num] = [node];
-      }
-      // 解码夫妻关系
-      decodeFq(fq[1], node);
-      // 解码子女关系
-      if (zn.length > 1) {
-        if (zn[1]) {
-          decodeZn(zn[1], node);
-        }
-        if (zn[2]) {
-          decodeZn(zn[2], node);
-        }
-      }
-      // console.log('name', name, node);
-    }
-    // 只有一个伴侣时
-    nodeEach(ret, (n: TreeNode) => {
-      if (n.children && n.children.length > 1) {
-        if (count(n.children, (w: TreeNode) => w.nt > NodeType.DEFAULT) === 1) {
-          const other = find(n.children, (w: TreeNode) => w.nt > NodeType.DEFAULT);
-          for (const c of filter(n.children, (w: TreeNode) => w.nt === NodeType.DEFAULT)){
-            c.other = other.name;
-          }
-        }
-      }
-    });
-    // console.debug('nodes', nodes);
-    // console.log(lines);
-    return ret;
-  } catch (e) {
-    return null;
   }
 }
