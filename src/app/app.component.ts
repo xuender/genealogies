@@ -6,6 +6,7 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 import { TreeList } from '../pages/tree-list/tree-list';
 import { Setting } from '../pages/setting/setting';
 import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
+import { MenuPage } from './menu-page';
 
 
 @Component({
@@ -15,7 +16,7 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
   rootPage: any = TreeList;
   // rootPage: any = Setting;
-  pages: Array<{title: string, component: any}>;
+  pages: Array<MenuPage>;
   constructor(
     public platform: Platform,
     private alertController: AlertController
@@ -24,9 +25,22 @@ export class MyApp {
     // 左侧导航菜单页面
     this.pages = [
       // { title: '我的家', component: Home },
-      { title: '家谱', component: TreeList },
-      { title: '问题', component: UnknownTree},
-      { title: '设置', component: Setting }
+      {
+        title: '家谱',
+        active: true,
+        icon: 'home',
+        component: TreeList
+      },
+      {
+        title: '问题',
+        icon: 'help-circle',
+        component: UnknownTree
+      },
+      {
+        title: '设置',
+        icon: 'construct',
+        component: Setting
+      }
     ];
 
   }
@@ -58,9 +72,11 @@ export class MyApp {
     });
   }
 
-  openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
+  openPage(page: MenuPage) {
+    for (const p of this.pages) {
+       p.active = false;
+    }
+    page.active = true;
     this.nav.setRoot(page.component);
   }
 }
