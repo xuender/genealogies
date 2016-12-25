@@ -1,10 +1,3 @@
-/**
- * 浅层属性读取
- */
-export function shallowProperty(obj: any, key: string): any {
-  return obj == null ? void 0 : obj[key];
-}
-// 过滤
 export function filter<T>(array: T[], com: (a: T) => boolean): T[] {
   const ret: T[] = [];
   if (array && array.length > 0) {
@@ -16,7 +9,7 @@ export function filter<T>(array: T[], com: (a: T) => boolean): T[] {
   }
   return ret;
 }
-// 统计数量
+
 export function count<T>(array: T[], com: (a: T) => boolean): number {
   let ret: number = 0;
   if (array && array.length > 0) {
@@ -28,24 +21,22 @@ export function count<T>(array: T[], com: (a: T) => boolean): number {
   }
   return ret;
 }
-/**
- * 查找
- */
+
 export function find<T>(array: T[], com: (a: T) => boolean): T {
   if (!array || array.length === 0) {
-    return null;
+    throw 'array is empty';
   }
   for (const a of array) {
     if (com(a)) {
       return a;
     }
   }
-  return null;
+  throw 'no find';
 }
-// 删除
-export function remove<T>(array: T[], com: (a: T) => boolean): number {
+
+export function remove<T>(array: T[], com: (a: T) => boolean): T[] {
   if (!array || array.length === 0) {
-    return 0;
+    return array;
   }
   const ids: number[] = [];
   for (let i = 0; i < array.length; i++) {
@@ -56,5 +47,5 @@ export function remove<T>(array: T[], com: (a: T) => boolean): number {
   for (const i of ids) {
     array.splice(i, 1);
   }
-  return ids.length;
+  return array;
 }

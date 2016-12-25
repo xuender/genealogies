@@ -4,6 +4,9 @@
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "types": [
+      "jasmine"
+    ],
     "lib": [
       "dom",
       "es2015"
