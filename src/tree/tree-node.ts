@@ -1,5 +1,6 @@
 import { NodeType } from './node-type';
 import { find, remove, filter, count } from '../utils/array';
+import { NodeWriter } from './node/node-writer';
 /**
  * 节点
  */
@@ -23,13 +24,8 @@ const D_REG = /,\s*/;
 // 句号分割
 const J_REG = /\.\s*/;
 
-// 节点转换文字
 export function nodeToStr(node: TreeNode): string {
-  const texts: string[] = [];
-  nodeText(node, null, texts, 1);
-  texts.push('--复制粘贴到《微家谱》可以生成方便编辑查看的树形家谱');
-  // console.log('node:', strToNode(texts.join('\n')));
-  return texts.join('\n');
+  return new NodeWriter(node).toString();
 }
 
 // 文字转换节点
@@ -129,82 +125,6 @@ export function nodeEach(node: TreeNode, run: (n: TreeNode) => void) {
   if (node.children) {
     for (const c of node.children) {
       nodeEach(c, run);
-    }
-  }
-}
-// 生成扩展属性
-function ext(node: TreeNode, p: TreeNode, ts: string[], d: number): boolean {
-  const ks: string[] = [];
-  let b = false;
-  if ((node.nt === NodeType.DEFAULT && !node.gender) || (node.nt > NodeType.DEFAULT && node.gender === p.gender)) {
-    ks.push(`${node.gender ? '男' : '女'}`);
-    b = true;
-  }
-  if (node.dob || (node.dead && node.dod)) {
-    ks.push(`${node.dob ? node.dob.substr(0, 10) : '?'}~${node.dead ? (node.dod ? node.dod.substr(0, 10) : '?') : ''}`);
-    b = true;
-  }
-  if (node.nt === NodeType.EX) {
-    ks.push('离异');
-    b = true;
-  }
-  // 父节点有多个伴侣时声明父亲或母亲
-  if (node.other && p && count(p.children, (n: TreeNode) => n.nt > NodeType.DEFAULT) > 1) {
-    ks.push(`${p.gender ? '母:' : '父:'}${node.other}`);
-    b = true;
-  }
-  if (b) {
-    ts.push(`(${ks.join(' ')})`);
-  }
-  return b;
-}
-// 节点文字
-function nodeText(node: TreeNode, p: TreeNode, texts: string[], d: number) {
-  const ts: string[] = [];
-  ts.push(`${d}代`);
-  ts.push(node.dead ? `[${node.name}]` : node.name);
-  // 扩展信息
-  const ex = ext(node, p, ts, d);
-  if (node.children && node.children.length > 0) {
-    const q: string[] = [];
-    for (const c of filter(node.children, (f: any) => f.nt > NodeType.DEFAULT)) {
-      const oq: string[] = [];
-      oq.push(c.dead ? `[${c.name}]` : c.name);
-      ext(c, node, oq, d);
-      q.push(oq.join(''));
-    }
-    if (q.length > 0) {
-      ts.push(node.gender ? '娶妻' : '嫁予');
-      ts.push(q.join(', '));
-    }
-    const ns: string[] = [];
-    for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && f.gender)) {
-      ns.push(c.dead ? `[${c.name}]` : c.name);
-    }
-    if (ns.length > 0) {
-      ts.push('. ');
-      ts.push(`生子${ns.length}: `);
-      ts.push(ns.join(', '));
-    }
-    const vs: string[] = [];
-    for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && !f.gender)) {
-      vs.push(c.dead ? `[${c.name}]` : c.name);
-    }
-    if (vs.length > 0) {
-      ts.push('. ');
-      ts.push(`生女${vs.length}: `);
-      ts.push(vs.join(', '));
-    }
-  }
-  if (ex || d === 1) {
-    texts.push(ts.join(''));
-  }
-  if (node.children && node.children.length > 0) {
-    if (!ex && d > 1) {
-      texts.push(ts.join(''));
-    }
-    for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT)) {
-      nodeText(c, node, texts, d + 1);
     }
   }
 }

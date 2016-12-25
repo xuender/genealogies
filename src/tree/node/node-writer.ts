@@ -1,0 +1,122 @@
+import { NodeType } from '../node-type';
+import { TreeNode } from '../tree-node';
+import { filter , count } from '../../utils/array';
+
+export class NodeWriter {
+    private texts: string[];
+    private generations: string[][];
+
+    constructor(private node: TreeNode) {
+        this.texts = [];
+        this.generations = [];
+    }
+
+    toString(): string {
+        this.nodeText(this.node, void 0, 1);
+        this.texts.push('--复制粘贴到《微家谱》可以生成方便编辑查看的树形家谱');
+        return this.texts.join('\n');
+    }
+
+    private nodeText(node: TreeNode, p: TreeNode, generation: number) {
+        const ts: string[] = [];
+        ts.push(`${ generation }代`);
+        ts.push(node.dead ? `[${node.name}]` : node.name);
+
+        // 2-5
+        ts.push(this.extData(node, p, generation));
+        ts.push(this.consortData(node));
+        ts.push(this.boyData(node));
+        ts.push(this.girlData(node));
+        if (generation === 1 || ts[2] || ts[3] || ts[4] || ts[5]) {
+            this.texts.push(ts.join(''));
+        }
+
+        if (this.generations[generation]) {
+            this.generations[generation].push(node.name);
+        } else {
+            this.generations[generation] = [node.name];
+        }
+
+        if (node.children && node.children.length > 0) {
+            for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT)) {
+                this.nodeText(c, node, generation + 1);
+            }
+        }
+    }
+
+    private extData(node: TreeNode, p: TreeNode, generation?: number): string {
+        const ks: string[] = [];
+        let b = false;
+        if ((node.nt === NodeType.DEFAULT && !node.gender) || (node.nt > NodeType.DEFAULT && node.gender === p.gender)) {
+            ks.push(`${node.gender ? '男' : '女'}`);
+            b = true;
+        }
+        if (node.dob || (node.dead && node.dod)) {
+            ks.push(`${node.dob ? node.dob.substr(0, 10) : '?'}~${node.dead ? (node.dod ? node.dod.substr(0, 10) : '?') : ''}`);
+            b = true;
+        }
+        if (node.nt === NodeType.EX) {
+            ks.push('离异');
+            b = true;
+        }
+        // 同代有重名时声明上代是谁
+        if (p && generation && this.generations[generation]) {
+            if (count(this.generations[generation], (n) => n === node.name) > 0) {
+                ks.push(`${p.gender ? '父' : '母'}:${p.name}`);
+                b = true;
+            }
+        }
+
+        // 父节点有多个伴侣时声明父亲或母亲
+        if (node.other && p && count(p.children, (n: TreeNode) => n.nt > NodeType.DEFAULT) > 1) {
+            ks.push(`${p.gender ? '母' : '父'}:${node.other}`);
+            b = true;
+        }
+        if (b) {
+            return `(${ks.join(' ')})`;
+        }
+        return '';
+    }
+
+    private consortData(node: TreeNode): string {
+        if (node.children && node.children.length > 0) {
+            const q: string[] = [];
+            for (const c of filter(node.children, (f: any) => f.nt > NodeType.DEFAULT)) {
+                const oq: string[] = [];
+                oq.push(c.dead ? `[${c.name}]` : c.name);
+                oq.push(this.extData(c, node));
+                q.push(oq.join(''));
+            }
+            if (q.length > 0) {
+                return `. ${ node.gender ? '娶妻' : '嫁予' }${ q.join(', ') }`;
+            }
+        }
+        return '';
+    }
+
+    private boyData(node: TreeNode): string {
+        if (node.children && node.children.length > 0) {
+            const ns: string[] = [];
+            for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && f.gender)) {
+                ns.push(c.dead ? `[${c.name}]` : c.name);
+            }
+            if (ns.length > 0) {
+                return `. 生子${ns.length}: ${ ns.join(', ') }`;
+            }
+        }
+        return '';
+    }
+
+    private girlData(node: TreeNode): string {
+        if (node.children && node.children.length > 0) {
+            const ns: string[] = [];
+            for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && !f.gender)) {
+                ns.push(c.dead ? `[${c.name}]` : c.name);
+            }
+            if (ns.length > 0) {
+                return `. 生女${ns.length}: ${ ns.join(', ') }`;
+            }
+        }
+        return '';
+    }
+}
