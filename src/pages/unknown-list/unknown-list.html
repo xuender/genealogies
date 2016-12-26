@@ -5,7 +5,7 @@
 </ion-header>
 <ion-content padding>
   <ion-card *ngFor="let u of unknowns">
-    <ion-card-header [ngClass]="{'dead': u.node.dead}" (click)="star(u.node)">
+    <ion-card-header [ngClass]="{'dead': u.node.dead}" (press)="star(u.node)">
       {{ u.node.name }}
       <ion-badge color="danger">
         {{ u.node.unknown }}

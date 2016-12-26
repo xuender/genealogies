@@ -7,9 +7,6 @@ import { Unknown, findUnknowns } from '../../tree/unknown';
 import { TreeNode } from '../../tree/tree-node';
 import { BackService } from '../../utils/back-service';
 
-/**
- * 家谱问题列表
- */
 @Component({
   selector: 'page-unknown-list',
   styles: ['unknown-list.scss'],
@@ -31,13 +28,15 @@ export class UnknownList {
     this.unknowns = findUnknowns(this.familyTree);
     this.backService.trackView('UnknownList');
   }
+
   editNode(node: TreeNode) {
     this.treeService.editNode(node, this.familyTree)
     .then((node: TreeNode) => this.unknowns = findUnknowns(this.familyTree));
   }
+
   star(node: TreeNode) {
      node.star = !node.star;
      this.familyTree.ua = new Date();
-     this.unknowns = findUnknowns(this.familyTree);
+     this.backService.hold();
   }
 }
