@@ -46,7 +46,6 @@ describe('TreeNode', () => {
         const lines = str.split('\n');
         it('lines length', () => expect(lines.length).toBe(6));
         it('fooder', () => expect(lines[lines.length - 1].indexOf('--')).toBe(0));
-        it('parent in line', () => expect(lines[4].indexOf('b') > 0).toBe(true));
     });
     describe('strToNode', () => {
         const str = `1代root. 娶妻w. 生子2: a, b

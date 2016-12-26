@@ -4,11 +4,9 @@ import { filter , count } from '../../utils/array';
 
 export class NodeWriter {
     private texts: string[];
-    private generations: string[][];
 
     constructor(private node: TreeNode) {
         this.texts = [];
-        this.generations = [];
     }
 
     toString(): string {
@@ -27,14 +25,8 @@ export class NodeWriter {
         ts.push(this.consortData(node));
         ts.push(this.boyData(node));
         ts.push(this.girlData(node));
-        if (generation === 1 || ts[2] || ts[3] || ts[4] || ts[5]) {
+        if (generation === 1 || (ts[2] && ts[2].length > 3) || ts[3] || ts[4] || ts[5]) {
             this.texts.push(ts.join(''));
-        }
-
-        if (this.generations[generation]) {
-            this.generations[generation].push(node.name);
-        } else {
-            this.generations[generation] = [node.name];
         }
 
         if (node.children && node.children.length > 0) {
@@ -58,13 +50,6 @@ export class NodeWriter {
         if (node.nt === NodeType.EX) {
             ks.push('离异');
             b = true;
-        }
-        // 同代有重名时声明上代是谁
-        if (p && generation && this.generations[generation]) {
-            if (count(this.generations[generation], (n) => n === node.name) > 0) {
-                ks.push(`${p.gender ? '父' : '母'}:${p.name}`);
-                b = true;
-            }
         }
 
         // 父节点有多个伴侣时声明父亲或母亲

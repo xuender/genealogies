@@ -20,8 +20,7 @@ describe('TreeWriter', () => {
                 children: [
                     {
                         name: 'c',
-                        gender: true,
-                        dob: '2012',
+                        gender: false,
                         nt: NodeType.DEFAULT,
                     }
                 ]
@@ -58,8 +57,6 @@ describe('TreeWriter', () => {
         // console.debug(str);
         const lines = str.split('\n');
         it('strings fooder', () => expect(lines[lines.length - 1].indexOf('--')).toBe(0));
-        it('lines length', () => expect(lines.length).toBe(6));
-        // console.debug(lines[4]);
-        it('parent in line', () => expect(lines[4].indexOf('b') > 0).toBe(true));
+        it('lines length', () => expect(lines.length).toBe(5));
     });
 });

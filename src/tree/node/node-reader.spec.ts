@@ -4,10 +4,9 @@ import { NodeWriter } from './node-writer';
 
 describe('TreeReader', () => {
     const str = `1代root. 娶妻w. 生子2: a, b
-2代a. 生子1: c
-3代c(2012~)
+2代a. 生女1: c
 2代b. 娶妻w1, w2(离异). 生子1: c
-3代c(2002~ 父:b 母:w2)
+3代c(2002~ 母:w2)
 --复制粘贴到《微家谱》可以生成方便编辑查看的树形家谱`;
 
     describe('check string', () => {

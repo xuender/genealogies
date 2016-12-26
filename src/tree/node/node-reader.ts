@@ -5,7 +5,8 @@ import { NodeType } from '../node-type';
 export class NodeReader {
     private lines: string[];
     private root: TreeNode;
-    private nodes: TreeNode[][];
+    private nodes: TreeNode[][] = [];
+    private nowNum: number = 1;
     constructor(str: string) {
         this.lines = str.split('\n');
         const last = this.lines[this.lines.length - 1];
@@ -19,7 +20,6 @@ export class NodeReader {
         if (last.indexOf('微家谱') < 0) {
             throw 'not my app';
         }
-        this.nodes = [];
     }
 
     parse(): TreeNode {
@@ -55,8 +55,8 @@ export class NodeReader {
             nt: NodeType.DEFAULT,
         };
         const parentsAndChildren: string[] = l.split(NodeReader.STOP_REG);
-
         const numAndName = NodeReader.NUM_REG.exec(parentsAndChildren[0]);
+
         const num: number = parseInt(numAndName[1], 10);
         tmp = this.decodeExt(numAndName[2], tmp);
         let node: TreeNode = void 0;
@@ -83,11 +83,19 @@ export class NodeReader {
                 this.decodeChildren(parentsAndChildren[i], node, num + 1);
             }
         }
+
+        // 清除后裔记录
+        if (num < this.nowNum) {
+            for (let i = num + 1; i < this.nodes.length; i++) {
+                this.nodes[i] = [];
+            }
+        }
+        this.nowNum = num;
         return node;
     }
 
     private static DIE_REG = new RegExp('^\\[([\\s\\S]+)\\]([\\s\\S]*)');   // 死亡
-    private static LIVE_REG = new RegExp('^([^\\(]+)([\\s\S]*)');   // 活着
+    private static LIVE_REG = new RegExp('^([^\\(]+)([\\s\\S]*)');   // 活着
     private static EXT_REG = new RegExp('^\\(([男女]*)\\s*([?~\\-\\d]*)\\s*([父母:]+[\\s\\S]+)*\\s*([离异]*)\\)$'); // 扩展数据
 
     private decodeExt(str: string, node: TreeNode): TreeNode {
@@ -105,7 +113,9 @@ export class NodeReader {
             const lr = NodeReader.LIVE_REG.exec(str);
             node.name = lr[1];
             extStr = lr[2];
+            // console.debug('lr', lr);
         }
+        // console.debug('extStr', extStr);
         if (extStr) {
             const er = NodeReader.EXT_REG.exec(extStr);
             // console.debug('er', er);
