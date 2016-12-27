@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { AlertController, NavController, NavParams, ModalController } from 'ionic-angular';
 import { Tree } from '../../tree/tree';
 import { TreeService } from '../../tree/tree-service';
 import { Unknown } from '../../tree/unknown';
@@ -21,6 +21,7 @@ export class UnknownList {
     public params: NavParams,
     public navCtrl: NavController,
     private modalCtrl: ModalController,
+    private alertCtrl: AlertController,
     private backService: BackService,
     public treeService: TreeService
   ) {
@@ -35,8 +36,31 @@ export class UnknownList {
   }
 
   star(node: TreeNode) {
-     node.star = !node.star;
-     this.familyTree.ua = new Date();
-     this.backService.hold();
+    node.star = !node.star;
+    this.familyTree.ua = new Date();
+    this.backService.trackAction('node', 'star');
+    this.backService.hold();
+  }
+
+  ignore(node: TreeNode) {
+    this.alertCtrl.create({
+      title: '是否忽略？',
+      message: `请问是否忽略${node.name}信息不完全的问题？`,
+      buttons: [
+        {
+          text: '取消'
+        },
+        {
+          text: '忽略',
+          handler: () => {
+            node.ignore = true;
+            this.familyTree.ua = new Date();
+            this.unknowns = Unknown.findUnknowns(this.familyTree);
+            this.backService.trackAction('node', 'ignore');
+            this.backService.hold();
+          }
+        }
+      ]
+    }).present();
   }
 }

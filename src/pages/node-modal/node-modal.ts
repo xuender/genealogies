@@ -6,9 +6,6 @@ import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
 import { BackService } from '../../utils/back-service';
 
-/**
- * 节点编辑页面
- */
 @Component({
   selector: 'page-node-modal',
   templateUrl: 'node-modal.html'
@@ -25,6 +22,7 @@ export class NodeModal {
   // 没有关闭按钮
   noClose: boolean;
   parentNode: TreeNode; // 父亲或母亲
+
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
@@ -51,15 +49,15 @@ export class NodeModal {
     }
     this.backService.trackView('NodeModal');
   }
-  // 创建日历提醒
+
   createDob() {
     this.createCalendar(new Date(this.node.dob), `${this.node.name}生日`);
   }
-  // 创建忌日提醒
+
   createDod() {
     this.createCalendar(new Date(this.node.dod), `${this.node.name}忌日`);
   }
-  // 创建提醒
+
   createCalendar(time: Date, title: string) {
     const now = new Date();
     const start = new Date(now.getTime());
@@ -80,7 +78,7 @@ export class NodeModal {
       title, null, note, start, end, {firstReminderMinutes: 60 * 15, recurrence: 'yearly', recurrenceInterval: 1}
     );
   }
-  // 设置父节点
+
   setParent(root: TreeNode, node: TreeNode) {
     if (root.children) {
       for (const c of root.children) {
@@ -92,21 +90,26 @@ export class NodeModal {
       }
     }
   }
-  ionViewWillEnter() {
-    this.viewCtrl.setBackButtonText('返回');
-  }
-  /**
-   * 取消
-   */
+
   cancel() {
     console.debug('cancel');
     this.viewCtrl.dismiss();
   }
-  /**
-   * 确定
-   */
+
   ok() {
     console.debug('ok');
     this.viewCtrl.dismiss(this.node);
+  }
+
+  star(node: TreeNode) {
+    node.star = !node.star;
+    this.backService.trackAction('node', 'star');
+    this.backService.hold();
+  }
+
+  ignore(node: TreeNode) {
+    node.ignore = !node.ignore;
+    this.backService.trackAction('node', 'ignore');
+    this.backService.hold();
   }
 }

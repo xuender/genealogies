@@ -70,8 +70,13 @@
     </ion-item>
   </form>
   <ion-item class="center">
-    <button ion-button icon-only color="secondary" round large (click)="node.star = !node.star">
+    <button ion-button color="secondary" outline large (click)="star()">
       <ion-icon [name]="node.star ? 'star' : 'star-outline'"></ion-icon>
+      关注
+    </button>
+    <button ion-button color="danger" outline large (click)="ignore()">
+      <ion-icon [name]="node.ignore ? 'ios-remove-circle' : 'ios-remove-circle-outline'"></ion-icon>
+      忽略问题
     </button>
   </ion-item>
 </ion-content>

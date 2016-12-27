@@ -20,12 +20,14 @@ export class Unknown {
     tree.unknown = 0;
     nodeEach(tree.root, (n: TreeNode) => {
       const u = new Unknown(n);
-      u.checkStart();
-      u.checkName();
-      u.checkDob();
-      u.checkDod();
-      u.checkConsort();
-      u.checkOther(tree);
+      if (!n.ignore) {
+        u.checkStart();
+        u.checkName();
+        u.checkDob();
+        u.checkDod();
+        u.checkConsort();
+        u.checkOther(tree);
+      }
 
       if (u.unknown.length > 0) {
         n.unknown = u.unknown.length;

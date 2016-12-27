@@ -6,11 +6,24 @@
 <ion-content padding>
     <ion-card *ngFor="let u of unknowns">
         <ion-card-header [ngClass]="{'dead': u.node.dead}" (press)="star(u.node)">
-            {{ u.node.name }}
-            <ion-badge color="danger">
-                {{ u.node.unknown }}
-            </ion-badge>
-            <ion-icon color="secondary" name="star" *ngIf="u.node.star"></ion-icon>
+            <ion-row>
+                <ion-col>
+                    {{ u.node.name }}
+                    <ion-badge color="danger">
+                        {{ u.node.unknown }}
+                    </ion-badge>
+                </ion-col>
+                <ion-col>
+                </ion-col>
+                <ion-col>
+                    <button ion-button small outline color="secondary" (click)="star(u.node)">
+                        <ion-icon [name]="u.node.star ? 'star' : 'star-outline'"></ion-icon>
+                    </button>
+                    <button ion-button small outline color="danger" (click)="ignore(u.node)">
+                        <ion-icon name="ios-remove-circle-outline"></ion-icon>
+                    </button>
+                </ion-col>
+            </ion-row>
         </ion-card-header>
         <ion-list inset>
             <button ion-item *ngFor="let s of u.unknown" (click)="editNode(u.node)" >

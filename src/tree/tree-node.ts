@@ -17,6 +17,7 @@ export interface TreeNode {
   other?: string;  // 父亲或母亲的名字
   unknown?: number; // 未知数量
   star?: boolean;   // 关注
+  ignore?: boolean; // 忽略
 }
 
 export function nodeToStr(node: TreeNode): string {
