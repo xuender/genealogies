@@ -17,7 +17,9 @@
   <form #f="ngForm" (ngSubmit)="ok()">
     <ion-item>
       <ion-label>姓名</ion-label>
-      <ion-input type="text" [(ngModel)]="node.name" minlength="1" name="name" required></ion-input>
+      <ion-input type="text" [(ngModel)]="node.name" minlength="2" name="name"
+        pattern="[\\d\\w\u4e00-\u9fa5]+[\\d\\w\u4e00-\u9fa5 ]*[\\d\\w\u4e00-\u9fa5]+"
+        required></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>出生日期</ion-label>

@@ -10,7 +10,7 @@
 <ion-content padding>
     <ion-item detail-push (click)="editMySelf()">
       <ion-icon name="contact" item-left></ion-icon>
-      个人信息
+      {{ treeService.mySelf.name }}的个人信息
     </ion-item>
     <ion-list>
       <ion-list-header>
