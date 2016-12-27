@@ -18,8 +18,9 @@ export class Unknown {
   public static findUnknowns(tree: Tree): Unknown[] {
     const us: Unknown[] = [];
     tree.unknown = 0;
-    nodeEach(tree.root, (n: TreeNode) => {
+    nodeEach(tree.root, (n: TreeNode, level: number) => {
       const u = new Unknown(n);
+      u.num = (50 - level) * 3000;
       if (!n.ignore) {
         u.checkStart();
         u.checkName();

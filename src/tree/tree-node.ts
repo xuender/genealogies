@@ -1,6 +1,7 @@
 import { NodeType } from './node-type';
 import { NodeWriter } from './node/node-writer';
 import { NodeReader } from './node/node-reader';
+import { filter } from '../utils/array';
 /**
  * 节点
  */
@@ -28,11 +29,17 @@ export function strToNode(str: string): TreeNode {
   return new NodeReader(str).parse();
 }
 
-export function nodeEach(node: TreeNode, run: (n: TreeNode) => void) {
-  run(node);
+export function nodeEach(node: TreeNode, run: (n: TreeNode, level?: number) => void, level = 1) {
+  run(node, level);
   if (node.children) {
-    for (const c of node.children) {
-      nodeEach(c, run);
+    for (const c of filter(node.children, (n: TreeNode) => n.nt > NodeType.DEFAULT)) {
+      nodeEach(c, run, level);
+    }
+    for (const c of filter(node.children, (n: TreeNode) => n.nt === NodeType.DEFAULT && n.gender)) {
+      nodeEach(c, run, level + 1);
+    }
+    for (const c of filter(node.children, (n: TreeNode) => n.nt === NodeType.DEFAULT && !n.gender)) {
+      nodeEach(c, run, level + 1);
     }
   }
 }
