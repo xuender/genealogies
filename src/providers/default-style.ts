@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 
-import * as d3 from '../tree/d3';
+import { event, select } from 'd3-selection';
+import { zoom } from 'd3-zoom';
+import { tree, hierarchy } from 'd3-hierarchy';
 import { Tree } from '../tree/tree';
 import { NodeType } from '../tree/node-type';
 import { TreeNode } from '../tree/tree-node';
@@ -33,15 +35,15 @@ export class DefaultStyle implements TreeStyle {
     public platform: Platform
   ) {
   }
-  public init(tree: Tree, svgId: string, maleFirst: boolean) {
+  public init(familyTree: Tree, svgId: string, maleFirst: boolean) {
     this.selectNode = {};
-    this.familyTree = tree;
+    this.familyTree = familyTree;
     this.maleFirst = maleFirst;
-    this.svg = d3.select(svgId);
+    this.svg = select(svgId);
     this.work = this.svg.append('g').attr('transform', 'translate(10, 10)');
-    this.zoom = d3.zoom()
+    this.zoom = zoom()
     .scaleExtent([1 / 4, 2])
-    .on('zoom', () => this.work.attr('transform', d3.event.transform));
+    .on('zoom', () => this.work.attr('transform', event.transform));
     this.svg.call(this.zoom);
   }
   toCenter() {
@@ -115,14 +117,14 @@ export class DefaultStyle implements TreeStyle {
     // 删除伴侣
     this.rc(this.familyTree.root);
     // 树形数据
-    const root = d3.hierarchy(this.familyTree.root);
+    const root = hierarchy(this.familyTree.root);
     // console.debug(JSON.stringify(this.familyTree.root));
     // 计算节点宽度
     const nodes = root.descendants();
     // 树形图形
-    const tree = d3.tree()
+    const treeData = tree()
     .nodeSize([120, 120])
-    .separation((a, b) => {
+    .separation((a: any, b: any) => {
       // 根据伴侣数量决定夫妻宽度
       let l = 0;
       if (a.data.bak) {
@@ -133,7 +135,7 @@ export class DefaultStyle implements TreeStyle {
       }
       return l * 0.5 + 1;
     });
-    tree(root);
+    treeData(root);
     // 夫妻居中
     for (const n of filter(nodes, (a: any) => a.data.bak && a.data.bak.length > 0)) {
       n.x -= n.data.bak.length * 50;
@@ -142,13 +144,14 @@ export class DefaultStyle implements TreeStyle {
     // 增加伴侣
     const nl = nodes.length;
     for (let i = 0; i < nl; i++) {
-      const n = nodes[i];
+      const n: any = <any> nodes[i];
       if (n.data.bak && n.data.bak.length > 0) {
         // console.log('bak', n.data.bak);
         n.data.bak.forEach((c, f) => {
-          const b = d3.hierarchy(c).descendants()[0];
+          const b: any = <any> hierarchy(c).descendants()[0];
           b.x = n.x + f * 100 + 100;
           b.y = n.y;
+          // TODO 伴侣的位置
           b.height = n.height;
           nodes.push(b);
           b.parent = n;
@@ -188,7 +191,7 @@ export class DefaultStyle implements TreeStyle {
     // 计算家谱宽高
     let minW = 0;
     let minH = 0;
-    for (const n of nodes) {
+    for (const n of <any[]> nodes) {
       if (n.x < minW) {
         minW = n.x;
       }
@@ -208,7 +211,7 @@ export class DefaultStyle implements TreeStyle {
     this.height += 130;
     // 居中
     this.maxWidth = 0;
-    for (const n of nodes) {
+    for (const n of <any[]> nodes) {
       if (n.x < this.maxWidth) {
         this.maxWidth = n.x;
       }
@@ -226,8 +229,7 @@ export class DefaultStyle implements TreeStyle {
           if (c.data.name === n.data.other) {
             links.unshift({
               source: c,
-              target: n,
-              other: true,
+              target: n
             });
           }
         }
@@ -248,7 +250,7 @@ export class DefaultStyle implements TreeStyle {
         case NodeType.EX:
           return 'gray';
       }
-      if (d.other) {
+      if (d.source.data.name === d.target.data.other) {
         return 'lightgreen';
       }
       return 'blue';
