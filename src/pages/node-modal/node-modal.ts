@@ -101,14 +101,14 @@ export class NodeModal {
     this.viewCtrl.dismiss(this.node);
   }
 
-  star(node: TreeNode) {
-    node.star = !node.star;
+  star() {
+    this.node.star = !this.node.star;
     this.backService.trackAction('node', 'star');
     this.backService.hold();
   }
 
-  ignore(node: TreeNode) {
-    node.ignore = !node.ignore;
+  ignore() {
+    this.node.ignore = !this.node.ignore;
     this.backService.trackAction('node', 'ignore');
     this.backService.hold();
   }
