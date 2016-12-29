@@ -35,7 +35,7 @@ export class TreeShow {
     public treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
-    console.debug('tree show', this.familyTree.title);
+    // console.debug('tree show', this.familyTree.title);
     this.copyNode = null;
     this.backService.trackView('TreeShow');
   }
@@ -50,7 +50,7 @@ export class TreeShow {
   selectDefault() {
     this.fab.close();
     this.treeService.style = 0;
-    console.debug('treeStyle', this.treeStyle);
+    // console.debug('treeStyle', this.treeStyle);
     this.ngAfterViewInit();
   }
 
@@ -61,7 +61,7 @@ export class TreeShow {
   selectVertical() {
     this.fab.close();
     this.treeService.style = 1;
-    console.debug('treeStyle', this.treeStyle);
+    // console.debug('treeStyle', this.treeStyle);
     this.ngAfterViewInit();
   }
 
@@ -101,7 +101,6 @@ export class TreeShow {
           this.copyNode.children.push(o);
         }
       }
-      this.backService.touch();
     }
     this.copyStr = nodeToStr(this.copyNode);
     this.backService.copy(this.copyStr);
@@ -147,7 +146,7 @@ export class TreeShow {
     // 显示家谱
     this.treeStyle.show(this.treeService.maleFirst);
     this.treeStyle.toCenter();
-    console.log(nodeToStr(this.selectNode));
+    // console.log(nodeToStr(this.selectNode));
   }
   // 设置浮动按钮
   setFab(fab: FabContainer) {

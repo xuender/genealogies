@@ -39,7 +39,7 @@ export class NodeWriter {
     private extData(node: TreeNode, p: TreeNode, generation?: number): string {
         const ks: string[] = [];
         let b = false;
-        if ((node.nt === NodeType.DEFAULT && !node.gender) || (node.nt > NodeType.DEFAULT && node.gender === p.gender)) {
+        if ((node.nt === NodeType.DEFAULT && !node.gender) || (p && node.nt > NodeType.DEFAULT && node.gender === p.gender)) {
             ks.push(`${node.gender ? '男' : '女'}`);
             b = true;
         }

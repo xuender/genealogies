@@ -90,8 +90,9 @@ export class DefaultStyle implements TreeStyle {
   isRoot() {
     return this.selectNode && !this.selectNode.parent;
   }
-  // 删除选择节点
+
   removeNode() {
+    // console.debug('removeNode');
     if (this.selectNode.parent) {  // 删除子节点
       remove(this.selectNode.parent.data.children, (n) => n === this.selectNode.data);
     } else if (this.selectNode.data.children && this.selectNode.data.children.length === 1) {  // 删除根节点
