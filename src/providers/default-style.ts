@@ -31,15 +31,26 @@ export class DefaultStyle implements TreeStyle {
   private maxWidth: number;
   private zoom: any;
 
+  protected nodeWidth: number;
+  protected nodeHeight: number;
+  protected writingMode: string;
+  protected isFillet: boolean;
+  protected nodeSize: [number, number];
   constructor(
     public platform: Platform
   ) {
+    this.nodeWidth = 80;
+    this.nodeHeight = 40;
+    this.writingMode = 'horizontal-tb';
+    this.isFillet = true;
+    this.nodeSize = [120, 120];
   }
   public init(familyTree: Tree, svgId: string, maleFirst: boolean) {
     this.selectNode = {};
     this.familyTree = familyTree;
     this.maleFirst = maleFirst;
     this.svg = select(svgId);
+    this.svg.selectAll('*').remove();
     this.work = this.svg.append('g').attr('transform', 'translate(10, 10)');
     this.zoom = zoom()
     .scaleExtent([1 / 4, 2])
@@ -48,6 +59,9 @@ export class DefaultStyle implements TreeStyle {
   }
   toCenter() {
     this.zoom.translateBy(this.svg, this.maxWidth * -1 + this.platform.width() / 2, 0);
+  }
+  name(): string {
+     return '默认式样';
   }
   // 转换成图片
   public toImage(): Promise<String> {
@@ -109,6 +123,7 @@ export class DefaultStyle implements TreeStyle {
   }
   // 显示家谱
   show(maleFirst: boolean) {
+    console.debug('name', this.name(), this.nodeWidth);
     this.width = 333;
     this.height = 133;
     this.maleFirst = maleFirst;
@@ -123,7 +138,7 @@ export class DefaultStyle implements TreeStyle {
     const nodes = root.descendants();
     // 树形图形
     const treeData = tree()
-    .nodeSize([120, 120])
+    .nodeSize(this.nodeSize)
     .separation((a: any, b: any) => {
       // 根据伴侣数量决定夫妻宽度
       let l = 0;
@@ -138,7 +153,7 @@ export class DefaultStyle implements TreeStyle {
     treeData(root);
     // 夫妻居中
     for (const n of filter(nodes, (a: any) => a.data.bak && a.data.bak.length > 0)) {
-      n.x -= n.data.bak.length * 50;
+      n.x -= n.data.bak.length * (this.nodeSize[0] - 20) / 2;
     }
     // console.log('root', root);
     // 增加伴侣
@@ -149,7 +164,7 @@ export class DefaultStyle implements TreeStyle {
         // console.log('bak', n.data.bak);
         n.data.bak.forEach((c, f) => {
           const b: any = <any> hierarchy(c).descendants()[0];
-          b.x = n.x + f * 100 + 100;
+          b.x = n.x + f * (this.nodeSize[0] - 20) + this.nodeSize[0] - 20;
           b.y = n.y;
           // TODO 伴侣的位置
           b.height = n.height;
@@ -280,27 +295,33 @@ export class DefaultStyle implements TreeStyle {
       }
     })
     .attr('transform', d => `translate(${d.x},${d.y})`);
-    node.filter((d: any) => d === this.selectNode)
+    const selectRect = node.filter((d: any) => d === this.selectNode)
     .append('rect')
-    .attr('width', 90).attr('height', 50)
-    .attr('x', -45).attr('y', -25)
-    .attr('rx', 25).attr('ry', 25)
+    .attr('width', this.nodeWidth + 10).attr('height', this.nodeHeight + 10)
+    .attr('x', (this.nodeWidth + 10) / -2).attr('y', (this.nodeHeight + 10) / -2)
     .attr('fill', 'gold');
+    if (this.isFillet) {
+      selectRect.attr('rx', 25).attr('ry', 25);
+    }
     // 方框
-    node.append('rect')
-    .attr('width', 80).attr('height', 40)
-    .attr('x', -40).attr('y', -20)
-    .attr('rx', 20).attr('ry', 20)
+    const rect = node.append('rect')
+    .attr('width', this.nodeWidth).attr('height', this.nodeHeight)
+    .attr('x', this.nodeWidth / -2).attr('y', this.nodeHeight / -2)
     .attr('fill', (d) => d.data.gender ? '#dff' : '#fdf')  // 颜色
     .attr('stroke', (d) => d.data.dead ? 'black' : '#aaa')  // 边框
     .attr('stroke-width', 2);
+    if (this.isFillet) {
+      rect.attr('rx', 20).attr('ry', 20);
+    }
     // 文字
     node.append('text')
     .attr('text-anchor', 'middle')
     .attr('pointer-event', 'auto')
     .attr('dx', 0).attr('dy', 3)
-    .attr('font-size', '12')
-    .text((d) => d.data.name.substr(0, 6));
+    .attr('font-size', '14')
+    .attr('writing-mode', this.writingMode)
+    .attr('style', 'letter-spacing: -1pt')
+    .text((d) => d.data.name.substr(0, 5));
   }
   // 排序
   sort(node: TreeNode) {

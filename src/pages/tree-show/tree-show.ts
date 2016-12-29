@@ -9,24 +9,19 @@ import { TreeNode, nodeToStr, strToNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
 import { DefaultStyle } from '../../providers/default-style';
 import { BackService } from '../../utils/back-service';
+import { TreeStyle } from '../../tree/tree-style';
+import { VerticalStyle } from '../../providers/vertical-style';
 
-/**
- * 家谱编辑页面
- */
 @Component({
   selector: 'page-tree-show',
   styles: ['tree-show.scss'],
   templateUrl: 'tree-show.html'
 })
 export class TreeShow {
-  // 家谱
   familyTree: Tree;
-  // 选择的节点数据
   selectNode: TreeNode;
-  // 操作按钮
   fab: FabContainer;
-  // 复制节点
-  public copyNode: TreeNode;
+  copyNode: TreeNode;
   private copyStr: string;
   constructor(
     public params: NavParams,
@@ -35,7 +30,8 @@ export class TreeShow {
     private modalCtrl: ModalController,
     private toastCtrl: ToastController,
     private backService: BackService,
-    public treeStyle: DefaultStyle,
+    private defaultStyle: DefaultStyle,
+    private verticalStyle: VerticalStyle,
     public treeService: TreeService
   ) {
     this.familyTree = this.params.get('tree');
@@ -43,7 +39,36 @@ export class TreeShow {
     this.copyNode = null;
     this.backService.trackView('TreeShow');
   }
-  // 粘贴
+
+  get treeStyle(): TreeStyle {
+    if (this.treeService.style === 0) {
+       return this.defaultStyle;
+    }
+    return this.verticalStyle;
+  }
+
+  selectDefault() {
+    this.fab.close();
+    this.treeService.style = 0;
+    console.debug('treeStyle', this.treeStyle);
+    this.ngAfterViewInit();
+  }
+
+  isDefaultStyle(): boolean {
+    return this.treeService.style === 0;
+  }
+
+  selectVertical() {
+    this.fab.close();
+    this.treeService.style = 1;
+    console.debug('treeStyle', this.treeStyle);
+    this.ngAfterViewInit();
+  }
+
+  isVerticalStyle(): boolean {
+     return this.treeService.style === 1;
+  }
+
   paste() {
     this.fab.close();
     const n = JSON.parse(JSON.stringify(this.copyNode));

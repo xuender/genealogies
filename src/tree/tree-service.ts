@@ -16,12 +16,24 @@ import { remove } from '../utils/array';
 
 @Injectable()
 export class TreeService {
-  public set maleFirst(v: boolean) {
+  private _maleFirst: boolean;
+  set maleFirst(v: boolean) {
+    this._maleFirst = v;
     this.storageService.setItem('maleFirst', v);
   }
-  public get maleFirst(): boolean {
-    return this.storageService.getItem('maleFirst', true);
+  get maleFirst(): boolean {
+    return this._maleFirst;
   }
+
+  private _style: number;
+  get style(): number {
+    return this._style;
+  }
+  set style(v: number) {
+    this._style = v;
+    this.storageService.setItem('style', v);
+  }
+
   private _trees: Tree[];
   // 判断是否有变化，触发set 方法
   get trees() {
@@ -46,7 +58,7 @@ export class TreeService {
       nodeEach(t.root, (n: TreeNode) => {
         t.totalNum += 1;
         if (!n.dead) {
-           t.aliveNum += 1;
+          t.aliveNum += 1;
         }
       });
     }
@@ -66,6 +78,8 @@ export class TreeService {
     private backService: BackService,
     private storageService: StorageService
   ) {
+    this._style = this.storageService.getItem('style', 1);
+    this._maleFirst = this.storageService.getItem('maleFirst', true);
     if (!this.mySelf) {
       this.mySelf = {
         name: '无名氏',

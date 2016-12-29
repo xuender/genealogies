@@ -2,7 +2,7 @@ import { TreeNode } from './tree-node';
 import { Tree } from './tree';
 // 家谱式样接口
 export interface TreeStyle {
-  // 初始化
+  name(): string;
   init(tree: Tree, svgId: string, maleFirst: boolean): void;
   // 选择的节点
   selectNode: any;

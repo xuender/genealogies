@@ -16,6 +16,7 @@ import { TreeShow } from '../pages/tree-show/tree-show';
 import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
 import { UnknownList } from '../pages/unknown-list/unknown-list';
 import { DefaultStyle } from '../providers/default-style';
+import { VerticalStyle } from '../providers/vertical-style';
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import { DefaultStyle } from '../providers/default-style';
     StorageService,
     BackService,
     DefaultStyle,
+    VerticalStyle,
     TreeService
   ]
 })

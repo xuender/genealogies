@@ -10,6 +10,19 @@
 </ion-header>
 <ion-content>
   <svg id="tree" width="100%" height="100%"></svg>
+  <ion-fab right top #setup (click)="setFab(setup)">
+    <button ion-fab color="secondary" mini>
+      <ion-icon name="cog"></ion-icon>
+    </button>
+    <ion-fab-list side="left">
+      <button ion-fab (click)="selectDefault()" [color]="isDefaultStyle() ? 'secondary' : ''">
+        横排图
+      </button>
+      <button ion-fab (click)="selectVertical()" [color]="isVerticalStyle() ? 'secondary' : ''">
+        垂丝图
+      </button>
+    </ion-fab-list>
+  </ion-fab>
   <ion-fab left bottom #sharing (click)="setFab(sharing)">
     <button ion-fab color="secondary" mini>
       <ion-icon name="share-alt"></ion-icon>
