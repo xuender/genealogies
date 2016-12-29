@@ -9,7 +9,8 @@ import { NodeType } from '../tree/node-type';
 import { TreeNode } from '../tree/tree-node';
 import { TreeStyle } from '../tree/tree-style';
 import { filter, find, remove } from '../utils/array';
-import * as Crypto from 'crypto-js';
+import { enc } from 'crypto-js';
+
 
 @Injectable()
 export class DefaultStyle implements TreeStyle {
@@ -68,8 +69,8 @@ export class DefaultStyle implements TreeStyle {
     return new Promise((resolve, reject) => {
       const html = this.work.html();
       const svg = `<svg width="${this.width}px" height="${this.height}px" version="1.1" xmlns="http://www.w3.org/2000/svg">${html}</svg>`;
-      const words = Crypto.enc.Utf8.parse(svg);
-      const data = Crypto.enc.Base64.stringify(words);
+      const words = enc.Utf8.parse(svg);
+      const data = enc.Base64.stringify(words);
       const canvas = document.createElement('canvas');
       canvas.width = this.width;
       canvas.height = this.height;
@@ -78,7 +79,7 @@ export class DefaultStyle implements TreeStyle {
       context.fillRect(0, 0, this.width, this.height);
       const image = new Image();
       image.src = `data:image/svg+xml;base64,${data}`;
-      image.onload = function() {
+      image.onload = () => {
         context.drawImage(image, 0, 0);
         // console.debug(canvas.toDataURL('image/png'));
         resolve(canvas.toDataURL('image/png'));
