@@ -1,19 +1,20 @@
-# 家谱 Genealogies
+# 微家谱 Genealogies
 
 > 慎终追远，民德归厚矣
-
-> 先人不善 不识道德 无有语者 殊无怪也
-
 > 祠堂、家谱、家规、家训对国家、族群团结太重要了
 
-
 ## 目标
-
 * 家谱程序手机应用
+    * android
+    * ios
 * 桌面应用
+    * windows
+    * ubuntu
+    * mac
 
-## 技术
-
+## 使用技术
 * inoic v2
+* angularJs v2
+* d3
+* crypto-js
 
-开发中...
