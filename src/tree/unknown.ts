@@ -6,7 +6,7 @@ import { filter, count } from '../utils/array';
  * 问题列表
  */
 export class Unknown {
-  private static START = 10;
+  private static START = 18;
   private static NO_NAME = 9;
   private static NO_OTHER = 8;
   private static NO_CONSORT = 7;
