@@ -167,7 +167,7 @@ export class TreeShow {
 
   removeNode() {
     this.fab.close();
-    console.debug('删除节点:', this.selectNode.name);
+    this.addHistory();
     this.nodeCopy();
     this.treeStyle.removeNode();
     this.backService.trackAction('node', 'removeNode');
