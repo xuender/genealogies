@@ -254,8 +254,8 @@ export class DefaultStyle implements TreeStyle {
         }
       }
     }
-    // 删除无用线条
-    remove(links, (l: any) => !('x' in l.source && 'x' in l.target));
+
+    remove(links, (l: any) => l.target.data.nt === NodeType.EX);
     // console.debug('root.links', links);
     g.selectAll('.link')
     .data(links)
@@ -266,8 +266,6 @@ export class DefaultStyle implements TreeStyle {
       switch (d.target.data.nt) {
         case NodeType.CONSORT:
           return 'red';
-        case NodeType.EX:
-          return 'gray';
       }
       if (d.source.data.name === d.target.data.other) {
         return 'lightgreen';
@@ -275,7 +273,18 @@ export class DefaultStyle implements TreeStyle {
       return 'blue';
     }) // 颜色
     .attr('stroke-width', (d) => '1.4px') // 宽度 离婚后宽度 0.8px
-    .attr('d', (d, i) => `M${d.source.x},${d.source.y}C${d.source.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${d.target.y}`);
+    .attr('d', (d) => {
+      if (d.source.y === d.target.y) {
+        return `M${d.source.x},${d.source.y} ${d.target.x},${d.target.y}`;
+      } else {
+        const p1 = `${ d.source.x },${ d.source.y + this.nodeHeight / 2 }`;
+        const p2 = `${ d.source.x },${ (d.source.y + d.target.y) / 2 }`;
+        const p3 = `${ d.target.x },${ (d.source.y + d.target.y) / 2 }`;
+        const p4 = `${ d.target.x },${ d.target.y - this.nodeHeight / 2 }`;
+        return `M${ p1 } C${ p2 } ${ p3 } ${ p4 }`;
+        // return `M${d.source.x},${d.source.y}C${d.source.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${d.target.y}`;
+      }
+    });
     this.updateNode(g, nodes);
   }
   // 点击监听
