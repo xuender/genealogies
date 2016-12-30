@@ -22,6 +22,7 @@ export class DefaultStyle implements TreeStyle {
   private svg: any;
   // 工作区
   private work: any;
+  private background: any;
   // 男丁在前
   private maleFirst: boolean;
   // 单击节点事件
@@ -52,6 +53,7 @@ export class DefaultStyle implements TreeStyle {
     this.maleFirst = maleFirst;
     this.svg = select(svgId);
     this.svg.selectAll('*').remove();
+    this.background = this.svg.append('g');
     this.work = this.svg.append('g').attr('transform', 'translate(10, 10)');
     this.zoom = zoom()
     .scaleExtent([1 / 4, 2])
@@ -193,9 +195,9 @@ export class DefaultStyle implements TreeStyle {
     // console.debug('nodes', nodes);
     // 删除所有元素
     this.work.selectAll('*').remove();
-    this.svg.select('text').remove();
+    this.background.select('text').remove();
     // 家谱标题
-    this.svg.append('text')
+    this.background.append('text')
     .attr('font-size', '36px')
     .attr('x', 20).attr('y', 50)
     .text(this.familyTree.title);
