@@ -8,8 +8,9 @@ import { Tree } from '../tree/tree';
 import { NodeType } from '../tree/node-type';
 import { TreeNode } from '../tree/tree-node';
 import { TreeStyle } from '../tree/tree-style';
-import { filter, find, remove } from '../utils/array';
+import { filter, remove } from '../utils/array';
 import { enc } from 'crypto-js';
+import { find } from 'underscore';
 
 
 @Injectable()
@@ -26,7 +27,7 @@ export class DefaultStyle implements TreeStyle {
   // 男丁在前
   private maleFirst: boolean;
   // 单击节点事件
-  private onClickNode: (node: TreeNode) => void;
+  onClickNode: (node: TreeNode) => void;
   // 家谱尺寸
   private width: number;
   private height: number;
@@ -282,15 +283,11 @@ export class DefaultStyle implements TreeStyle {
         const p3 = `${ d.target.x },${ (d.source.y + d.target.y) / 2 }`;
         const p4 = `${ d.target.x },${ d.target.y - this.nodeHeight / 2 }`;
         return `M${ p1 } C${ p2 } ${ p3 } ${ p4 }`;
-        // return `M${d.source.x},${d.source.y}C${d.source.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${(d.source.y + d.target.y) / 2} ${d.target.x},${d.target.y}`;
       }
     });
     this.updateNode(g, nodes);
   }
-  // 点击监听
-  clickNodeListener(onClickNode: (node: TreeNode) => void) {
-    this.onClickNode = onClickNode;
-  }
+
   // 选择节点后刷新节点
   updateNode(g: any, nodes: any) {
     g.selectAll('.node').remove();

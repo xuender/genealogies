@@ -1,6 +1,7 @@
 import { TreeNode , nodeEach } from '../tree-node';
-import { find, count, filter, remove } from '../../utils/array';
+import { count, filter, remove } from '../../utils/array';
 import { NodeType } from '../node-type';
+import { find } from 'underscore';
 
 export class NodeReader {
     private lines: string[];
@@ -34,8 +35,10 @@ export class NodeReader {
             if (n.children && n.children.length > 1) {
                 if (count(n.children, (w: TreeNode) => w.nt > NodeType.DEFAULT) === 1) {
                     const other = find(n.children, (w: TreeNode) => w.nt > NodeType.DEFAULT);
-                    for (const c of filter(n.children, (w: TreeNode) => w.nt === NodeType.DEFAULT)){
-                        c.other = other.name;
+                    if (other) {
+                        for (const c of filter(n.children, (w: TreeNode) => w.nt === NodeType.DEFAULT)){
+                            c.other = other.name;
+                        }
                     }
                 }
             }
@@ -62,14 +65,11 @@ export class NodeReader {
         let node: TreeNode = void 0;
         if (this.root) {    // 非根节点
             if (this.nodes[num]) {
-                try {
-                    // TODO 这里需要考虑处理重名
-                    node = find(this.nodes[num], (n: TreeNode) => n.name === tmp.name && n.gender === tmp.gender);
-                    if (node) {
-                        Object.assign(node, tmp);
-                        remove(this.nodes[num], (n: TreeNode) => n === node);
-                    }
-                } catch (e) {}
+                node = find(this.nodes[num], (n: TreeNode) => n.name === tmp.name && n.gender === tmp.gender);
+                if (node) {
+                    Object.assign(node, tmp);
+                    remove(this.nodes[num], (n: TreeNode) => n === node);
+                }
             }
         }
         if (!node) {

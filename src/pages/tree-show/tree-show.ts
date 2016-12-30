@@ -11,6 +11,7 @@ import { DefaultStyle } from '../../providers/default-style';
 import { BackService } from '../../utils/back-service';
 import { TreeStyle } from '../../tree/tree-style';
 import { VerticalStyle } from '../../providers/vertical-style';
+import { NodeMerge } from '../../tree/node/node-merge';
 
 @Component({
   selector: 'page-tree-show',
@@ -21,7 +22,6 @@ export class TreeShow {
   familyTree: Tree;
   selectNode: TreeNode;
   fab: FabContainer;
-  copyNode: TreeNode;
   private copyStr: string;
   constructor(
     public params: NavParams,
@@ -36,7 +36,6 @@ export class TreeShow {
   ) {
     this.familyTree = this.params.get('tree');
     // console.debug('tree show', this.familyTree.title);
-    this.copyNode = null;
     this.backService.trackView('TreeShow');
   }
 
@@ -71,41 +70,12 @@ export class TreeShow {
 
   paste() {
     this.fab.close();
-    const n = JSON.parse(JSON.stringify(this.copyNode));
-    n.nt = NodeType.DEFAULT;
-    if (!this.selectNode.children) {
-      this.selectNode.children = [];
-    }
-    this.selectNode.children.push(n);
+    new NodeMerge(this.selectNode).merge(this.treeService.copyNode);
     this.familyTree.ua = new Date();
     this.treeStyle.show(this.treeService.maleFirst);
     this.backService.trackAction('node', 'paste');
   }
-  // 复制节点
-  private nodeCopy() {
-    this.copyNode = JSON.parse(JSON.stringify(this.selectNode));
-    if (this.copyNode.nt !== NodeType.DEFAULT) {
-      // 复制伴侣
-      if (!this.copyNode.children) {
-        this.copyNode.children = [];
-      }
-      const b = JSON.parse(JSON.stringify(this.treeStyle.selectNode.parent.data));
-      delete b.children;
-      b.nt = this.copyNode.nt;
-      this.copyNode.children.push(b);
-      // 如果是配偶则复制配偶的后裔
-      for (const c of this.treeStyle.selectNode.parent.data.children) {
-        if (c.other === this.copyNode.name) {
-          const o = JSON.parse(JSON.stringify(c));
-          o.other = b.name;
-          this.copyNode.children.push(o);
-        }
-      }
-    }
-    this.copyStr = nodeToStr(this.copyNode);
-    this.backService.copy(this.copyStr);
-  }
-  // 复制
+
   copy() {
     this.fab.close();
     const toast = this.toastCtrl.create({
@@ -116,6 +86,30 @@ export class TreeShow {
     toast.present();
     this.nodeCopy();
     this.backService.trackAction('node', 'copy');
+  }
+
+  private nodeCopy() {
+    this.treeService.copyNode = JSON.parse(JSON.stringify(this.selectNode));
+    if (this.treeService.copyNode.nt !== NodeType.DEFAULT) {
+      // 复制伴侣
+      if (!this.treeService.copyNode.children) {
+        this.treeService.copyNode.children = [];
+      }
+      const b = JSON.parse(JSON.stringify(this.treeStyle.selectNode.parent.data));
+      delete b.children;
+      b.nt = this.treeService.copyNode.nt;
+      this.treeService.copyNode.children.push(b);
+      // 如果是配偶则复制配偶的后裔
+      for (const c of this.treeStyle.selectNode.parent.data.children) {
+        if (c.other === this.treeService.copyNode.name) {
+          const o = JSON.parse(JSON.stringify(c));
+          o.other = b.name;
+          this.treeService.copyNode.children.push(o);
+        }
+      }
+    }
+    this.copyStr = nodeToStr(this.treeService.copyNode);
+    this.backService.copy(this.copyStr);
   }
   // 是否选择根节点
   isRoot() {
@@ -136,13 +130,13 @@ export class TreeShow {
     // 创建家谱默认式样
     this.treeStyle.init(this.familyTree, '#tree', this.treeService.maleFirst);
     // 绑定点击节点动作
-    this.treeStyle.clickNodeListener((node: TreeNode) => {
+    this.treeStyle.onClickNode = (node: TreeNode) => {
       this.selectNode = node;
       if (this.fab) {
         this.fab.close();
       }
       this.backService.hold();
-    });
+    };
     // 显示家谱
     this.treeStyle.show(this.treeService.maleFirst);
     this.treeStyle.toCenter();
@@ -155,7 +149,7 @@ export class TreeShow {
     .then((str: string) => {
       if (str && str !== this.copyStr) {
         try {
-          this.copyNode = strToNode(str);
+          this.treeService.copyNode = strToNode(str);
           this.copyStr = str;
           this.fab.close();
         } catch (e) {

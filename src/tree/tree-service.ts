@@ -35,6 +35,7 @@ export class TreeService {
   }
 
   private _trees: Tree[];
+  copyNode: TreeNode;
   // 判断是否有变化，触发set 方法
   get trees() {
     if (this._trees) {

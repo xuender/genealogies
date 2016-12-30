@@ -22,18 +22,6 @@ export function count<T>(array: T[], com: (a: T) => boolean): number {
   return ret;
 }
 
-export function find<T>(array: T[], com: (a: T) => boolean): T {
-  if (!array || array.length === 0) {
-    throw 'array is empty';
-  }
-  for (const a of array) {
-    if (com(a)) {
-      return a;
-    }
-  }
-  throw 'no find';
-}
-
 export function remove<T>(array: T[], com: (a: T) => boolean): T[] {
   if (!array || array.length === 0) {
     return array;

@@ -59,8 +59,8 @@
       <button ion-fab color="secondary" (click)="copy()">
         <ion-icon name="copy"></ion-icon>
       </button>
-      <button ion-fab color="secondary" *ngIf="copyNode" (click)="paste()">
-          {{ copyNode.name.substr(0, 3) }}
+      <button ion-fab color="secondary" *ngIf="treeService.copyNode" (click)="paste()">
+          {{ treeService.copyNode.name.substr(0, 3) }}
       </button>
       <button color="danger" ion-fab (click)="removeNode()"
         *ngIf="showRemove()">

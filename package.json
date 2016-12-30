@@ -25,6 +25,7 @@
     "ionic-native": "2.2.11",
     "ionicons": "3.0.0",
     "rxjs": "5.0.0-beta.12",
+    "underscore": "^1.8.3",
     "uuid": "^3.0.0",
     "zone.js": "0.6.26"
   },
@@ -34,6 +35,7 @@
     "@types/d3": "^4.4.0",
     "@types/jasmine": "^2.5.38",
     "@types/node": "^6.0.51",
+    "@types/underscore": "^1.7.36",
     "angular-cli": "^1.0.0-beta.24",
     "jasmine-core": "2.5.2",
     "jasmine-spec-reporter": "2.5.0",
