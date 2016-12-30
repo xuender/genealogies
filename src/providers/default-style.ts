@@ -128,7 +128,6 @@ export class DefaultStyle implements TreeStyle {
   }
   // 显示家谱
   show(maleFirst: boolean) {
-    console.debug('name', this.name(), this.nodeWidth);
     this.width = 333;
     this.height = 133;
     this.maleFirst = maleFirst;

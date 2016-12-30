@@ -44,6 +44,9 @@
       <ion-icon name="brush"></ion-icon>
     </button>
     <ion-fab-list side="top">
+      <button color="danger" ion-fab (click)="undo()" *ngIf="history.length > 0">
+        <ion-icon name="undo"></ion-icon>
+      </button>
       <button ion-fab (click)="editNode()">
         <ion-icon name="contact"></ion-icon>
       </button>

@@ -23,6 +23,7 @@ export class TreeShow {
   selectNode: TreeNode;
   fab: FabContainer;
   private copyStr: string;
+  history: string[];
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
@@ -34,42 +35,94 @@ export class TreeShow {
     private verticalStyle: VerticalStyle,
     public treeService: TreeService
   ) {
+    this.history = [];
     this.familyTree = this.params.get('tree');
     // console.debug('tree show', this.familyTree.title);
     this.backService.trackView('TreeShow');
   }
 
-  get treeStyle(): TreeStyle {
-    if (this.treeService.style === 0) {
-       return this.defaultStyle;
+  info() {
+    const s = JSON.stringify(this.familyTree);
+    this.treeService.edit(this.familyTree)
+    .then((tree: Tree) => {
+      this.treeStyle.show(this.treeService.maleFirst);
+      this.addHistory(s);
+    });
+  }
+
+  private addHistory(s = JSON.stringify(this.familyTree)) {
+    this.history.push(s);
+  }
+
+  undo() {
+    const s = this.history.pop();
+    if (s) {
+      this.familyTree = JSON.parse(s);
+      this.familyTree.ua = new Date();
+      this.ngAfterViewInit();
+      this.backService.trackAction('tree', 'undo');
     }
-    return this.verticalStyle;
   }
 
-  selectDefault() {
+  editNode() {
     this.fab.close();
-    this.treeService.style = 0;
-    // console.debug('treeStyle', this.treeStyle);
-    this.ngAfterViewInit();
+    this.treeService.editNode(this.selectNode, this.familyTree)
+    .then((node) => {
+      this.addHistory();
+      Object.assign(this.selectNode, node);
+      this.familyTree.ua = new Date();
+      this.treeStyle.show(this.treeService.maleFirst);
+    });
+    this.backService.touch();
   }
 
-  isDefaultStyle(): boolean {
-    return this.treeService.style === 0;
+  addParent() {
+    this.addHistory();
+    const root = {
+      name: `${this.selectNode.name}的父亲`,
+      gender: true,
+      nt: NodeType.DEFAULT,
+      children: [this.familyTree.root],
+    };
+    this.familyTree.root = root;
+    this.familyTree.ua = new Date();
+    this.treeStyle.show(this.treeService.maleFirst);
+    this.backService.trackAction('node', 'addParent');
   }
 
-  selectVertical() {
-    this.fab.close();
-    this.treeService.style = 1;
-    // console.debug('treeStyle', this.treeStyle);
-    this.ngAfterViewInit();
+  addConsort() {
+    this.addHistory();
+    if (!this.selectNode.children) {
+      this.selectNode.children = [];
+    }
+    this.selectNode.children.push({
+      name: `${this.selectNode.name}的${this.selectNode.gender ? '妻子' : '丈夫'}`,
+      gender: !this.selectNode.gender,
+      nt: NodeType.CONSORT,
+    });
+    this.familyTree.ua = new Date();
+    this.treeStyle.show(this.treeService.maleFirst);
+    this.backService.trackAction('node', 'addConsort');
   }
 
-  isVerticalStyle(): boolean {
-     return this.treeService.style === 1;
+  addChildren() {
+    this.addHistory();
+    if (!this.selectNode.children) {
+      this.selectNode.children = [];
+    }
+    this.selectNode.children.push({
+      name: `${this.selectNode.name}的儿子`,
+      gender: true,
+      nt: NodeType.DEFAULT,
+    });
+    this.familyTree.ua = new Date();
+    this.treeStyle.show(this.treeService.maleFirst);
+    this.backService.trackAction('node', 'addChildren');
   }
 
   paste() {
     this.fab.close();
+    this.addHistory();
     new NodeMerge(this.selectNode).merge(this.treeService.copyNode);
     this.familyTree.ua = new Date();
     this.treeStyle.show(this.treeService.maleFirst);
@@ -111,19 +164,78 @@ export class TreeShow {
     this.copyStr = nodeToStr(this.treeService.copyNode);
     this.backService.copy(this.copyStr);
   }
-  // 是否选择根节点
+
+  removeNode() {
+    this.fab.close();
+    console.debug('删除节点:', this.selectNode.name);
+    this.nodeCopy();
+    this.treeStyle.removeNode();
+    this.backService.trackAction('node', 'removeNode');
+    this.backService.touch();
+  }
+
+  shareText() {
+    this.fab.close();
+    SocialSharing.share(
+      nodeToStr(this.selectNode),
+      this.familyTree.title,
+      null
+    );
+    this.backService.touch();
+    this.backService.trackAction('node', 'shareText');
+  }
+
+  shareImage() {
+    this.fab.close();
+    this.treeStyle.toImage()
+    .then((img: string) => {
+      SocialSharing.share(
+        null,
+        this.familyTree.title,
+        img,
+        null
+      );
+      this.backService.touch();
+      this.backService.trackAction('node', 'shareImage');
+    });
+  }
+
+  get treeStyle(): TreeStyle {
+    if (this.treeService.style === 0) {
+      return this.defaultStyle;
+    }
+    return this.verticalStyle;
+  }
+
+  selectDefault() {
+    this.fab.close();
+    this.treeService.style = 0;
+    // console.debug('treeStyle', this.treeStyle);
+    this.ngAfterViewInit();
+  }
+
+  isDefaultStyle(): boolean {
+    return this.treeService.style === 0;
+  }
+
+  selectVertical() {
+    this.fab.close();
+    this.treeService.style = 1;
+    // console.debug('treeStyle', this.treeStyle);
+    this.ngAfterViewInit();
+  }
+
+  isVerticalStyle(): boolean {
+    return this.treeService.style === 1;
+  }
+
   isRoot() {
     return this.selectNode && this.treeStyle && this.treeStyle.isRoot();
   }
-  // 默认节点
+
   isDefault() {
     return this.selectNode
     && (!('nt' in this.selectNode) || this.selectNode.nt === NodeType.DEFAULT);
-  }
-  // 显示家谱信息
-  info() {
-    this.treeService.edit(this.familyTree)
-    .then((tree: Tree) => this.treeStyle.show(this.treeService.maleFirst));
   }
   // 初始化之后
   ngAfterViewInit() {
@@ -142,7 +254,7 @@ export class TreeShow {
     this.treeStyle.toCenter();
     // console.log(nodeToStr(this.selectNode));
   }
-  // 设置浮动按钮
+
   setFab(fab: FabContainer) {
     this.fab = fab;
     this.backService.paste()
@@ -161,94 +273,8 @@ export class TreeShow {
       }
     });
   }
-  // 分享文字
-  shareText() {
-    this.fab.close();
-    SocialSharing.share(
-      nodeToStr(this.selectNode),
-      this.familyTree.title,
-      null
-    );
-    this.backService.touch();
-    this.backService.trackAction('node', 'shareText');
-  }
-  // 分享截图
-  shareImage() {
-    this.fab.close();
-    this.treeStyle.toImage()
-    .then((img: string) => {
-      SocialSharing.share(
-        null,
-        this.familyTree.title,
-        img,
-        null
-      );
-      this.backService.touch();
-      this.backService.trackAction('node', 'shareImage');
-    });
-  }
-  // 显示删除按钮
+
   showRemove(): boolean {
     return this.treeStyle && this.treeStyle.isDeleted();
-  }
-  // 编辑节点
-  editNode() {
-    this.fab.close();
-    this.treeService.editNode(this.selectNode, this.familyTree)
-    .then((node) => this.treeStyle.show(this.treeService.maleFirst));
-    this.backService.touch();
-  }
-  // 增加伴侣
-  addConsort() {
-    console.debug('增加伴侣:', this.selectNode.name);
-    if (!this.selectNode.children) {
-      this.selectNode.children = [];
-    }
-    this.selectNode.children.push({
-      name: `${this.selectNode.name}的${this.selectNode.gender ? '妻子' : '丈夫'}`,
-      gender: !this.selectNode.gender,
-      nt: NodeType.CONSORT,
-    });
-    this.familyTree.ua = new Date();
-    this.treeStyle.show(this.treeService.maleFirst);
-    this.backService.trackAction('node', 'addConsort');
-  }
-  // 增加子女
-  addChildren() {
-    console.debug('增加子女:', this.selectNode.name);
-    if (!this.selectNode.children) {
-      this.selectNode.children = [];
-    }
-    this.selectNode.children.push({
-      name: `${this.selectNode.name}的儿子`,
-      gender: true,
-      nt: NodeType.DEFAULT,
-    });
-    this.familyTree.ua = new Date();
-    this.treeStyle.show(this.treeService.maleFirst);
-    this.backService.trackAction('node', 'addChildren');
-  }
-  // 删除节点
-  removeNode() {
-    this.fab.close();
-    console.debug('删除节点:', this.selectNode.name);
-    this.nodeCopy();
-    this.treeStyle.removeNode();
-    this.backService.trackAction('node', 'removeNode');
-    this.backService.touch();
-  }
-  // 增加父亲
-  addParent() {
-    console.debug('增加父亲:', this.selectNode.name);
-    const root = {
-      name: `${this.selectNode.name}的父亲`,
-      gender: true,
-      nt: NodeType.DEFAULT,
-      children: [this.familyTree.root],
-    };
-    this.familyTree.root = root;
-    this.familyTree.ua = new Date();
-    this.treeStyle.show(this.treeService.maleFirst);
-    this.backService.trackAction('node', 'addParent');
   }
 }

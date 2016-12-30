@@ -102,15 +102,7 @@ export class TreeService {
         tree: tree
       });
       nm.present();
-      nm.onDidDismiss(newNode => {
-        if (newNode) {
-          Object.assign(node, newNode);
-          if (tree) {
-            tree.ua = new Date();
-          }
-          resolve(node);
-        }
-      });
+      nm.onDidDismiss(newNode => resolve(newNode));
     });
   }
   // 首次初始化
@@ -156,13 +148,9 @@ export class TreeService {
       treeModal.onDidDismiss(data => {
         if (data) {
           if (this.isNew(data)) {
-            console.debug('新增');
-            // TODO 远程调用
             this.trees.push(data);
             resolve(data);
           } else {
-            console.debug('修改');
-            // TODO 远程调用
             data.ua = new Date();
             this.trees.forEach(t => {
               if (t.id === data.id) {

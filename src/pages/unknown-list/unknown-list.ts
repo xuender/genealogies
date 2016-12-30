@@ -32,7 +32,11 @@ export class UnknownList {
 
   editNode(node: TreeNode) {
     this.treeService.editNode(node, this.familyTree)
-    .then((node: TreeNode) => this.unknowns = Unknown.findUnknowns(this.familyTree));
+    .then((newNode: TreeNode) => {
+      Object.assign(node, newNode);
+      this.familyTree.ua = new Date();
+      this.unknowns = Unknown.findUnknowns(this.familyTree);
+    });
   }
 
   star(node: TreeNode) {
