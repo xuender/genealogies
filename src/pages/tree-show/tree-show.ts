@@ -57,10 +57,16 @@ export class TreeShow {
   undo() {
     const s = this.history.pop();
     if (s) {
-      this.familyTree = JSON.parse(s);
-      this.familyTree.ua = new Date();
-      this.ngAfterViewInit();
-      this.backService.trackAction('tree', 'undo');
+      for (let i = 0; i < this.treeService.trees.length; i++) {
+        if (this.treeService.trees[i] === this.familyTree) {
+          this.familyTree = JSON.parse(s);
+          this.familyTree.ua = new Date();
+          this.treeService.trees[i] = this.familyTree;
+          this.ngAfterViewInit();
+          this.backService.trackAction('tree', 'undo');
+          break;
+        }
+      }
     }
   }
 
@@ -79,7 +85,7 @@ export class TreeShow {
   addParent() {
     this.addHistory();
     const root = {
-      name: `${this.selectNode.name}的父亲`,
+      name: `${this.selectNode.name}父亲`,
       gender: true,
       nt: NodeType.DEFAULT,
       children: [this.familyTree.root],
@@ -96,7 +102,7 @@ export class TreeShow {
       this.selectNode.children = [];
     }
     this.selectNode.children.push({
-      name: `${this.selectNode.name}的${this.selectNode.gender ? '妻子' : '丈夫'}`,
+      name: `${this.selectNode.name}${this.selectNode.gender ? '妻子' : '丈夫'}`,
       gender: !this.selectNode.gender,
       nt: NodeType.CONSORT,
     });
@@ -111,7 +117,7 @@ export class TreeShow {
       this.selectNode.children = [];
     }
     this.selectNode.children.push({
-      name: `${this.selectNode.name}的儿子`,
+      name: `${this.selectNode.name}儿子`,
       gender: true,
       nt: NodeType.DEFAULT,
     });

@@ -134,7 +134,7 @@ export class TreeService {
       if (node) {
         this.mySelf = node;
       }
-      if (!this.trees) {
+      if (!this.trees || this.trees.length === 0) {
         this.trees = [this.getNewTree()];
       }
     });
