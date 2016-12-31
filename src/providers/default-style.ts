@@ -1,57 +1,57 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 
-import { event, select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
-import { tree, hierarchy } from 'd3-hierarchy';
+import { event, select } from 'd3-selection';
+import { tree, hierarchy, HierarchyNode } from 'd3-hierarchy';
+import { enc } from 'crypto-js';
+import { find, filter } from 'underscore';
+
 import { Tree } from '../tree/tree';
 import { NodeType } from '../tree/node-type';
-import { TreeNode } from '../tree/tree-node';
+import { TreeNode , nodeEach } from '../tree/tree-node';
 import { TreeStyle } from '../tree/tree-style';
-import { filter, remove } from '../utils/array';
-import { enc } from 'crypto-js';
-import { find } from 'underscore';
+import { remove } from '../utils/array';
+import { TreeService } from '../tree/tree-service';
 
 
 @Injectable()
 export class DefaultStyle implements TreeStyle {
-  // 家谱
-  private familyTree: Tree;
-  // 选择的节点
   selectNode: any;
-  // 绘图区域
+  onClickNode: (node: TreeNode) => void;
+  name: string;
+
+  private familyTree: Tree;
   private svg: any;
-  // 工作区
   private work: any;
   private background: any;
-  // 男丁在前
-  private maleFirst: boolean;
-  // 单击节点事件
-  onClickNode: (node: TreeNode) => void;
-  // 家谱尺寸
+  private zoom: any;
+
   private width: number;
   private height: number;
   private maxWidth: number;
-  private zoom: any;
 
   protected nodeWidth: number;
   protected nodeHeight: number;
   protected writingMode: string;
   protected isFillet: boolean;
   protected nodeSize: [number, number];
+
   constructor(
-    public platform: Platform
+    public platform: Platform,
+    protected treeService: TreeService
   ) {
+    this.name = '现代图';
     this.nodeWidth = 80;
     this.nodeHeight = 40;
     this.writingMode = 'horizontal-tb';
     this.isFillet = true;
     this.nodeSize = [120, 120];
   }
-  public init(familyTree: Tree, svgId: string, maleFirst: boolean) {
+
+  init(familyTree: Tree, svgId: string) {
     this.selectNode = {};
     this.familyTree = familyTree;
-    this.maleFirst = maleFirst;
     this.svg = select(svgId);
     this.svg.selectAll('*').remove();
     this.background = this.svg.append('g');
@@ -61,14 +61,12 @@ export class DefaultStyle implements TreeStyle {
     .on('zoom', () => this.work.attr('transform', event.transform));
     this.svg.call(this.zoom);
   }
+
   toCenter() {
     this.zoom.translateBy(this.svg, this.maxWidth * -1 + this.platform.width() / 2, 0);
   }
-  name(): string {
-     return '默认式样';
-  }
-  // 转换成图片
-  public toImage(): Promise<String> {
+
+  toImage(): Promise<String> {
     return new Promise((resolve, reject) => {
       const html = this.work.html();
       const svg = `<svg width="${this.width}px" height="${this.height}px" version="1.1" xmlns="http://www.w3.org/2000/svg">${html}</svg>`;
@@ -89,7 +87,7 @@ export class DefaultStyle implements TreeStyle {
       };
     });
   }
-  // 是否选择根节点
+
   isRoot() {
     return this.selectNode && !this.selectNode.parent;
   }
@@ -103,10 +101,10 @@ export class DefaultStyle implements TreeStyle {
     }
     this.selectNode = {};
     this.familyTree.ua = new Date();
-    this.show(this.maleFirst);
+    this.show();
   }
-  // 节点是可以被删除的
-  isDeleted(): boolean {
+
+  canDeleted(): boolean {
     if (!this.selectNode) {
       return false;
     }
@@ -115,51 +113,148 @@ export class DefaultStyle implements TreeStyle {
     // 根节点并且有1个子节点
       || (!this.selectNode.parent && this.selectNode.children && this.selectNode.children.length === 1);
   }
-  rc(node: TreeNode) {
+
+  show() {
+    this.width = 333;
+    this.height = 133;
+
+    this.sort(this.familyTree.root);
+    const allNodes = this.createAllNodes();
+    if (this.treeService.noWoman) {
+      this.bakWoman(allNodes);
+    }
+    if (this.treeService.sameSurname) {
+      this.bakOther(allNodes);
+    }
+    this.bakConsort();
+
+    const root = this.createRoot();
+    const nodes = root.descendants();
+
+    if (this.treeService.noWoman || this.treeService.sameSurname) {
+      this.restore(allNodes);
+    }
+    this.restoreConsort(nodes);
+    allNodes.forEach((n) => delete n.p);
+
+    if (this.selectNode.data) {
+      this.selectNode = find(nodes, (n: any) => n.data === this.selectNode.data);
+    } else {
+      this.selectNode = root;
+    }
+    // console.debug('selectNode', this.selectNode);
+    this.onClickNode(this.selectNode.data);
+
+    this.svgClean();
+    this.svgTitle();
+
+    this.countSize(nodes);
+
+    // 家谱位置
+    const g = this.work.append('g')
+    .attr('class', 'part')
+    .attr('transform', (d: Node) => `translate(${this.maxWidth}, ${80})`);
+
+    this.createLinks(g, nodes, root);
+    this.createNodes(g, nodes);
+  }
+
+  private sort(node: TreeNode) {
     if (node.children) {
-      node.bak = filter(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
-      remove(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
-      for (const c of node.children) {
-        if (c.nt === NodeType.DEFAULT) {
-          this.rc(c);
+      for (const n of node.children){
+        this.sort(n);
+      }
+      node.children.sort((a: TreeNode, b: TreeNode) => {
+        if (a.nt !== b.nt) {  // 子女在前，伴侣在后
+          return a.nt - b.nt;
         }
+        // 男子在前女子在后
+        if (this.treeService.maleFirst && a.gender !== b.gender) {
+          return a.gender ? -1 : 1;
+        } else {
+          return (a.dob ? new Date(a.dob) : new Date()).getTime()
+          - (b.dob ? new Date(b.dob) : new Date()).getTime();
+        }
+      });
+    }
+  }
+
+  private createAllNodes(): TreeNode[] {
+    const ret: TreeNode[] = [];
+    nodeEach(this.familyTree.root, (n, p) => {
+      n.p = p;
+      ret.push(n);
+    });
+    return ret;
+  }
+
+  private bakWoman(nodes: TreeNode[]) {
+    for (const node of nodes) {
+      if (!node.bak2) {
+        node.bak2 = [];
+      }
+      node.bak2.push.apply(node.bak2, filter(node.children, (c) => !c.gender));
+      remove(node.children, (c) => !c.gender);
+    }
+  }
+
+  private bakOther(nodes: TreeNode[]) {
+    for (const node of nodes) {
+      if (!node.bak2) {
+        node.bak2 = [];
+      }
+      node.bak2.push.apply(node.bak2, filter(node.children, (c) => c.nt > NodeType.DEFAULT || !c.p.gender));
+      remove(node.children, (c) => c.nt > NodeType.DEFAULT || !c.p.gender);
+    }
+  }
+
+  private bakConsort() {
+    nodeEach(this.familyTree.root, (node) => {
+        node.bak = filter(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
+        remove(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
+    });
+  }
+
+
+  private createRoot(): HierarchyNode<TreeNode> {
+    const root = hierarchy(this.familyTree.root);
+    // 树形图形
+    tree()
+    .nodeSize(this.nodeSize)
+    .separation((a: any, b: any) => {
+      if (this.treeService.noWoman) {
+        return 1;
+      } else {
+        // 根据伴侣数量决定夫妻宽度
+        let l = 0;
+        if (a.data.bak) {
+          l += a.data.bak.length;
+        }
+        if (b.data.bak) {
+          l += b.data.bak.length;
+        }
+        return l * 0.5 + 1;
+      }
+    })(root);
+    return root;
+  }
+
+  private restore(nodes: TreeNode[]) {
+    for (const node of nodes) {
+      if (node.bak2 && node.bak2.length > 0) {
+        if (!node.children) {
+          node.children = [];
+        }
+        node.children.push.apply(node.children, node.bak2);
+        delete node.bak2;
       }
     }
   }
-  // 显示家谱
-  show(maleFirst: boolean) {
-    this.width = 333;
-    this.height = 133;
-    this.maleFirst = maleFirst;
-    // 排序
-    this.sort(this.familyTree.root);
-    // 删除伴侣
-    this.rc(this.familyTree.root);
-    // 树形数据
-    const root = hierarchy(this.familyTree.root);
-    // console.debug(JSON.stringify(this.familyTree.root));
-    // 计算节点宽度
-    const nodes = root.descendants();
-    // 树形图形
-    const treeData = tree()
-    .nodeSize(this.nodeSize)
-    .separation((a: any, b: any) => {
-      // 根据伴侣数量决定夫妻宽度
-      let l = 0;
-      if (a.data.bak) {
-        l += a.data.bak.length;
-      }
-      if (b.data.bak) {
-        l += b.data.bak.length;
-      }
-      return l * 0.5 + 1;
-    });
-    treeData(root);
-    // 夫妻居中
+
+  private restoreConsort(nodes: Array<HierarchyNode<TreeNode>>) {
     for (const n of filter(nodes, (a: any) => a.data.bak && a.data.bak.length > 0)) {
       n.x -= n.data.bak.length * (this.nodeSize[0] - 20) / 2;
     }
-    // console.log('root', root);
     // 增加伴侣
     const nl = nodes.length;
     for (let i = 0; i < nl; i++) {
@@ -170,7 +265,7 @@ export class DefaultStyle implements TreeStyle {
           const b: any = <any> hierarchy(c).descendants()[0];
           b.x = n.x + f * (this.nodeSize[0] - 20) + this.nodeSize[0] - 20;
           b.y = n.y;
-          // TODO 伴侣的位置
+          // 伴侣的位置
           b.height = n.height;
           nodes.push(b);
           b.parent = n;
@@ -179,34 +274,27 @@ export class DefaultStyle implements TreeStyle {
           }
           n.children.push(b);
           n.data.children.push(c);
-          delete n.data.bak;
         });
+        delete n.data.bak;
       }
     }
-    // 设置选择节点
-    if (this.selectNode.data) {
-      this.selectNode = find(nodes, (n: any) => n.data === this.selectNode.data);
-    } else {
-      this.selectNode = root;
-    }
-    // console.debug('selectNode', this.selectNode);
-    // 点击节点事件
-    this.onClickNode(this.selectNode.data);
-    // console.debug('nodes', nodes);
+  }
+
+  private svgClean() {
     // 删除所有元素
     this.work.selectAll('*').remove();
     this.background.select('text').remove();
+  }
+
+  private svgTitle() {
     // 家谱标题
     this.background.append('text')
     .attr('font-size', '36px')
     .attr('x', 20).attr('y', 50)
     .text(this.familyTree.title);
-    // 设置夫妻关系
-    // for (const n of nodes){
-    //   if (n.data.nt !== NodeType.DEFAULT) {
-    //     n.y -= 80;  // 夫妻关系位置上移
-    //   }
-    // }
+  }
+
+  private countSize(nodes: Array<HierarchyNode<TreeNode>>) {
     // 计算家谱宽高
     let minW = 0;
     let minH = 0;
@@ -236,11 +324,9 @@ export class DefaultStyle implements TreeStyle {
       }
     }
     this.maxWidth = this.maxWidth * -1 + 50;
-    // 家谱位置
-    const g = this.work.append('g')
-    .attr('class', 'part')
-    .attr('transform', (d: Node) => `translate(${this.maxWidth}, ${80})`);
-    // 线条
+  }
+
+  private createLinks(g: any, nodes: Array<HierarchyNode<TreeNode>>, root: HierarchyNode<TreeNode>) {
     const links = root.links();
     for (const n of nodes) {
       if (n.data.other) {
@@ -254,9 +340,8 @@ export class DefaultStyle implements TreeStyle {
         }
       }
     }
-
     remove(links, (l: any) => l.target.data.nt === NodeType.EX);
-    // console.debug('root.links', links);
+    g.selectAll('.link').remove();
     g.selectAll('.link')
     .data(links)
     .enter().append('path')
@@ -284,11 +369,9 @@ export class DefaultStyle implements TreeStyle {
         return `M${ p1 } C${ p2 } ${ p3 } ${ p4 }`;
       }
     });
-    this.updateNode(g, nodes);
   }
 
-  // 选择节点后刷新节点
-  updateNode(g: any, nodes: any) {
+  private createNodes(g: any, nodes: Array<HierarchyNode<TreeNode>>) {
     g.selectAll('.node').remove();
     // 节点
     const node = g.selectAll('.node')
@@ -300,7 +383,7 @@ export class DefaultStyle implements TreeStyle {
       if (this.selectNode !== d) {
         this.onClickNode(d.data);
         this.selectNode = d;
-        this.updateNode(g, nodes);
+        this.createNodes(g, nodes);
       }
     })
     .attr('transform', d => `translate(${d.x},${d.y})`);
@@ -331,25 +414,5 @@ export class DefaultStyle implements TreeStyle {
     .attr('writing-mode', this.writingMode)
     .attr('style', 'letter-spacing: -1pt')
     .text((d) => d.data.name.substr(0, 5));
-  }
-  // 排序
-  sort(node: TreeNode) {
-    if (node.children) {
-      for (const n of node.children){
-        this.sort(n);
-      }
-      node.children.sort((a: TreeNode, b: TreeNode) => {
-        if (a.nt !== b.nt) {  // 子女在前，伴侣在后
-          return a.nt - b.nt;
-        }
-        // 男子在前女子在后
-        if (this.maleFirst && a.gender !== b.gender) {
-          return a.gender ? -1 : 1;
-        } else {
-          return (a.dob ? new Date(a.dob) : new Date()).getTime()
-          - (b.dob ? new Date(b.dob) : new Date()).getTime();
-        }
-      });
-    }
   }
 }

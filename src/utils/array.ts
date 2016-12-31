@@ -1,15 +1,3 @@
-export function filter<T>(array: T[], com: (a: T) => boolean): T[] {
-  const ret: T[] = [];
-  if (array && array.length > 0) {
-    for (const a of array) {
-      if (com(a)) {
-        ret.push(a);
-      }
-    }
-  }
-  return ret;
-}
-
 export function count<T>(array: T[], com: (a: T) => boolean): number {
   let ret: number = 0;
   if (array && array.length > 0) {

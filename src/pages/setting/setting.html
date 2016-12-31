@@ -1,35 +1,56 @@
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>设置</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>设置</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding>
     <ion-item detail-push (click)="editMySelf()">
-      <ion-icon name="contact" item-left></ion-icon>
-      {{ treeService.mySelf.name }}的个人信息
+        <ion-icon name="contact" item-left></ion-icon>
+        {{ treeService.mySelf.name }}的个人信息
     </ion-item>
     <ion-list>
-      <ion-list-header>
-        选项
-      </ion-list-header>
-      <ion-item>
-        <ion-label>男子在前</ion-label>
-        <ion-icon name="male" item-left></ion-icon>
-        <ion-toggle name="maleFirst" [(ngModel)]="treeService.maleFirst"></ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-label>音效</ion-label>
-        <ion-icon [name]="backService.audio ? 'volume-up' : 'volume-off'" item-left></ion-icon>
-        <ion-toggle name="audio" [(ngModel)]="backService.audio"></ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-label>震动</ion-label>
-        <ion-icon [name]="backService.vibration ? 'notifications' : 'notifications-off'" item-left></ion-icon>
-        <ion-toggle name="vibration" [(ngModel)]="backService.vibration"></ion-toggle>
-      </ion-item>
+        <ion-list-header>
+            家谱
+        </ion-list-header>
+        <ion-item>
+            <ion-label>家谱式样</ion-label>
+            <ion-select okText="确定" cancelText="取消"
+                [(ngModel)]="treeService.style" name="style">
+                <ion-option [value]="1">垂丝图</ion-option>
+                <ion-option [value]="0">现代图</ion-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-label>男子在前</ion-label>
+            <ion-icon name="man" item-left></ion-icon>
+            <ion-toggle name="maleFirst" [(ngModel)]="treeService.maleFirst"></ion-toggle>
+        </ion-item>
+        <ion-item>
+            <ion-label>不显示女性</ion-label>
+            <ion-icon name="male" item-left></ion-icon>
+            <ion-toggle name="noWoman" [(ngModel)]="treeService.noWoman"></ion-toggle>
+        </ion-item>
+        <ion-item>
+            <ion-label>不显示外姓</ion-label>
+            <ion-icon name="contract" item-left></ion-icon>
+            <ion-toggle name="sameSurname" [(ngModel)]="treeService.sameSurname"></ion-toggle>
+        </ion-item>
+        <ion-list-header>
+            杂项
+        </ion-list-header>
+        <ion-item>
+            <ion-label>音效</ion-label>
+            <ion-icon [name]="backService.audio ? 'volume-up' : 'volume-off'" item-left></ion-icon>
+            <ion-toggle name="audio" [(ngModel)]="backService.audio"></ion-toggle>
+        </ion-item>
+        <ion-item>
+            <ion-label>震动</ion-label>
+            <ion-icon [name]="backService.vibration ? 'notifications' : 'notifications-off'" item-left></ion-icon>
+            <ion-toggle name="vibration" [(ngModel)]="backService.vibration"></ion-toggle>
+        </ion-item>
     </ion-list>
-  </ion-content>
+</ion-content>

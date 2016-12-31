@@ -1,7 +1,8 @@
 import { TreeNode, nodeEach } from './tree-node';
 import { NodeType } from './node-type';
 import { Tree } from './tree';
-import { filter, count } from '../utils/array';
+import { count } from '../utils/array';
+import { filter } from 'underscore';
 /**
  * 问题列表
  */
@@ -18,7 +19,7 @@ export class Unknown {
   public static findUnknowns(tree: Tree): Unknown[] {
     const us: Unknown[] = [];
     tree.unknown = 0;
-    nodeEach(tree.root, (n: TreeNode, level: number) => {
+    nodeEach(tree.root, (n: TreeNode, p: TreeNode, level: number) => {
       const u = new Unknown(n);
       u.num = (50 - level) * 3000;
       if (!n.ignore) {

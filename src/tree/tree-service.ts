@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { ModalController } from 'ionic-angular';
 
-import * as uuid from 'uuid';
-// import { LocalStorage } from 'ng2-webstorage';
+import { v4 } from 'uuid';
 
 import { Tree } from './tree';
 import { TreeModal } from '../pages/tree-modal/tree-modal';
@@ -32,6 +31,30 @@ export class TreeService {
   set style(v: number) {
     this._style = v;
     this.storageService.setItem('style', v);
+  }
+  isDefaultStyle(): boolean {
+    return this._style === 0;
+  }
+  isVerticalStyle(): boolean {
+    return this._style === 1;
+  }
+
+  private _noWoman: boolean;
+  get noWoman(): boolean {
+     return this._noWoman;
+  }
+  set noWoman(v: boolean) {
+    this._noWoman = v;
+    this.storageService.setItem('noWoman', v);
+  }
+
+  private _sameSurname: boolean;
+  get sameSurname(): boolean {
+    return this._sameSurname;
+  }
+  set sameSurname(v: boolean) {
+    this._sameSurname = v;
+    this.storageService.setItem('sameSurname', v);
   }
 
   private _trees: Tree[];
@@ -66,13 +89,16 @@ export class TreeService {
     this._trees = trees;
     this.storageService.setItem('_trees', trees);
   }
+  private _mySelf: TreeNode;
   public get mySelf(): TreeNode {
-    return this.storageService.getItem('myself');
+    return this._mySelf;
   }
   public set mySelf(v: TreeNode) {
+    this._mySelf = v;
     this.storageService.setItem('myself', v);
   }
   private loadTime: Date;
+
   constructor(
     private http: Http,
     private modalCtrl: ModalController,
@@ -81,6 +107,10 @@ export class TreeService {
   ) {
     this._style = this.storageService.getItem('style', 1);
     this._maleFirst = this.storageService.getItem('maleFirst', true);
+    this._noWoman = this.storageService.getItem('noWoman', false);
+    this._sameSurname = this.storageService.getItem('sameSurname', false);
+    this._mySelf = this.storageService.getItem('myself', void 0);
+
     if (!this.mySelf) {
       this.mySelf = {
         name: '无名氏',
@@ -92,20 +122,7 @@ export class TreeService {
     }
     this.loadTime = new Date();
   }
-  // 编辑节点
-  editNode(node: TreeNode, tree: Tree): Promise<TreeNode> {
-    return new Promise<TreeNode>((resolve, reject) => {
-      console.debug('编辑节点:', node.name);
-      const nm = this.modalCtrl.create(NodeModal, {
-        node: Object.assign({}, node),
-        old: node,
-        tree: tree
-      });
-      nm.present();
-      nm.onDidDismiss(newNode => resolve(newNode));
-    });
-  }
-  // 首次初始化
+
   init() {
     console.log('用户初始化');
     const nm = this.modalCtrl.create(NodeModal, {
@@ -123,10 +140,10 @@ export class TreeService {
     });
     nm.present();
   }
-  // 新家谱
+
   getNewTree() {
     return {
-      id: uuid(),
+      id: v4(),
       title: `${this.mySelf.name === '无名氏' ? '无名' : this.mySelf.name[0]}氏家谱`,
       note: '',
       root: this.mySelf,
@@ -134,14 +151,14 @@ export class TreeService {
       ua: new Date(),
     };
   }
-  // 增加家谱
-  public add() {
+
+  add() {
     console.debug('增加家谱');
     this.edit(this.getNewTree());
     this.backService.trackAction('tree', 'add');
   }
-  // 编辑家谱
-  public edit(tree: Tree): Promise<Tree> {
+
+  edit(tree: Tree): Promise<Tree> {
     console.debug('保存家谱:', tree.title);
     return new Promise((resolve, reject) => {
       const treeModal = this.modalCtrl.create(TreeModal, {tree: Object.assign({}, tree)});
@@ -164,6 +181,7 @@ export class TreeService {
       treeModal.present();
     });
   }
+
   private isNew(tree: Tree) {
     for (const t of this.trees) {
       if (tree.id === t.id) {
@@ -172,8 +190,21 @@ export class TreeService {
     }
     return true;
   }
-  // 删除家谱
-  public del(tree: Tree) {
+
+  editNode(node: TreeNode, tree: Tree): Promise<TreeNode> {
+    return new Promise<TreeNode>((resolve, reject) => {
+      console.debug('编辑节点:', node.name);
+      const nm = this.modalCtrl.create(NodeModal, {
+        node: Object.assign({}, node),
+        old: node,
+        tree: tree
+      });
+      nm.present();
+      nm.onDidDismiss(newNode => resolve(newNode));
+    });
+  }
+
+  del(tree: Tree) {
     console.debug('删除家谱:', tree.title);
     remove(this.trees, (t: Tree) => tree.id === t.id);
     this.backService.trackAction('tree', 'del');

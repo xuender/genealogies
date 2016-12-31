@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController  } from 'ionic-angular';
+import { filter } from 'underscore';
 
 import { Calendar } from 'ionic-native';
 import { TreeNode } from '../../tree/tree-node';
@@ -39,10 +40,8 @@ export class NodeModal {
         this.setParent(tree.root, old);
         if (this.parentNode) {
           this.otherTitle = this.parentNode.gender ? '母亲' : '父亲';
-          for (const c of this.parentNode.children) {
-            if (c.nt !== NodeType.DEFAULT) {
-              this.others.push(c.name);
-            }
+          for (const c of filter(this.parentNode.children, (c) => c.nt > NodeType.DEFAULT)) {
+            this.others.push(c.name);
           }
         }
       }
@@ -64,7 +63,7 @@ export class NodeModal {
     start.setMonth(time.getMonth());
     start.setDate(time.getDate());
     if (start < now) {  // 已经过去，下年提醒
-       start.setMonth(start.getMonth() + 12);
+      start.setMonth(start.getMonth() + 12);
     }
     start.setHours(0);
     start.setMinutes(0);

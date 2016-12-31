@@ -1,6 +1,8 @@
+import { filter } from 'underscore';
+
 import { NodeType } from '../node-type';
 import { TreeNode } from '../tree-node';
-import { filter , count } from '../../utils/array';
+import { count } from '../../utils/array';
 
 export class NodeWriter {
     private texts: string[];
@@ -29,10 +31,8 @@ export class NodeWriter {
             this.texts.push(ts.join(''));
         }
 
-        if (node.children && node.children.length > 0) {
-            for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT)) {
-                this.nodeText(c, node, generation + 1);
-            }
+        for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT)) {
+            this.nodeText(c, node, generation + 1);
         }
     }
 
@@ -64,43 +64,37 @@ export class NodeWriter {
     }
 
     private consortData(node: TreeNode): string {
-        if (node.children && node.children.length > 0) {
-            const q: string[] = [];
-            for (const c of filter(node.children, (f: any) => f.nt > NodeType.DEFAULT)) {
-                const oq: string[] = [];
-                oq.push(c.dead ? `[${c.name}]` : c.name);
-                oq.push(this.extData(c, node));
-                q.push(oq.join(''));
-            }
-            if (q.length > 0) {
-                return `. ${ node.gender ? '娶妻' : '嫁予' }${ q.join(', ') }`;
-            }
+        const q: string[] = [];
+        for (const c of filter(node.children, (f: any) => f.nt > NodeType.DEFAULT)) {
+            const oq: string[] = [];
+            oq.push(c.dead ? `[${c.name}]` : c.name);
+            oq.push(this.extData(c, node));
+            q.push(oq.join(''));
+        }
+        if (q.length > 0) {
+            return `. ${ node.gender ? '娶妻' : '嫁予' }${ q.join(', ') }`;
         }
         return '';
     }
 
     private boyData(node: TreeNode): string {
-        if (node.children && node.children.length > 0) {
-            const ns: string[] = [];
-            for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && f.gender)) {
-                ns.push(c.dead ? `[${c.name}]` : c.name);
-            }
-            if (ns.length > 0) {
-                return `. 生子${ns.length}: ${ ns.join(', ') }`;
-            }
+        const ns: string[] = [];
+        for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && f.gender)) {
+            ns.push(c.dead ? `[${c.name}]` : c.name);
+        }
+        if (ns.length > 0) {
+            return `. 生子${ns.length}: ${ ns.join(', ') }`;
         }
         return '';
     }
 
     private girlData(node: TreeNode): string {
-        if (node.children && node.children.length > 0) {
-            const ns: string[] = [];
-            for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && !f.gender)) {
-                ns.push(c.dead ? `[${c.name}]` : c.name);
-            }
-            if (ns.length > 0) {
-                return `. 生女${ns.length}: ${ ns.join(', ') }`;
-            }
+        const ns: string[] = [];
+        for (const c of filter(node.children, (f: TreeNode) => f.nt === NodeType.DEFAULT && !f.gender)) {
+            ns.push(c.dead ? `[${c.name}]` : c.name);
+        }
+        if (ns.length > 0) {
+            return `. 生女${ns.length}: ${ ns.join(', ') }`;
         }
         return '';
     }

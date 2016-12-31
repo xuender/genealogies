@@ -1,7 +1,8 @@
+import { find, filter } from 'underscore';
+
 import { TreeNode , nodeEach } from '../tree-node';
-import { count, filter, remove } from '../../utils/array';
+import { count, remove } from '../../utils/array';
 import { NodeType } from '../node-type';
-import { find } from 'underscore';
 
 export class NodeReader {
     private lines: string[];

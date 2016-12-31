@@ -15,11 +15,20 @@
       <ion-icon name="cog"></ion-icon>
     </button>
     <ion-fab-list side="left">
-      <button ion-fab (click)="selectDefault()" [color]="isDefaultStyle() ? 'secondary' : ''">
-        横排
+      <button ion-fab (click)="selectDefault()" [color]="treeService.isDefaultStyle() ? 'secondary' : ''">
+        现代
       </button>
-      <button ion-fab (click)="selectVertical()" [color]="isVerticalStyle() ? 'secondary' : ''">
+      <button ion-fab (click)="selectVertical()" [color]="treeService.isVerticalStyle() ? 'secondary' : ''">
         垂丝
+      </button>
+      <button ion-fab (click)="changeMaleFirst()" [color]="treeService.maleFirst ? 'secondary' : ''">
+        <ion-icon name="man"></ion-icon>
+      </button>
+      <button ion-fab (click)="changeNoWoman()" [color]="treeService.noWoman ? 'secondary' : ''">
+        <ion-icon name="male"></ion-icon>
+      </button>
+      <button ion-fab (click)="changeSameSurname()" [color]="treeService.sameSurname ? 'secondary' : ''">
+        <ion-icon name="contract"></ion-icon>
       </button>
     </ion-fab-list>
   </ion-fab>

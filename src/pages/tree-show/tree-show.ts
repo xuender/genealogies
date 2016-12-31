@@ -45,7 +45,7 @@ export class TreeShow {
     const s = JSON.stringify(this.familyTree);
     this.treeService.edit(this.familyTree)
     .then((tree: Tree) => {
-      this.treeStyle.show(this.treeService.maleFirst);
+      this.treeStyle.show();
       this.addHistory(s);
     });
   }
@@ -71,7 +71,7 @@ export class TreeShow {
       this.addHistory();
       Object.assign(this.selectNode, node);
       this.familyTree.ua = new Date();
-      this.treeStyle.show(this.treeService.maleFirst);
+      this.treeStyle.show();
     });
     this.backService.touch();
   }
@@ -86,7 +86,7 @@ export class TreeShow {
     };
     this.familyTree.root = root;
     this.familyTree.ua = new Date();
-    this.treeStyle.show(this.treeService.maleFirst);
+    this.treeStyle.show();
     this.backService.trackAction('node', 'addParent');
   }
 
@@ -101,7 +101,7 @@ export class TreeShow {
       nt: NodeType.CONSORT,
     });
     this.familyTree.ua = new Date();
-    this.treeStyle.show(this.treeService.maleFirst);
+    this.treeStyle.show();
     this.backService.trackAction('node', 'addConsort');
   }
 
@@ -116,7 +116,7 @@ export class TreeShow {
       nt: NodeType.DEFAULT,
     });
     this.familyTree.ua = new Date();
-    this.treeStyle.show(this.treeService.maleFirst);
+    this.treeStyle.show();
     this.backService.trackAction('node', 'addChildren');
   }
 
@@ -125,7 +125,7 @@ export class TreeShow {
     this.addHistory();
     new NodeMerge(this.selectNode).merge(this.treeService.copyNode);
     this.familyTree.ua = new Date();
-    this.treeStyle.show(this.treeService.maleFirst);
+    this.treeStyle.show();
     this.backService.trackAction('node', 'paste');
   }
 
@@ -201,7 +201,7 @@ export class TreeShow {
   }
 
   get treeStyle(): TreeStyle {
-    if (this.treeService.style === 0) {
+    if (this.treeService.isDefaultStyle()) {
       return this.defaultStyle;
     }
     return this.verticalStyle;
@@ -210,23 +210,33 @@ export class TreeShow {
   selectDefault() {
     this.fab.close();
     this.treeService.style = 0;
-    // console.debug('treeStyle', this.treeStyle);
     this.ngAfterViewInit();
-  }
-
-  isDefaultStyle(): boolean {
-    return this.treeService.style === 0;
   }
 
   selectVertical() {
     this.fab.close();
     this.treeService.style = 1;
-    // console.debug('treeStyle', this.treeStyle);
     this.ngAfterViewInit();
   }
 
-  isVerticalStyle(): boolean {
-    return this.treeService.style === 1;
+  changeSameSurname() {
+    this.changeBoolean('sameSurname');
+  }
+
+  private changeBoolean(key: string) {
+    this.fab.close();
+    this.treeService[key] = !this.treeService[key];
+    this.treeStyle.show();
+    this.backService.touch();
+    this.backService.trackAction('tree', key);
+  }
+
+  changeNoWoman() {
+    this.changeBoolean('noWoman');
+  }
+
+  changeMaleFirst() {
+    this.changeBoolean('maleFirst');
   }
 
   isRoot() {
@@ -240,7 +250,7 @@ export class TreeShow {
   // 初始化之后
   ngAfterViewInit() {
     // 创建家谱默认式样
-    this.treeStyle.init(this.familyTree, '#tree', this.treeService.maleFirst);
+    this.treeStyle.init(this.familyTree, '#tree');
     // 绑定点击节点动作
     this.treeStyle.onClickNode = (node: TreeNode) => {
       this.selectNode = node;
@@ -250,7 +260,7 @@ export class TreeShow {
       this.backService.hold();
     };
     // 显示家谱
-    this.treeStyle.show(this.treeService.maleFirst);
+    this.treeStyle.show();
     this.treeStyle.toCenter();
     // console.log(nodeToStr(this.selectNode));
   }
@@ -275,6 +285,6 @@ export class TreeShow {
   }
 
   showRemove(): boolean {
-    return this.treeStyle && this.treeStyle.isDeleted();
+    return this.treeStyle && this.treeStyle.canDeleted();
   }
 }
