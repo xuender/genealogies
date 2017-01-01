@@ -22,18 +22,18 @@
         required></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>出生日期</ion-label>
-      <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD"
-        doneText="确定" cancelText="取消"
-        name="dob" [(ngModel)]="node.dob"></ion-datetime>
-    </ion-item>
-    <ion-item>
       <ion-label>性别</ion-label>
       <ion-select okText="确定" cancelText="取消"
         [(ngModel)]="node.gender" name="gender">
         <ion-option [value]="true">男</ion-option>
         <ion-option [value]="false">女</ion-option>
       </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>出生日期</ion-label>
+      <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD"
+        doneText="确定" cancelText="取消"
+        name="dob" [(ngModel)]="node.dob"></ion-datetime>
     </ion-item>
     <ion-item *ngIf="others.length>0">
       <ion-label>{{ otherTitle }}</ion-label>
@@ -49,6 +49,16 @@
         <ion-option [value]="1">配偶</ion-option>
         <ion-option [value]="2">离异</ion-option>
       </ion-select>
+    </ion-item>
+    <ion-item *ngIf="!node.dead">
+      <ion-label>联系电话</ion-label>
+      <ion-input type="text" [(ngModel)]="node.phone" minlength="3" name="phone"
+        pattern="[#\\-\\d]+"></ion-input>
+      <ion-note *ngIf="node.phone" item-right>
+        <button ion-button small icon-only (click)="call()">
+          <ion-icon name="call"></ion-icon>
+        </button>
+      </ion-note>
     </ion-item>
     <ion-item class="item-input">
       <ion-label>过世</ion-label>
@@ -68,18 +78,8 @@
       忌日提醒
       <ion-icon name="calendar" color="dark" item-right></ion-icon>
     </ion-item>
-    <ion-item>
-      <ion-label>联系电话</ion-label>
-      <ion-input type="text" [(ngModel)]="node.phone" minlength="3" name="phone"
-        pattern="[#\\-\\d]+"></ion-input>
-      <ion-note *ngIf="node.phone" item-right>
-        <button ion-button icon-only (click)="call()">
-          <ion-icon name="call"></ion-icon>
-        </button>
-      </ion-note>
-    </ion-item>
   </form>
-  <ion-item class="center">
+  <ion-item class="center" *ngIf="!node.dead">
     <button ion-button outline large (click)="readContact()">
       <ion-icon name="contacts"></ion-icon>
       读联系人信息
