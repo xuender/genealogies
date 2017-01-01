@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { filter } from 'underscore';
 
 import { Tree } from './tree';
@@ -121,7 +122,13 @@ export class Unknown {
   }
 
   checkPhone() {
-    if (!this.node.phone) {
+    if (!this.node.dead && !this.node.phone) {
+      // 年龄小于18岁无需联系电话
+      if (this.node.dob) {
+        if (moment().years() - moment(this.node.dob).years() < 18) {
+          return;
+        }
+      }
       this.unknown.push('联系电话未知');
       this.portion(UnknownType.NO_PHONE);
     }
