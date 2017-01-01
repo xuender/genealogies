@@ -103,13 +103,15 @@ export class NodeModal {
       node: this.node
     });
     sm.onDidDismiss( (contact) => {
-      if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
-        this.node.phone = contact.phoneNumbers[0].value;
+      if (contact) {
+        if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
+          this.node.phone = contact.phoneNumbers[0].value;
+        }
+        if (contact.birthday) {
+          this.node.dob = moment(contact.birthday).format('YYYY-MM-DD');
+        }
+        this.backService.trackAction('node', 'contactOk');
       }
-      if (contact.birthday) {
-        this.node.dob = moment(contact.birthday).format('YYYY-MM-DD');
-      }
-      this.backService.trackAction('node', 'contactOk');
     });
     sm.present();
     this.backService.trackAction('node', 'contact');

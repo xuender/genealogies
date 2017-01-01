@@ -44,8 +44,10 @@ export class TreeShow {
     const s = JSON.stringify(this.familyTree);
     this.treeService.edit(this.familyTree)
     .then((tree: Tree) => {
-      this.treeStyle.show();
-      this.addHistory(s);
+      if (tree) {
+        this.treeStyle.show();
+        this.addHistory(s);
+      }
     });
   }
 
@@ -73,10 +75,12 @@ export class TreeShow {
     this.fab.close();
     this.treeService.editNode(this.selectNode, this.familyTree)
     .then((node) => {
-      this.addHistory();
-      Object.assign(this.selectNode, node);
-      this.familyTree.ua = new Date();
-      this.treeStyle.show();
+      if (node) {
+        this.addHistory();
+        Object.assign(this.selectNode, node);
+        this.familyTree.ua = new Date();
+        this.treeStyle.show();
+      }
     });
     this.backService.touch();
   }
@@ -194,14 +198,16 @@ export class TreeShow {
     this.fab.close();
     this.treeStyle.toImage()
     .then((img: string) => {
-      SocialSharing.share(
-        null,
-        this.familyTree.title,
-        img,
-        null
-      );
-      this.backService.touch();
-      this.backService.trackAction('node', 'shareImage');
+      if (img) {
+        SocialSharing.share(
+          null,
+          this.familyTree.title,
+          img,
+          null
+        );
+        this.backService.touch();
+        this.backService.trackAction('node', 'shareImage');
+      }
     });
   }
 
