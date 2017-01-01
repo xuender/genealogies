@@ -10,23 +10,23 @@ import { BackService } from '../../utils/back-service';
 })
 export class TreeModal {
   tree: Tree;
+
   constructor(
     public params: NavParams,
     private backService: BackService,
     public viewCtrl: ViewController
   ) {
     this.tree = this.params.get('tree');
-    console.debug('tree modal', this.tree);
     this.backService.trackView('TreeModal');
   }
 
   cancel() {
-    console.debug('cancel');
     this.viewCtrl.dismiss();
+    this.backService.touch();
   }
 
   ok() {
-    console.debug('ok');
     this.viewCtrl.dismiss(this.tree);
+    this.backService.touch();
   }
 }

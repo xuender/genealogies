@@ -1,14 +1,15 @@
 import { find, filter } from 'underscore';
 
-import { TreeNode , nodeEach } from '../tree-node';
-import { count, remove } from '../../utils/array';
 import { NodeType } from '../node-type';
+import { count, remove } from '../../utils/array';
+import { TreeNode , nodeEach } from '../tree-node';
 
 export class NodeReader {
     private lines: string[];
     private root: TreeNode;
     private nodes: TreeNode[][] = [];
     private nowNum: number = 1;
+
     constructor(str: string) {
         this.lines = str.split('\n');
         const last = this.lines[this.lines.length - 1];

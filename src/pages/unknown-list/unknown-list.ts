@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-
 import { AlertController, NavController, NavParams, ModalController } from 'ionic-angular';
+
 import { Tree } from '../../tree/tree';
-import { TreeService } from '../../tree/tree-service';
 import { Unknown } from '../../tree/unknown';
 import { TreeNode } from '../../tree/tree-node';
+import { TreeService } from '../../tree/tree-service';
 import { BackService } from '../../utils/back-service';
 
 @Component({
@@ -13,10 +13,9 @@ import { BackService } from '../../utils/back-service';
   templateUrl: 'unknown-list.html'
 })
 export class UnknownList {
-  // 家谱
   familyTree: Tree;
-  // 问题列表
   unknowns: Unknown[];
+
   constructor(
     public params: NavParams,
     public navCtrl: NavController,

@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
-import { ToastController, NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
 import { SocialSharing } from 'ionic-native';
-// import { LocalStorage } from 'ng2-webstorage';
-import { TreeService } from '../../tree/tree-service';
+import { ToastController, NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
 
 import { Tree } from '../../tree/tree';
-import { TreeNode, nodeToStr, strToNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
-import { DefaultStyle } from '../../providers/default-style';
-import { BackService } from '../../utils/back-service';
 import { TreeStyle } from '../../tree/tree-style';
-import { VerticalStyle } from '../../providers/vertical-style';
+import { TreeService } from '../../tree/tree-service';
+import { BackService } from '../../utils/back-service';
 import { NodeMerge } from '../../tree/node/node-merge';
+import { DefaultStyle } from '../../providers/default-style';
+import { VerticalStyle } from '../../providers/vertical-style';
+import { TreeNode, nodeToStr, strToNode } from '../../tree/tree-node';
 
 @Component({
   selector: 'page-tree-show',
@@ -22,8 +21,9 @@ export class TreeShow {
   familyTree: Tree;
   selectNode: TreeNode;
   fab: FabContainer;
-  private copyStr: string;
   history: string[];
+  private copyStr: string;
+
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
@@ -37,7 +37,6 @@ export class TreeShow {
   ) {
     this.history = [];
     this.familyTree = this.params.get('tree');
-    // console.debug('tree show', this.familyTree.title);
     this.backService.trackView('TreeShow');
   }
 
@@ -233,7 +232,6 @@ export class TreeShow {
     this.fab.close();
     this.treeService[key] = !this.treeService[key];
     this.treeStyle.show();
-    this.backService.touch();
     this.backService.trackAction('tree', key);
   }
 

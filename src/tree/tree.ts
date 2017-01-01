@@ -1,7 +1,5 @@
 import { TreeNode } from './tree-node';
-/**
- * 家谱
- */
+
 export interface Tree {
   id: string;     // 主键
   title: string;  // 家谱标题

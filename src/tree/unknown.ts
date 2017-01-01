@@ -1,12 +1,11 @@
-import { TreeNode, nodeEach } from './tree-node';
-import { NodeType } from './node-type';
-import { UnknownType } from './unknown-type';
-import { Tree } from './tree';
-import { count } from '../utils/array';
 import { filter } from 'underscore';
-/**
- * 问题列表
- */
+
+import { Tree } from './tree';
+import { NodeType } from './node-type';
+import { count } from '../utils/array';
+import { UnknownType } from './unknown-type';
+import { TreeNode, nodeEach } from './tree-node';
+
 export class Unknown {
 
   public static findUnknowns(tree: Tree): Unknown[] {

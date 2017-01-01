@@ -1,6 +1,7 @@
+import { find, pick, isArray } from 'underscore';
+
 import { TreeNode } from '../tree-node';
 import { NodeType } from '../node-type';
-import { find, pick, isArray } from 'underscore';
 
 export class NodeMerge {
     constructor(private source: TreeNode) {

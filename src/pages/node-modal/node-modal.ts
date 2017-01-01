@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { NavParams, ViewController, ModalController } from 'ionic-angular';
 import { filter } from 'underscore';
 import * as moment from 'moment';
-
 import { Calendar, CallNumber } from 'ionic-native';
+
 import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
 import { BackService } from '../../utils/back-service';
@@ -14,17 +14,12 @@ import { SelectContact } from '../select-contact/select-contact';
   templateUrl: 'node-modal.html'
 })
 export class NodeModal {
-  // 节点
   node: TreeNode;
-  // 可选择的父亲或母亲
   others: string[];
-  // 父亲或母亲的称呼
   otherTitle: string;
-  // 标题
   title: string;
-  // 没有关闭按钮
   noClose: boolean;
-  parentNode: TreeNode; // 父亲或母亲
+  parentNode: TreeNode;
 
   constructor(
     public params: NavParams,
@@ -95,10 +90,12 @@ export class NodeModal {
 
   cancel() {
     this.viewCtrl.dismiss();
+    this.backService.touch();
   }
 
   ok() {
     this.viewCtrl.dismiss(this.node);
+    this.backService.touch();
   }
 
   readContact() {
@@ -107,7 +104,7 @@ export class NodeModal {
     });
     sm.onDidDismiss( (contact) => {
       if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
-         this.node.phone = contact.phoneNumbers[0].value;
+        this.node.phone = contact.phoneNumbers[0].value;
       }
       if (contact.birthday) {
         this.node.dob = moment(contact.birthday).format('YYYY-MM-DD');

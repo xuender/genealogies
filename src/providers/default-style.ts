@@ -1,19 +1,17 @@
-import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
-
+import { Injectable } from '@angular/core';
+import { enc } from 'crypto-js';
 import { zoom } from 'd3-zoom';
+import { find, filter } from 'underscore';
 import { event, select } from 'd3-selection';
 import { tree, hierarchy, HierarchyNode } from 'd3-hierarchy';
-import { enc } from 'crypto-js';
-import { find, filter } from 'underscore';
 
 import { Tree } from '../tree/tree';
-import { NodeType } from '../tree/node-type';
-import { TreeNode , nodeEach } from '../tree/tree-node';
-import { TreeStyle } from '../tree/tree-style';
 import { remove } from '../utils/array';
+import { NodeType } from '../tree/node-type';
+import { TreeStyle } from '../tree/tree-style';
 import { TreeService } from '../tree/tree-service';
-
+import { TreeNode , nodeEach } from '../tree/tree-node';
 
 @Injectable()
 export class DefaultStyle implements TreeStyle {
@@ -214,7 +212,6 @@ export class DefaultStyle implements TreeStyle {
         remove(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
     });
   }
-
 
   private createRoot(): HierarchyNode<TreeNode> {
     const root = hierarchy(this.familyTree.root);

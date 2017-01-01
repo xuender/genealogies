@@ -1,17 +1,16 @@
-import { Injectable } from '@angular/core';
+import { v4 } from 'uuid';
 import { Http } from '@angular/http';
+import { Injectable } from '@angular/core';
 import { ModalController } from 'ionic-angular';
 
-import { v4 } from 'uuid';
-
 import { Tree } from './tree';
-import { TreeModal } from '../pages/tree-modal/tree-modal';
-import { TreeNode , nodeEach } from './tree-node';
 import { NodeType } from './node-type';
-import { NodeModal } from '../pages/node-modal/node-modal';
-import { StorageService } from '../utils/storage-service';
-import { BackService } from '../utils/back-service';
 import { remove } from '../utils/array';
+import { TreeNode , nodeEach } from './tree-node';
+import { BackService } from '../utils/back-service';
+import { StorageService } from '../utils/storage-service';
+import { TreeModal } from '../pages/tree-modal/tree-modal';
+import { NodeModal } from '../pages/node-modal/node-modal';
 
 @Injectable()
 export class TreeService {
@@ -19,6 +18,7 @@ export class TreeService {
   set maleFirst(v: boolean) {
     this._maleFirst = v;
     this.storageService.setItem('maleFirst', v);
+    this.backService.touch();
   }
   get maleFirst(): boolean {
     return this._maleFirst;
@@ -31,6 +31,7 @@ export class TreeService {
   set style(v: number) {
     this._style = v;
     this.storageService.setItem('style', v);
+    this.backService.touch();
   }
   isDefaultStyle(): boolean {
     return this._style === 0;
@@ -41,11 +42,12 @@ export class TreeService {
 
   private _noWoman: boolean;
   get noWoman(): boolean {
-     return this._noWoman;
+    return this._noWoman;
   }
   set noWoman(v: boolean) {
     this._noWoman = v;
     this.storageService.setItem('noWoman', v);
+    this.backService.touch();
   }
 
   private _sameSurname: boolean;
@@ -55,11 +57,10 @@ export class TreeService {
   set sameSurname(v: boolean) {
     this._sameSurname = v;
     this.storageService.setItem('sameSurname', v);
+    this.backService.touch();
   }
 
   private _trees: Tree[];
-  copyNode: TreeNode;
-  // 判断是否有变化，触发set 方法
   get trees() {
     if (this._trees) {
       for (const t of this._trees) {
@@ -89,6 +90,7 @@ export class TreeService {
     this._trees = trees;
     this.storageService.setItem('_trees', trees);
   }
+
   private _mySelf: TreeNode;
   public get mySelf(): TreeNode {
     return this._mySelf;
@@ -97,6 +99,8 @@ export class TreeService {
     this._mySelf = v;
     this.storageService.setItem('myself', v);
   }
+
+  copyNode: TreeNode;
   private loadTime: Date;
 
   constructor(

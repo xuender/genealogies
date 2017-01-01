@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
+import { Injectable } from '@angular/core';
+
 import { DefaultStyle } from './default-style';
 import { TreeService } from '../tree/tree-service';
-import 'rxjs/add/operator/map';
 
 @Injectable()
 export class VerticalStyle extends DefaultStyle {

@@ -1,6 +1,6 @@
-import { TreeNode } from './tree-node';
 import { Tree } from './tree';
-// 家谱式样接口
+import { TreeNode } from './tree-node';
+
 export interface TreeStyle {
   name: string;
   init(tree: Tree, svgId: string): void;

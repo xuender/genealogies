@@ -1,10 +1,9 @@
+import { filter } from 'underscore';
+
 import { NodeType } from './node-type';
 import { NodeWriter } from './node/node-writer';
 import { NodeReader } from './node/node-reader';
-import { filter } from 'underscore';
-/**
- * 节点
- */
+
 export interface TreeNode {
   id?: string;        // 共享时才需要ID
   name: string;       // 姓名
