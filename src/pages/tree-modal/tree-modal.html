@@ -23,8 +23,16 @@
                     minlength="3" required></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label fixed>说明</ion-label>
-                <ion-input type="text" [(ngModel)]="tree.note" name="note"></ion-input>
+                <ion-label fixed>在世人数</ion-label>
+                <ion-badge item-right>{{ tree.aliveNum }}</ion-badge>
+            </ion-item>
+            <ion-item>
+                <ion-label fixed>总人数</ion-label>
+                <ion-badge item-right>{{ tree.totalNum }}</ion-badge>
+            </ion-item>
+            <ion-item *ngIf="tree.unknown">
+                <ion-label fixed>未知问题</ion-label>
+                <ion-badge color="danger" item-right>{{ tree.unknown }}</ion-badge>
             </ion-item>
             <ion-item>
                 <ion-label fixed>修改时间</ion-label>
