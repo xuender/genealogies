@@ -1,5 +1,6 @@
 import { TreeNode, nodeEach } from './tree-node';
 import { NodeType } from './node-type';
+import { UnknownType } from './unknown-type';
 import { Tree } from './tree';
 import { count } from '../utils/array';
 import { filter } from 'underscore';
@@ -7,14 +8,6 @@ import { filter } from 'underscore';
  * 问题列表
  */
 export class Unknown {
-  private static START = 18;
-  private static NO_NAME = 9;
-  private static NO_OTHER = 8;
-  private static NO_CONSORT = 7;
-  private static ERROR_DOB = 6;
-  private static ERROR_DOD = 5;
-  private static NO_DOB = 4;
-  private static NO_DOD = 3;
 
   public static findUnknowns(tree: Tree): Unknown[] {
     const us: Unknown[] = [];
@@ -28,6 +21,7 @@ export class Unknown {
         u.checkDob();
         u.checkDod();
         u.checkConsort();
+        u.checkPhone();
         u.checkOther(tree);
       }
 
@@ -51,19 +45,19 @@ export class Unknown {
 
   checkStart() {
     if (this.node.star) {
-      this.portion(Unknown.START);
+      this.portion(UnknownType.START);
     }
   }
 
   portion(num: number) {
-    this.num += 1 << num;
+    this.num += num;
   }
 
   checkName() {
     for (const s of ['无名', '妻子', '丈夫', '父亲', '奶奶', '祖母', '儿子', '妈妈', '女儿', '姐姐', '哥哥', '爷爷', '祖父']) {
       if (this.node.name.indexOf(s) >= 0) {
         this.unknown.push('姓名未知');
-        this.portion(Unknown.NO_NAME);
+        this.portion(UnknownType.NO_NAME);
         return;
       }
     }
@@ -79,12 +73,12 @@ export class Unknown {
         }
         if (olds.length > 0) {
           this.unknown.push(`年龄小于: ${olds.join(', ')}`);
-          this.portion(Unknown.ERROR_DOB);
+          this.portion(UnknownType.ERROR_DOB);
         }
       }
     } else {
       this.unknown.push('出生日期未知');
-      this.portion(Unknown.NO_DOB);
+      this.portion(UnknownType.NO_DOB);
     }
   }
 
@@ -96,7 +90,7 @@ export class Unknown {
           const dob = new Date(this.node.dob);
           if (dob > dod) {
             this.unknown.push('忌日小于生日');
-            this.portion(Unknown.ERROR_DOD);
+            this.portion(UnknownType.ERROR_DOD);
           }
         }
         if (this.node.children) {
@@ -106,12 +100,12 @@ export class Unknown {
           }
           if (olds.length > 0) {
             this.unknown.push(`忌日早于子女生日: ${olds.join(', ')}`);
-            this.portion(Unknown.ERROR_DOD);
+            this.portion(UnknownType.ERROR_DOD);
           }
         }
       } else {
         this.unknown.push('忌日未知');
-        this.portion(Unknown.NO_DOD);
+        this.portion(UnknownType.NO_DOD);
       }
     }
   }
@@ -122,8 +116,15 @@ export class Unknown {
       const on = count(this.node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
       if (cn > 0 && on === 0) {
         this.unknown.push('有子女无伴侣');
-        this.portion(Unknown.NO_CONSORT);
+        this.portion(UnknownType.NO_CONSORT);
       }
+    }
+  }
+
+  checkPhone() {
+    if (!this.node.phone) {
+      this.unknown.push('联系电话未知');
+      this.portion(UnknownType.NO_PHONE);
     }
   }
 
@@ -141,7 +142,7 @@ export class Unknown {
         const on = count(p.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
         if (on > 1) {
           this.unknown.push(`${p.gender ? '母亲' : '父亲'}未知`);
-          this.portion(Unknown.NO_OTHER);
+          this.portion(UnknownType.NO_OTHER);
         }
       }
     }
