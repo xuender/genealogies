@@ -6,6 +6,7 @@ describe('TreeWriter', () => {
     const root: TreeNode = {
         name: 'root',
         gender: true,
+        phone: '123321',
         nt: NodeType.DEFAULT,
         children: [
             {
@@ -58,5 +59,6 @@ describe('TreeWriter', () => {
         const lines = str.split('\n');
         it('strings fooder', () => expect(lines[lines.length - 1].indexOf('--')).toBe(0));
         it('lines length', () => expect(lines.length).toBe(5));
+        it('phone', () => expect(lines[0].indexOf('123321')).toBeGreaterThanOrEqual(0));
     });
 });

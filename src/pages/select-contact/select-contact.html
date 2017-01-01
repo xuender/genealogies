@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-navbar>
+        <ion-buttons start>
+            <button ion-button (click)="cancel()">
+                取消
+            </button>
+        </ion-buttons>
+        <ion-title>选择联系人</ion-title>
+        <ion-buttons end>
+            <button class="default-button" [disabled]="select < 0" (click)="ok()">
+                确定
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-list radio-group [(ngModel)]="select">
+        <ion-item *ngFor="let c of contacts; let i = index;">
+            <ion-avatar item-left *ngIf="c.photos.length > 0">
+                <img [src]="domSanitizer.bypassSecurityTrustUrl(c.photos[0].value)">
+            </ion-avatar>
+            <ion-label>
+                {{ c.displayName }}
+                <p *ngIf="c.phoneNumbers.length > 0">{{ c.phoneNumbers[0].value }}</p>
+                <p *ngIf="c.birthday">{{ c.birthday | date:'y-MM-dd' }}</p>
+            </ion-label>
+            <ion-radio [value]="i"></ion-radio>
+        </ion-item>
+    </ion-list>
+</ion-content>

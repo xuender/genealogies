@@ -17,6 +17,7 @@ import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
 import { UnknownList } from '../pages/unknown-list/unknown-list';
 import { DefaultStyle } from '../providers/default-style';
 import { VerticalStyle } from '../providers/vertical-style';
+import { SelectContact } from '../pages/select-contact/select-contact';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { VerticalStyle } from '../providers/vertical-style';
     Setting,
     TreeList,
     TreeModal,
+    SelectContact,
     UnknownTree,
     UnknownList,
     TreeShow
@@ -43,6 +45,7 @@ import { VerticalStyle } from '../providers/vertical-style';
     MyApp,
     // Home,
     NodeModal,
+    SelectContact,
     Setting,
     TreeList,
     TreeModal,

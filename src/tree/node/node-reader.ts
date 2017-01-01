@@ -97,7 +97,7 @@ export class NodeReader {
 
     private static DIE_REG = new RegExp('^\\[([\\s\\S]+)\\]([\\s\\S]*)');   // 死亡
     private static LIVE_REG = new RegExp('^([^\\(]+)([\\s\\S]*)');   // 活着
-    private static EXT_REG = new RegExp('^\\(([男女]*)\\s*([?~\\-\\d]*)\\s*([父母:]+[\\s\\S]+)*\\s*([离异]*)\\)$'); // 扩展数据
+    private static EXT_REG = new RegExp('^\\(([男女]*)*\\s*([?~\\d]*)*\\s*(电话:[#\\-\\d]*)*\\s*([父母:]+[\\s\\S]+)*\\s*([离异]*)\\)$'); // 扩展数据
 
     private decodeExt(str: string, node: TreeNode): TreeNode {
         if (!str) {
@@ -119,24 +119,29 @@ export class NodeReader {
         // console.debug('extStr', extStr);
         if (extStr) {
             const er = NodeReader.EXT_REG.exec(extStr);
-            // console.debug('er', er);
-            if (er[1]) {
-                node.gender = er[1] === '男';
-            }
-            if (er[2]) {
-                const bs = er[2].split('~');
-                if (bs[0] && bs[0].length > 3) {
-                    node.dob = bs[0];
+            if (er) {
+                // console.log('er', er);
+                if (er[1]) {
+                    node.gender = er[1] === '男';
                 }
-                if (bs[1] && bs[1].length > 3) {
-                    node.dod = bs[1];
+                if (er[2]) {
+                    const bs = er[2].split('~');
+                    if (bs[0] && bs[0].length > 3) {
+                        node.dob = bs[0];
+                    }
+                    if (bs[1] && bs[1].length > 3) {
+                        node.dod = bs[1];
+                    }
                 }
-            }
-            if (er[3]) {
-                node.other = er[3].substring(2);
-            }
-            if (er[4]) {
-                node.nt = NodeType.EX;
+                if (er[3]) {
+                    node.phone = er[3].split(':')[1];
+                }
+                if (er[4]) {
+                    node.other = er[4].substring(2);
+                }
+                if (er[5]) {
+                    node.nt = NodeType.EX;
+                }
             }
         }
         return node;

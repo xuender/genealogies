@@ -4,7 +4,7 @@ import { NodeWriter } from './node-writer';
 
 describe('TreeReader', () => {
     const str = `1代root. 娶妻w. 生子2: a, b
-2代a. 生女1: c
+2代a(电话:123321). 生女1: c
 2代b. 娶妻w1, w2(离异). 生子1: c
 3代c(2002~ 母:w2)
 --复制粘贴到《微家谱》可以生成方便编辑查看的树形家谱`;
@@ -22,6 +22,7 @@ describe('TreeReader', () => {
         it('root', () => expect(node.name).toBe('root'));
         it('root children length', () => expect(node.children.length).toBe(3));
         it('w', () => expect(node.children[0].name).toBe('w'));
+        it('phone', () => expect(node.children[1].phone).toBe('123321'));
         it('c1', () => expect(node.children[1].children[0].name).toBe('c'));
         it('c2', () => expect(node.children[2].children[2].name).toBe('c'));
         const newStr = new NodeWriter(node).toString();

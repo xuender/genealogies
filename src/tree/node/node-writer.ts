@@ -47,6 +47,10 @@ export class NodeWriter {
             ks.push(`${node.dob ? node.dob.substr(0, 10) : '?'}~${node.dead ? (node.dod ? node.dod.substr(0, 10) : '?') : ''}`);
             b = true;
         }
+        if (node.phone) {
+             ks.push(`电话:${node.phone}`);
+             b = true;
+        }
         if (node.nt === NodeType.EX) {
             ks.push('离异');
             b = true;

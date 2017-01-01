@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { NavParams, ViewController  } from 'ionic-angular';
+import { NavParams, ViewController, ModalController } from 'ionic-angular';
 import { filter } from 'underscore';
+import * as moment from 'moment';
 
-import { Calendar } from 'ionic-native';
+import { Calendar, CallNumber } from 'ionic-native';
 import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
 import { BackService } from '../../utils/back-service';
+import { SelectContact } from '../select-contact/select-contact';
 
 @Component({
   selector: 'page-node-modal',
@@ -27,6 +29,7 @@ export class NodeModal {
   constructor(
     public params: NavParams,
     public viewCtrl: ViewController,
+    public modalCtrl: ModalController,
     private backService: BackService
   ) {
     this.node = this.params.get('node');
@@ -91,13 +94,34 @@ export class NodeModal {
   }
 
   cancel() {
-    console.debug('cancel');
     this.viewCtrl.dismiss();
   }
 
   ok() {
-    console.debug('ok');
     this.viewCtrl.dismiss(this.node);
+  }
+
+  readContact() {
+    const sm = this.modalCtrl.create(SelectContact, {
+      node: this.node
+    });
+    sm.onDidDismiss( (contact) => {
+      if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
+         this.node.phone = contact.phoneNumbers[0].value;
+      }
+      if (contact.birthday) {
+        this.node.dob = moment(contact.birthday).format('YYYY-MM-DD');
+      }
+      this.backService.trackAction('node', 'contactOk');
+    });
+    sm.present();
+    this.backService.trackAction('node', 'contact');
+  }
+
+  call() {
+    CallNumber.callNumber(this.node.phone, true)
+    .then(() => this.backService.trackAction('node', 'callOk'));
+    this.backService.trackAction('node', 'call');
   }
 
   star() {
