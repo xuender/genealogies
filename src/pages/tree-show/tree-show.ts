@@ -218,6 +218,7 @@ export class TreeShow {
     return this.verticalStyle;
   }
 
+  /*
   selectDefault() {
     this.fab.close();
     this.treeService.style = 0;
@@ -229,6 +230,7 @@ export class TreeShow {
     this.treeService.style = 1;
     this.ngAfterViewInit();
   }
+  */
 
   changeSameSurname() {
     this.changeBoolean('sameSurname');
