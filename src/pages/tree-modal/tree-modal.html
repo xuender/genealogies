@@ -22,11 +22,11 @@
                     pattern="[\\d\\w\u4e00-\u9fa5]+[\\d\\w\u4e00-\u9fa5 ]*[\\d\\w\u4e00-\u9fa5]+"
                     minlength="3" required></ion-input>
             </ion-item>
-            <ion-item>
+            <ion-item *ngIf="tree.aliveNum">
                 <ion-label fixed>在世人数</ion-label>
                 <ion-badge item-right>{{ tree.aliveNum }}</ion-badge>
             </ion-item>
-            <ion-item>
+            <ion-item *ngIf="tree.totalNum">
                 <ion-label fixed>录入人数</ion-label>
                 <ion-badge item-right>{{ tree.totalNum }}</ion-badge>
             </ion-item>
@@ -34,11 +34,11 @@
                 <ion-label fixed>未知问题</ion-label>
                 <ion-badge color="danger" item-right>{{ tree.unknown }}</ion-badge>
             </ion-item>
-            <ion-item>
+            <ion-item *ngIf="tree.ua">
                 <ion-label fixed>修改时间</ion-label>
                 <ion-label>{{ tree.ua | date:"y-MM-dd HH:mm"}}</ion-label>
             </ion-item>
-            <ion-item>
+            <ion-item *ngIf="tree.ca">
                 <ion-label fixed>创建时间</ion-label>
                 <ion-label>{{ tree.ca | date:"y-MM-dd HH:mm"}}</ion-label>
             </ion-item>
