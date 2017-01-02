@@ -6,6 +6,7 @@ import { MyApp } from './app.component';
 import { BackService } from '../utils/back-service';
 import { StorageService } from '../utils/storage-service';
 import { TreeService } from '../tree/tree-service';
+import { ContactsService } from '../providers/contacts-service';
 
 // import { Home } from '../pages/home/home';
 import { NodeModal } from '../pages/node-modal/node-modal';
@@ -58,6 +59,7 @@ import { SelectContact } from '../pages/select-contact/select-contact';
     BackService,
     DefaultStyle,
     VerticalStyle,
+    ContactsService,
     TreeService
   ]
 })

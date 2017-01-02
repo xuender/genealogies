@@ -79,8 +79,8 @@
       <ion-icon name="calendar" color="dark" item-right></ion-icon>
     </ion-item>
   </form>
-  <ion-item class="center" *ngIf="!node.dead">
-    <button ion-button outline large (click)="readContact()">
+  <ion-item class="center" *ngIf="havePhone()">
+    <button ion-button outline large (click)="readContact()" [disabled]="contactsService.disabled()">
       <ion-icon name="contacts"></ion-icon>
       读联系人信息
     </button>
