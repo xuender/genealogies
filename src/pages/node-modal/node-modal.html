@@ -19,7 +19,7 @@
       <ion-label>姓名</ion-label>
       <ion-input type="text" [(ngModel)]="node.name" minlength="2" name="name"
         pattern="[\\d\\w\u4e00-\u9fa5]+[\\d\\w\u4e00-\u9fa5 ]*[\\d\\w\u4e00-\u9fa5]+"
-        required></ion-input>
+        clearInput="true" required></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>性别</ion-label>
@@ -36,7 +36,7 @@
         name="dob" [(ngModel)]="node.dob"></ion-datetime>
       <ion-note *ngIf="node.dob" item-right>
         <button type="button" ion-button color="light" small outline icon-only (click)="cleanDob()">
-          <ion-icon name="remove-circle"></ion-icon>
+          <ion-icon name="close"></ion-icon>
         </button>
       </ion-note>
     </ion-item>
@@ -80,7 +80,7 @@
         name="dod" [(ngModel)]="node.dod"></ion-datetime>
       <ion-note *ngIf="node.dod" item-right>
         <button type="button" ion-button color="light" small outline icon-only (click)="cleanDod()">
-          <ion-icon name="remove-circle"></ion-icon>
+          <ion-icon name="close"></ion-icon>
         </button>
       </ion-note>
     </ion-item>
@@ -98,11 +98,11 @@
   <ion-item class="center">
     <button ion-button color="secondary" outline large (click)="star()">
       <ion-icon [name]="node.star ? 'star' : 'star-outline'"></ion-icon>
-      关注
+      {{ node.star ? '取消关注' : '置顶关注' }}
     </button>
     <button ion-button color="danger" outline large (click)="ignore()">
       <ion-icon [name]="node.ignore ? 'ios-remove-circle' : 'ios-remove-circle-outline'"></ion-icon>
-      忽略问题
+      {{ node.ignore ? '显示问题' : '忽略问题' }}
     </button>
   </ion-item>
 </ion-content>
