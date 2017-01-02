@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import { filter } from 'underscore';
 import { Component } from '@angular/core';
 import { Calendar, CallNumber } from 'ionic-native';
-import { NavParams, ViewController, ModalController } from 'ionic-angular';
+import { AlertController, NavParams, ViewController, ModalController } from 'ionic-angular';
 
 import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
@@ -26,6 +26,7 @@ export class NodeModal {
     public params: NavParams,
     public viewCtrl: ViewController,
     public modalCtrl: ModalController,
+    private alertController: AlertController,
     public contactsService: ContactsService,
     private backService: BackService
   ) {
@@ -117,6 +118,40 @@ export class NodeModal {
     });
     sm.present();
     this.backService.trackAction('node', 'contact');
+  }
+
+  cleanDob() {
+    this.alertController.create({
+      title: '重置生日',
+      subTitle: `是否重置${this.node.name}的生日？`,
+      buttons: [
+        {
+          text: '关闭',
+          role: 'cancel'
+        },
+        {
+          text: '重置',
+          handler: () => this.node.dob = ''
+        }
+      ]
+    }).present();
+  }
+
+  cleanDod() {
+    this.alertController.create({
+      title: '重置忌日',
+      subTitle: `是否重置${this.node.name}的忌日？`,
+      buttons: [
+        {
+          text: '关闭',
+          role: 'cancel'
+        },
+        {
+          text: '重置',
+          handler: () => this.node.dod = ''
+        }
+      ]
+    }).present();
   }
 
   call() {

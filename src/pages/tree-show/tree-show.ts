@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SocialSharing } from 'ionic-native';
-import { ToastController, NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
+import { AlertController, ToastController, NavController, NavParams, ViewController, FabContainer, ModalController } from 'ionic-angular';
 
 import { Tree } from '../../tree/tree';
 import { NodeType } from '../../tree/node-type';
@@ -30,6 +30,7 @@ export class TreeShow {
     public navCtrl: NavController,
     private modalCtrl: ModalController,
     private toastCtrl: ToastController,
+    private alertController: AlertController,
     private backService: BackService,
     private defaultStyle: DefaultStyle,
     private verticalStyle: VerticalStyle,
@@ -56,19 +57,34 @@ export class TreeShow {
   }
 
   undo() {
-    const s = this.history.pop();
-    if (s) {
-      for (let i = 0; i < this.treeService.trees.length; i++) {
-        if (this.treeService.trees[i] === this.familyTree) {
-          this.familyTree = JSON.parse(s);
-          this.familyTree.ua = new Date();
-          this.treeService.trees[i] = this.familyTree;
-          this.ngAfterViewInit();
-          this.backService.trackAction('tree', 'undo');
-          break;
+    this.alertController.create({
+      title: '确认撤消操作',
+      subTitle: `是否确认执行撤消操作，退回到之间的记录？`,
+      buttons: [
+        {
+          text: '取消',
+          role: 'cancel'
+        },
+        {
+          text: '确认',
+          handler: () => {
+            const s = this.history.pop();
+            if (s) {
+              for (let i = 0; i < this.treeService.trees.length; i++) {
+                if (this.treeService.trees[i] === this.familyTree) {
+                  this.familyTree = JSON.parse(s);
+                  this.familyTree.ua = new Date();
+                  this.treeService.trees[i] = this.familyTree;
+                  this.ngAfterViewInit();
+                  this.backService.trackAction('tree', 'undo');
+                  return;
+                }
+              }
+            }
+          }
         }
-      }
-    }
+      ]
+    }).present();
   }
 
   editNode() {
@@ -219,18 +235,18 @@ export class TreeShow {
   }
 
   /*
-  selectDefault() {
-    this.fab.close();
-    this.treeService.style = 0;
-    this.ngAfterViewInit();
-  }
+     selectDefault() {
+     this.fab.close();
+     this.treeService.style = 0;
+     this.ngAfterViewInit();
+     }
 
-  selectVertical() {
-    this.fab.close();
-    this.treeService.style = 1;
-    this.ngAfterViewInit();
-  }
-  */
+     selectVertical() {
+     this.fab.close();
+     this.treeService.style = 1;
+     this.ngAfterViewInit();
+     }
+   */
 
   changeSameSurname() {
     this.changeBoolean('sameSurname');

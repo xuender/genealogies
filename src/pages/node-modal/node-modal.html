@@ -34,6 +34,11 @@
       <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD"
         doneText="确定" cancelText="取消"
         name="dob" [(ngModel)]="node.dob"></ion-datetime>
+      <ion-note *ngIf="node.dob" item-right>
+        <button type="button" ion-button color="light" small outline icon-only (click)="cleanDob()">
+          <ion-icon name="remove-circle"></ion-icon>
+        </button>
+      </ion-note>
     </ion-item>
     <ion-item *ngIf="others.length>0">
       <ion-label>{{ otherTitle }}</ion-label>
@@ -55,7 +60,7 @@
       <ion-input type="text" [(ngModel)]="node.phone" minlength="3" name="phone"
         pattern="[#\\-\\d]+"></ion-input>
       <ion-note *ngIf="node.phone" item-right>
-        <button ion-button small icon-only (click)="call()">
+        <button type="button" ion-button small icon-only (click)="call()">
           <ion-icon name="call"></ion-icon>
         </button>
       </ion-note>
@@ -73,6 +78,11 @@
       <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD"
         doneText="确定" cancelText="取消"
         name="dod" [(ngModel)]="node.dod"></ion-datetime>
+      <ion-note *ngIf="node.dod" item-right>
+        <button type="button" ion-button color="light" small outline icon-only (click)="cleanDod()">
+          <ion-icon name="remove-circle"></ion-icon>
+        </button>
+      </ion-note>
     </ion-item>
     <ion-item (click)="createDod()" *ngIf="node.dead && node.dod">
       忌日提醒
