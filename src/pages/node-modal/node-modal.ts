@@ -8,7 +8,6 @@ import { TreeNode } from '../../tree/tree-node';
 import { NodeType } from '../../tree/node-type';
 import { BackService } from '../../utils/back-service';
 import { SelectContact } from '../select-contact/select-contact';
-import { ContactsService } from '../../providers/contacts-service';
 
 @Component({
   selector: 'page-node-modal',
@@ -27,7 +26,6 @@ export class NodeModal {
     public viewCtrl: ViewController,
     public modalCtrl: ModalController,
     private alertController: AlertController,
-    public contactsService: ContactsService,
     private backService: BackService
   ) {
     this.node = this.params.get('node');

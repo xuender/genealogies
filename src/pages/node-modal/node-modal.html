@@ -55,7 +55,7 @@
         <ion-option [value]="2">离异</ion-option>
       </ion-select>
     </ion-item>
-    <ion-item *ngIf="!node.dead">
+    <ion-item *ngIf="havePhone()">
       <ion-label>联系电话</ion-label>
       <ion-input type="text" [(ngModel)]="node.phone" minlength="3" name="phone"
         pattern="[#\\-\\d]+"></ion-input>
@@ -90,7 +90,7 @@
     </ion-item>
   </form>
   <ion-item class="center" *ngIf="havePhone()">
-    <button ion-button outline large (click)="readContact()" [disabled]="contactsService.disabled()">
+    <button ion-button outline large (click)="readContact()">
       <ion-icon name="contacts"></ion-icon>
       读联系人信息
     </button>

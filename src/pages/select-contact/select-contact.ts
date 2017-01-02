@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ViewController, NavParams } from 'ionic-angular';
-import { Contact } from 'ionic-native';
+import { Contact, Contacts } from 'ionic-native';
 
 import { TreeNode } from '../../tree/tree-node';
 import { BackService } from '../../utils/back-service';
-import { ContactsService } from '../../providers/contacts-service';
 
 @Component({
     selector: 'page-select-contact',
@@ -19,7 +18,6 @@ export class SelectContact {
         public domSanitizer: DomSanitizer,
         public viewCtrl: ViewController,
         private backService: BackService,
-        private contactsService: ContactsService,
         public params: NavParams
     ) {
         this.node = this.params.get('node');
@@ -29,11 +27,17 @@ export class SelectContact {
     }
 
     ionViewDidLoad() {
-        const name = this.node.name;
-        this.contactsService.filter(name)
+        Contacts.find(['displayName'], {
+            filter: this.node.name,
+            multiple: true,
+            desiredFields: ['name', 'displayName', 'photos', 'birthday', 'phoneNumbers'],
+            hasPhoneNumber: true
+        })
         .then((contacts) => {
-            this.contacts.push.apply(this.contacts, contacts);
-            this.backService.trackAction('contacts', 'ok');
+            if (contacts) {
+                this.contacts.push.apply(this.contacts, contacts);
+                this.backService.trackAction('contacts', 'ok');
+            }
         }, () => {
             this.backService.trackAction('contacts', 'error');
         });
