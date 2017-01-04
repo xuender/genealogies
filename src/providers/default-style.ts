@@ -329,7 +329,7 @@ export class DefaultStyle implements TreeStyle {
       if (n.data.other) {
         for (const c of n.parent.children) {
           if (c.data.name === n.data.other) {
-            links.unshift({
+            links.push({
               source: c,
               target: n
             });

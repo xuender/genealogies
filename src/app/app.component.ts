@@ -51,30 +51,30 @@ export class MyApp {
       StatusBar.styleDefault();
       Splashscreen.hide();
       /*
-      if (this.platform.is('android')) {
-        this.platform.registerBackButtonAction(() => {
-          this.alertController.create({
-            title: '退出应用',
-            message: '您确定退出家谱应用么？',
-            buttons: [
-              {
-                text: '退出',
-                handler: () => this.platform.exitApp()
-              },
-              {
-                text: '取消'
-              }
-            ]
-          }).present();
-        }, 100);
-      }
-        */
+         if (this.platform.is('android')) {
+         this.platform.registerBackButtonAction(() => {
+         this.alertController.create({
+title: '退出应用',
+message: '您确定退出家谱应用么？',
+buttons: [
+{
+text: '退出',
+handler: () => this.platform.exitApp()
+},
+{
+text: '取消'
+}
+]
+}).present();
+}, 100);
+}
+       */
     });
   }
 
   openPage(page: MenuPage) {
     for (const p of this.pages) {
-       p.active = false;
+      p.active = false;
     }
     page.active = true;
     this.nav.setRoot(page.component);
