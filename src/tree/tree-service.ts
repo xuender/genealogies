@@ -211,6 +211,7 @@ export class TreeService {
   del(tree: Tree) {
     console.debug('删除家谱:', tree.title);
     remove(this.trees, (t: Tree) => tree.id === t.id);
+    this.trees = this._trees;
     this.backService.trackAction('tree', 'del');
   }
 }
