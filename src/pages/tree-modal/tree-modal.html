@@ -19,7 +19,7 @@
             <ion-item>
                 <ion-label fixed>标题</ion-label>
                 <ion-input type="text" [(ngModel)]="tree.title" name="title"
-                    pattern="[\\d\\w\u4e00-\u9fa5]+[\\d\\w\u4e00-\u9fa5 ]*[\\d\\w\u4e00-\u9fa5]+"
+                    pattern="^[^-~.,()\\[\\] ]+[^-~.,()\\[\\]]*[^-~.,()\\[\\] ]+$"
                     clearInput="true" minlength="3" required></ion-input>
             </ion-item>
             <ion-item *ngIf="tree.aliveNum">

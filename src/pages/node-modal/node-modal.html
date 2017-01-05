@@ -18,7 +18,7 @@
     <ion-item>
       <ion-label>姓名</ion-label>
       <ion-input type="text" [(ngModel)]="node.name" minlength="2" name="name"
-        pattern="[\\d\\w\u4e00-\u9fa5]+[\\d\\w\u4e00-\u9fa5 ]*[\\d\\w\u4e00-\u9fa5]+"
+        pattern="^[^-~.,()\\[\\] ]+[^-~.,()\\[\\]]*[^-~.,()\\[\\] ]+$"
         clearInput="true" required></ion-input>
     </ion-item>
     <ion-item>
