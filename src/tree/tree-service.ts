@@ -100,8 +100,9 @@ export class TreeService {
 		return this._mySelf;
 	}
 	public set mySelf(v: TreeNode) {
-		this._mySelf = v;
-		this.storageService.setItem('myself', v);
+		this._mySelf = JSON.parse(JSON.stringify(v));
+		delete this._mySelf.children;
+		this.storageService.setItem('myself', this._mySelf);
 	}
 
 	constructor(
@@ -147,11 +148,12 @@ export class TreeService {
 	}
 
 	getNewTree() {
+		const root = JSON.parse(JSON.stringify(this.mySelf));
 		return {
 			id: v4(),
 			title: `${this.mySelf.name === '无名氏' ? '无名' : this.mySelf.name[0]}氏家谱`,
 			note: '',
-			root: this.mySelf,
+			root: root,
 			ca: new Date(),
 			ua: new Date(),
 		};
