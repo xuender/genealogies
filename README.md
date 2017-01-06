@@ -1,4 +1,4 @@
-# 微家谱 Genealogies
+# 老豆家谱 Genealogies
 
 > 慎终追远，民德归厚矣
 
@@ -19,3 +19,9 @@
 * d3
 * crypto-js
 
+## 截图
+![家谱列表](doc/p1.png)
+![树状家谱](doc/p2.png)
+![编辑成员](doc/p3.png)
+![复制家谱](doc/p4.png)
+![复制家谱](doc/p5.png)
