@@ -3,44 +3,44 @@ import { NodeType } from '../node-type';
 import { NodeMerge } from './node-merge';
 
 describe('TreeMerge', () => {
-    describe('children', () => {
-        const p: TreeNode = {
-            name: 'p',
-            gender: true,
-            nt: NodeType.DEFAULT,
-        };
-        const c: TreeNode = {
-            name: 'c',
-            gender: true,
-            nt: NodeType.DEFAULT,
-        };
-        new NodeMerge(p).merge(c);
-        it('children length', () => expect(p.children.length).toBe(1));
-        it('children name', () => expect(p.children[0].name).toEqual('c'));
-    });
+	describe('children', () => {
+		const p: TreeNode = {
+			name: 'p',
+			gender: true,
+			nt: NodeType.DEFAULT,
+		};
+		const c: TreeNode = {
+			name: 'c',
+			gender: true,
+			nt: NodeType.DEFAULT,
+		};
+		new NodeMerge(p).merge(c);
+		it('children length', () => expect(p.children.length).toBe(1));
+		it('children name', () => expect(p.children[0].name).toEqual('c'));
+	});
 
-    describe('name equal', () => {
-        const p: TreeNode = {
-            name: 'p',
-            gender: true,
-            nt: NodeType.DEFAULT,
-        };
-        const c: TreeNode = {
-            name: 'p',
-            gender: false,
-            nt: NodeType.DEFAULT,
-            children: [
-                {
-                    name: 'bb',
-                    gender: true,
-                    nt: NodeType.CONSORT
-                }
-            ]
-        };
-        new NodeMerge(p).merge(c);
-        it('gender', () => expect(p.gender).toEqual(c.gender));
-        it('children length', () => expect(p.children.length).toEqual(1));
-        it('children name', () => expect(p.children[0].name).toEqual('bb'));
-        it('children nt', () => expect(p.children[0].nt).toEqual(NodeType.CONSORT));
-    });
+	describe('name equal', () => {
+		const p: TreeNode = {
+			name: 'p',
+			gender: true,
+			nt: NodeType.DEFAULT,
+		};
+		const c: TreeNode = {
+			name: 'p',
+			gender: false,
+			nt: NodeType.DEFAULT,
+			children: [
+				{
+					name: 'bb',
+					gender: true,
+					nt: NodeType.CONSORT
+				}
+			]
+		};
+		new NodeMerge(p).merge(c);
+		it('gender', () => expect(p.gender).toEqual(c.gender));
+		it('children length', () => expect(p.children.length).toEqual(1));
+		it('children name', () => expect(p.children[0].name).toEqual('bb'));
+		it('children nt', () => expect(p.children[0].nt).toEqual(NodeType.CONSORT));
+	});
 });

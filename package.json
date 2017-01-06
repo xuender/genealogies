@@ -40,6 +40,7 @@
     "@types/underscore": "^1.7.36",
     "@types/uuid": "^2.0.29",
     "angular-cli": "^1.0.0-beta.24",
+    "codelyzer": "^2.0.0-beta.4",
     "jasmine-core": "2.5.2",
     "jasmine-spec-reporter": "2.5.0",
     "karma": "^1.2.0",
@@ -54,7 +55,6 @@
     "protractor": "~4.0.13",
     "ts-node": "^1.7.0",
     "tslint": "^4.0.2",
-    "tslint-ionic-rules": "^0.0.8",
     "typescript": "2.0.9"
   },
   "cordovaPlugins": [

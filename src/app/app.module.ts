@@ -21,44 +21,44 @@ import { SelectContact } from '../pages/select-contact/select-contact';
 
 
 @NgModule({
-  declarations: [
-    MyApp,
-    // Home,
-    NodeModal,
-    Setting,
-    TreeList,
-    TreeModal,
-    SelectContact,
-    UnknownTree,
-    UnknownList,
-    TreeShow
-  ],
-  imports: [
-    IonicModule.forRoot(MyApp, {
-      backButtonText: '后退',
-      // mode: 'ios'
-    })
-    // Ng2Webstorage.forRoot({ prefix: 'family', separator: '.'}),
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    // Home,
-    NodeModal,
-    SelectContact,
-    Setting,
-    TreeList,
-    TreeModal,
-    UnknownTree,
-    UnknownList,
-    TreeShow
-  ],
-  providers: [
-    StorageService,
-    BackService,
-    DefaultStyle,
-    VerticalStyle,
-    TreeService
-  ]
+	declarations: [
+		MyApp,
+		// Home,
+		NodeModal,
+		Setting,
+		TreeList,
+		TreeModal,
+		SelectContact,
+		UnknownTree,
+		UnknownList,
+		TreeShow
+	],
+	imports: [
+		IonicModule.forRoot(MyApp, {
+			backButtonText: '后退',
+			// mode: 'ios'
+		})
+		// Ng2Webstorage.forRoot({ prefix: 'family', separator: '.'}),
+	],
+	bootstrap: [IonicApp],
+	entryComponents: [
+		MyApp,
+		// Home,
+		NodeModal,
+		SelectContact,
+		Setting,
+		TreeList,
+		TreeModal,
+		UnknownTree,
+		UnknownList,
+		TreeShow
+	],
+	providers: [
+		StorageService,
+		BackService,
+		DefaultStyle,
+		VerticalStyle,
+		TreeService
+	]
 })
 export class AppModule {}
