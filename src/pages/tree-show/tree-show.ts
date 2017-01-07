@@ -4,6 +4,7 @@ import { AlertController, ToastController, NavController, NavParams, ViewControl
 
 import { Tree } from '../../tree/tree';
 import { NodeType } from '../../tree/node-type';
+import { pngToBase64 } from '../../utils/image';
 import { TreeStyle } from '../../tree/tree-style';
 import { TreeService } from '../../tree/tree-service';
 import { BackService } from '../../utils/back-service';
@@ -229,7 +230,29 @@ export class TreeShow {
 
 	shareLink() {
 		this.fab.close();
-		// TODO 尚未实现
+		SocialSharing.share(
+			'老豆家谱',
+			this.familyTree.title,
+			null,
+			'http://a.app.qq.com/o/simple.jsp?pkgname=cn.oldbean.tree',
+		);
+		this.backService.touch();
+		this.backService.trackAction('node', 'shareLink');
+	}
+
+	shareQr() {
+		this.fab.close();
+		pngToBase64('assets/qr-qq.png')
+		.then((data) => {
+			SocialSharing.share(
+				'老豆家谱',
+				'老豆家谱',
+				data,
+				'http://a.app.qq.com/o/simple.jsp?pkgname=cn.oldbean.tree',
+			);
+			this.backService.touch();
+			this.backService.trackAction('node', 'shareQr');
+		});
 	}
 
 	get treeStyle(): TreeStyle {
@@ -278,7 +301,7 @@ export class TreeShow {
 
 	isDefault() {
 		return this.selectNode
-			&& (!('nt' in this.selectNode) || this.selectNode.nt === NodeType.DEFAULT);
+		&& (!('nt' in this.selectNode) || this.selectNode.nt === NodeType.DEFAULT);
 	}
 	// 初始化之后
 	ngAfterViewInit() {
@@ -301,20 +324,20 @@ export class TreeShow {
 	setFab(fab: FabContainer) {
 		this.fab = fab;
 		this.backService.paste()
-			.then((str: string) => {
-					if (str && str !== this.copyStr) {
-					try {
+		.then((str: string) => {
+			if (str && str !== this.copyStr) {
+				try {
 					this.treeService.copyNode = strToNode(str);
 					this.copyStr = str;
 					this.fab.close();
-					} catch (e) {
+				} catch (e) {
 					console.error(e);
 					this.backService.touch();
-					}
-					} else {
-					this.backService.touch();
-					}
-					});
+				}
+			} else {
+				this.backService.touch();
+			}
+		});
 	}
 
 	showRemove(): boolean {

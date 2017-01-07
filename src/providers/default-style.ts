@@ -1,6 +1,5 @@
 import { Platform } from 'ionic-angular';
 import { Injectable } from '@angular/core';
-import { enc } from 'crypto-js';
 import { zoom } from 'd3-zoom';
 import { find, filter } from 'underscore';
 import { event, select } from 'd3-selection';
@@ -8,6 +7,7 @@ import { tree, hierarchy, HierarchyNode } from 'd3-hierarchy';
 
 import { Tree } from '../tree/tree';
 import { remove } from '../utils/array';
+import { svgToBase64 } from '../utils/image';
 import { NodeType } from '../tree/node-type';
 import { TreeStyle } from '../tree/tree-style';
 import { TreeService } from '../tree/tree-service';
@@ -64,26 +64,8 @@ export class DefaultStyle implements TreeStyle {
 		this.zoom.translateBy(this.svg, this.maxWidth * -1 + this.platform.width() / 2, 0);
 	}
 
-	toImage(): Promise<String> {
-		return new Promise((resolve, reject) => {
-			const html = this.work.html();
-			const svg = `<svg width="${this.width}px" height="${this.height}px" version="1.1" xmlns="http://www.w3.org/2000/svg">${html}</svg>`;
-			const words = enc.Utf8.parse(svg);
-			const data = enc.Base64.stringify(words);
-			const canvas = document.createElement('canvas');
-			canvas.width = this.width;
-			canvas.height = this.height;
-			const context = canvas.getContext('2d');
-			context.fillStyle = '#FFF';
-			context.fillRect(0, 0, this.width, this.height);
-			const image = new Image();
-			image.src = `data:image/svg+xml;base64,${data}`;
-			image.onload = () => {
-				context.drawImage(image, 0, 0);
-				// console.debug(canvas.toDataURL('image/png'));
-				resolve(canvas.toDataURL('image/png'));
-			};
-		});
+	toImage(): Promise<string> {
+		return svgToBase64(this.work.html(), this.width, this.height);
 	}
 
 	isRoot() {
