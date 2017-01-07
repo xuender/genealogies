@@ -12,7 +12,7 @@ export class NodeReader {
 
 	private static DIE_REG = new RegExp('^\\[([\\s\\S]+)\\]([\\s\\S]*)');   // 死亡
 	private static LIVE_REG = new RegExp('^([^\\(]+)([\\s\\S]*)');   // 活着
-	private static EXT_REG = new RegExp('^\\(([男女]*)*\\s*([?~\\d]*)*\\s*(电话:[#\\-\\d]*)*\\s*([父母:]+[\\s\\S]+)*\\s*([离异]*)\\)$'); // 扩展数据
+	private static EXT_REG = new RegExp('^\\(([男女]*)*\\s*([?\\-~\\d]*)*\\s*(电话:[#\\-\\d]*)*\\s*([父母:]+[\\s\\S]+)*\\s*([离异]*)\\)$'); // 扩展数据
 
 	private lines: string[];
 	private root: TreeNode;
@@ -73,21 +73,17 @@ export class NodeReader {
 			if (this.nodes[num]) {
 				node = find(this.nodes[num], (n: TreeNode) => n.name === tmp.name && n.gender === tmp.gender);
 				if (node) {
+					// console.debug('old', node);
 					Object.assign(node, tmp);
+					// console.debug('new', node);
 					remove(this.nodes[num], (n: TreeNode) => n === node);
 				}
 			}
 		}
-		if (!node) {
+		if (node) {
+			// console.debug('new', JSON.stringify(node));
+		} else {
 			node = tmp;
-		}
-
-		for (let i = 1; i < parentsAndChildren.length; i++) {
-			if (NodeReader.MAW_REG.test(parentsAndChildren[i])) {
-				this.decodeManAndWife(parentsAndChildren[i].replace(NodeReader.MAW_REG, ''), node);
-			} else {
-				this.decodeChildren(parentsAndChildren[i], node, num + 1);
-			}
 		}
 
 		// 清除后裔记录
@@ -97,6 +93,15 @@ export class NodeReader {
 			}
 		}
 		this.nowNum = num;
+
+		for (let i = 1; i < parentsAndChildren.length; i++) {
+			if (NodeReader.MAW_REG.test(parentsAndChildren[i])) {
+				this.decodeManAndWife(parentsAndChildren[i].replace(NodeReader.MAW_REG, ''), node);
+			} else {
+				this.decodeChildren(parentsAndChildren[i], node, num + 1);
+			}
+		}
+
 		return node;
 	}
 
@@ -121,7 +126,7 @@ export class NodeReader {
 		if (extStr) {
 			const er = NodeReader.EXT_REG.exec(extStr);
 			if (er) {
-				// console.log('er', er);
+				// console.debug('er', er);
 				if (er[1]) {
 					node.gender = er[1] === '男';
 				}
@@ -162,6 +167,7 @@ export class NodeReader {
 				nt: NodeType.DEFAULT,
 			};
 			zn = this.decodeExt(s, zn);
+			// console.debug('zn', JSON.stringify(zn));
 			if (node.children) {
 				node.children.push(zn);
 			} else {
@@ -172,6 +178,7 @@ export class NodeReader {
 			} else {
 				this.nodes[generation] = [zn];
 			}
+			// console.debug('node', JSON.stringify(node));
 		}
 	}
 

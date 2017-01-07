@@ -29,4 +29,19 @@ describe('TreeReader', () => {
 		// console.log(newStr);
 		it('new str', () => expect(newStr).toBe(str));
 	});
+
+	const xu = `
+1代[徐a]. 生子2: 徐a1, 徐a2.
+2代徐a1. 生子1: 徐a11
+3代徐a11. 生子1: 徐a111
+2代徐a2(1978-03-21~ 电话:13456789123). 娶妻房氏(1982-02-09~ 电话:13890123458). 生女1: 徐宝宝
+3代徐宝宝(女 2008-06-16~)
+--复制粘贴到《老豆家谱》可以生成方便编辑查看的树形家谱`;
+	describe('lost node', () => {
+		const node: TreeNode = new NodeReader(xu).parse();
+		// console.log('node', JSON.stringify(node));
+		it('not null', () => expect(node).not.toBeNull());
+		it('children length', () => expect(node.children.length).toBe(2));
+		it('dob', () => expect(node.children[1].children[1].dob).toBe('2008-06-16'));
+	});
 });

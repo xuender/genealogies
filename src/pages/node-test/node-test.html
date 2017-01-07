@@ -1,0 +1,14 @@
+<ion-header>
+	<ion-navbar>
+		<ion-buttons start>
+			<button ion-button (click)="read()">
+				读取
+			</button>
+		</ion-buttons>
+		<ion-title>NodeTest</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<ion-textarea [(ngModel)]="msg"></ion-textarea>
+</ion-content>

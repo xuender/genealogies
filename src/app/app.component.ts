@@ -7,6 +7,7 @@ import { TreeList } from '../pages/tree-list/tree-list';
 import { Setting } from '../pages/setting/setting';
 import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
 import { MenuPage } from './menu-page';
+// import { NodeTest } from '../pages/node-test/node-test';
 
 
 @Component({
@@ -40,7 +41,14 @@ export class MyApp {
 				title: '设置',
 				icon: 'construct',
 				component: Setting
-			}
+			},
+			/*
+			{
+				title: '测试',
+				icon: 'construct',
+				component: NodeTest
+			},
+			*/
 		];
 
 	}

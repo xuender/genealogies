@@ -18,6 +18,7 @@ import { UnknownList } from '../pages/unknown-list/unknown-list';
 import { DefaultStyle } from '../providers/default-style';
 import { VerticalStyle } from '../providers/vertical-style';
 import { SelectContact } from '../pages/select-contact/select-contact';
+import { NodeTest } from '../pages/node-test/node-test';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { SelectContact } from '../pages/select-contact/select-contact';
 		SelectContact,
 		UnknownTree,
 		UnknownList,
-		TreeShow
+		TreeShow,
+		NodeTest
 	],
 	imports: [
 		IonicModule.forRoot(MyApp, {
@@ -51,7 +53,8 @@ import { SelectContact } from '../pages/select-contact/select-contact';
 		TreeModal,
 		UnknownTree,
 		UnknownList,
-		TreeShow
+		TreeShow,
+		NodeTest
 	],
 	providers: [
 		StorageService,
