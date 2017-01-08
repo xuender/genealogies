@@ -7,6 +7,9 @@ import { StorageService } from './storage-service';
 @Injectable()
 export class BackService {
 	private _vibration: boolean;
+	private _audio: boolean;
+	private isInit: boolean;
+
 	public get vibration(): boolean {
 		return this._vibration;
 	}
@@ -15,7 +18,6 @@ export class BackService {
 		this.storageService.setItem('vibration', v);
 	}
 
-	private _audio: boolean;
 	public get audio(): boolean {
 		return this._audio;
 	}
@@ -28,6 +30,7 @@ export class BackService {
 		private platform: Platform,
 		private storageService: StorageService
 	) {
+		this.isInit = false;
 		this._audio = this.storageService.getItem('audio', true);
 		this._vibration = this.storageService.getItem('vibration', true);
 		this.platform.ready().then(() => {
@@ -36,7 +39,8 @@ export class BackService {
 			} catch (error) {
 				console.error('GoogleAnalytics: ' + error);
 			}
-			NativeAudio.preloadSimple('touch', 'assets/audio/touch.mp3');
+			NativeAudio.preloadSimple('touch', 'assets/audio/touch.mp3')
+			.then(() => this.isInit = true);
 		});
 	}
 
@@ -54,12 +58,16 @@ export class BackService {
 
 	touch() {
 		try {
-			if (this.audio) {
+			if (this.isPlay()) {
 				NativeAudio.play('touch');
 			}
 		} catch (error) {
 			console.error('touch', error);
 		}
+	}
+
+	private isPlay(): boolean {
+		return this.isInit && this.audio;
 	}
 
 	hold() {
