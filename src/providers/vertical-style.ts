@@ -17,5 +17,8 @@ export class VerticalStyle extends DefaultStyle {
 		this.writingMode = 'tb';
 		this.isFillet = false;
 		this.nodeSize = [60, 120];
+		this.titleX = -7;
+		this.nameX = 6;
+		this.nameDy = 3;
 	}
 }

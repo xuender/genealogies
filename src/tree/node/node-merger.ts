@@ -3,7 +3,7 @@ import { find, pick, isArray } from 'underscore';
 import { TreeNode } from '../tree-node';
 import { NodeType } from '../node-type';
 
-export class NodeMerge {
+export class NodeMerger {
 
 	static extend(dst: TreeNode, src: TreeNode) {
 		dst.gender = src.gender;
@@ -18,7 +18,7 @@ export class NodeMerge {
 		for (const c of src.children) {
 			const dc = find(dst.children, (i) => i.name === c.name);
 			if (dc) {
-				NodeMerge.extend(dc, c);
+				NodeMerger.extend(dc, c);
 			} else {
 				dst.children.push(c);
 			}
@@ -32,7 +32,7 @@ export class NodeMerge {
 		const n = JSON.parse(JSON.stringify(node));
 		n.nt = NodeType.DEFAULT;
 		if (node.name === this.source.name) {
-			NodeMerge.extend(this.source, n);
+			NodeMerger.extend(this.source, n);
 		} else {
 			if (!this.source.children) {
 				this.source.children = [];

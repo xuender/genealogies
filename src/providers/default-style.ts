@@ -12,6 +12,8 @@ import { NodeType } from '../tree/node-type';
 import { TreeStyle } from '../tree/tree-style';
 import { TreeService } from '../tree/tree-service';
 import { TreeNode , nodeEach } from '../tree/tree-node';
+import { NodeTitler } from '../tree/node/node-titler';
+import { TITLE_DEFAULT } from '../tree/node/title';
 
 @Injectable()
 export class DefaultStyle implements TreeStyle {
@@ -29,11 +31,16 @@ export class DefaultStyle implements TreeStyle {
 	private height: number;
 	private maxWidth: number;
 
+	private nodeTitler: NodeTitler;
+
 	protected nodeWidth: number;
 	protected nodeHeight: number;
 	protected writingMode: string;
 	protected isFillet: boolean;
 	protected nodeSize: [number, number];
+	protected titleX: number;
+	protected nameX: number;
+	protected nameDy: number;
 
 	constructor(
 		public platform: Platform,
@@ -45,11 +52,15 @@ export class DefaultStyle implements TreeStyle {
 		this.writingMode = 'horizontal-tb';
 		this.isFillet = true;
 		this.nodeSize = [120, 120];
+		this.titleX = 0;
+		this.nameX = 0;
+		this.nameDy = 13;
 	}
 
 	init(familyTree: Tree, svgId: string) {
 		this.selectNode = {};
 		this.familyTree = familyTree;
+		this.nodeTitler = new NodeTitler(TITLE_DEFAULT, this.familyTree.root);
 		this.svg = select(svgId);
 		this.svg.selectAll('*').remove();
 		this.background = this.svg.append('g');
@@ -121,6 +132,10 @@ export class DefaultStyle implements TreeStyle {
 			this.selectNode = find(nodes, (n: any) => n.data === this.selectNode.data);
 		} else {
 			this.selectNode = root;
+		}
+
+		if (this.treeService.title) {
+			this.nodeTitler.selectNode = this.selectNode.data;
 		}
 		// console.debug('selectNode', this.selectNode);
 		this.onClickNode(this.selectNode.data);
@@ -362,6 +377,9 @@ export class DefaultStyle implements TreeStyle {
 			if (this.selectNode !== d) {
 				this.onClickNode(d.data);
 				this.selectNode = d;
+				if (this.treeService.title) {
+					this.nodeTitler.selectNode = this.selectNode.data;
+				}
 				this.createNodes(g, nodes);
 			}
 		})
@@ -385,13 +403,36 @@ export class DefaultStyle implements TreeStyle {
 			rect.attr('rx', 20).attr('ry', 20);
 		}
 		// 文字
-		node.append('text')
+		const text = node.append('text')
 		.attr('text-anchor', 'middle')
 		.attr('pointer-event', 'auto')
 		.attr('dx', 0).attr('dy', 3)
 		.attr('font-size', '14')
 		.attr('writing-mode', this.writingMode)
-		.attr('style', 'letter-spacing: -1pt')
+		.attr('style', 'letter-spacing: -1pt');
+		/*
+		if (this.treeService.title) {
+			text.append('tspan')
+			.attr('x', '0')
+			.attr('dy', '-4')
+			.text((d) => this.nodeTitler.title(d.data));
+		}
+		text.append('tspan')
+		.attr('x', '0')
+		.attr('dy', (d) => this.treeService.title && this.nodeTitler.title(d.data) ? 14 : 3)
+		.text((d) => d.data.name.substr(0, 5));
+		*/
+		if (this.treeService.title) {
+			text.append('tspan')
+			.attr('x', this.titleX)
+			.attr('y', '0')
+			.attr('dy', '-4')
+			.text((d) => this.nodeTitler.title(d.data));
+		}
+		text.append('tspan')
+		.attr('x', (d) => this.treeService.title && this.nodeTitler.title(d.data) ? this.nameX : 0)
+		.attr('y', '0')
+		.attr('dy', (d) => this.treeService.title && this.nodeTitler.title(d.data) ? this.nameDy : 3)
 		.text((d) => d.data.name.substr(0, 5));
 	}
 }

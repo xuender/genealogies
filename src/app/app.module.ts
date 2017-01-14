@@ -19,7 +19,8 @@ import { DefaultStyle } from '../providers/default-style';
 import { VerticalStyle } from '../providers/vertical-style';
 import { SelectContact } from '../pages/select-contact/select-contact';
 import { NodeTest } from '../pages/node-test/node-test';
-
+import { TitlePage } from '../pages/title/title';
+import { TitleListPage } from '../pages/title-list/title-list';
 
 @NgModule({
 	declarations: [
@@ -33,6 +34,8 @@ import { NodeTest } from '../pages/node-test/node-test';
 		UnknownTree,
 		UnknownList,
 		TreeShow,
+		TitleListPage,
+		TitlePage,
 		NodeTest
 	],
 	imports: [
@@ -54,6 +57,8 @@ import { NodeTest } from '../pages/node-test/node-test';
 		UnknownTree,
 		UnknownList,
 		TreeShow,
+		TitleListPage,
+		TitlePage,
 		NodeTest
 	],
 	providers: [

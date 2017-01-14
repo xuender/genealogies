@@ -24,11 +24,11 @@ export interface TreeNode {
 }
 
 export function nodeToStr(node: TreeNode): string {
-	return new NodeWriter(node).toString();
+	return new NodeWriter(node).write();
 }
 
 export function strToNode(str: string): TreeNode {
-	return new NodeReader(str).parse();
+	return new NodeReader(str).read();
 }
 
 export function nodeEach(

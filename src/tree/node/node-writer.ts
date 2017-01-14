@@ -11,7 +11,7 @@ export class NodeWriter {
 		this.texts = [];
 	}
 
-	toString(): string {
+	write(): string {
 		this.nodeText(this.node, void 0, 1);
 		this.texts.push('--复制粘贴到《老豆家谱》可以生成方便编辑查看的树形家谱');
 		return this.texts.join('\n');

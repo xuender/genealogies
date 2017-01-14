@@ -54,7 +54,7 @@ describe('TreeWriter', () => {
 	};
 	describe('node to string', () => {
 		const nw = new NodeWriter(root);
-		const str = nw.toString();
+		const str = nw.write();
 		// console.debug(str);
 		const lines = str.split('\n');
 		it('strings fooder', () => expect(lines[lines.length - 1].indexOf('--')).toBe(0));

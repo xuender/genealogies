@@ -24,6 +24,9 @@
       <button ion-fab (click)="changeSameSurname()" [color]="treeService.sameSurname ? 'secondary' : ''">
         <ion-icon name="contract"></ion-icon>
       </button>
+      <button ion-fab (click)="changeTitle()" [color]="treeService.title ? 'secondary' : ''">
+        <ion-icon name="megaphone"></ion-icon>
+      </button>
     </ion-fab-list>
   </ion-fab>
   <ion-fab left bottom #sharing (click)="setFab(sharing)">

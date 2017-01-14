@@ -34,7 +34,7 @@ export class NodeReader {
 		}
 	}
 
-	parse(): TreeNode {
+	read(): TreeNode {
 		for (const l of this.lines) {
 			const node = this.strToNode(l);
 			if (!this.root) {

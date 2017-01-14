@@ -1,8 +1,8 @@
 import { TreeNode } from '../tree-node';
 import { NodeType } from '../node-type';
-import { NodeMerge } from './node-merge';
+import { NodeMerger } from './node-merger';
 
-describe('TreeMerge', () => {
+describe('TreeMerger', () => {
 	describe('children', () => {
 		const p: TreeNode = {
 			name: 'p',
@@ -14,7 +14,7 @@ describe('TreeMerge', () => {
 			gender: true,
 			nt: NodeType.DEFAULT,
 		};
-		new NodeMerge(p).merge(c);
+		new NodeMerger(p).merge(c);
 		it('children length', () => expect(p.children.length).toBe(1));
 		it('children name', () => expect(p.children[0].name).toEqual('c'));
 	});
@@ -37,7 +37,7 @@ describe('TreeMerge', () => {
 				}
 			]
 		};
-		new NodeMerge(p).merge(c);
+		new NodeMerger(p).merge(c);
 		it('gender', () => expect(p.gender).toEqual(c.gender));
 		it('children length', () => expect(p.children.length).toEqual(1));
 		it('children name', () => expect(p.children[0].name).toEqual('bb'));

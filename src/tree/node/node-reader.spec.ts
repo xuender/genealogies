@@ -16,8 +16,8 @@ describe('TreeReader', () => {
 		it('good string', () => expect(() => new NodeReader('张三\n-- 老豆家谱')).not.toThrow());
 	});
 
-	describe('str parse node', () => {
-		const node: TreeNode = new NodeReader(str).parse();
+	describe('str read node', () => {
+		const node: TreeNode = new NodeReader(str).read();
 		it('not null', () => expect(node).not.toBeNull());
 		it('root', () => expect(node.name).toBe('root'));
 		it('root children length', () => expect(node.children.length).toBe(3));
@@ -25,7 +25,7 @@ describe('TreeReader', () => {
 		it('phone', () => expect(node.children[1].phone).toBe('123321'));
 		it('c1', () => expect(node.children[1].children[0].name).toBe('c'));
 		it('c2', () => expect(node.children[2].children[2].name).toBe('c'));
-		const newStr = new NodeWriter(node).toString();
+		const newStr = new NodeWriter(node).write();
 		// console.log(newStr);
 		it('new str', () => expect(newStr).toBe(str));
 	});
@@ -38,7 +38,7 @@ describe('TreeReader', () => {
 3代徐宝宝(女 2008-06-16~)
 --复制粘贴到《老豆家谱》可以生成方便编辑查看的树形家谱`;
 	describe('lost node', () => {
-		const node: TreeNode = new NodeReader(xu).parse();
+		const node: TreeNode = new NodeReader(xu).read();
 		// console.log('node', JSON.stringify(node));
 		it('not null', () => expect(node).not.toBeNull());
 		it('children length', () => expect(node.children.length).toBe(2));

@@ -8,7 +8,7 @@ import { pngToBase64 } from '../../utils/image';
 import { TreeStyle } from '../../tree/tree-style';
 import { TreeService } from '../../tree/tree-service';
 import { BackService } from '../../utils/back-service';
-import { NodeMerge } from '../../tree/node/node-merge';
+import { NodeMerger } from '../../tree/node/node-merger';
 import { DefaultStyle } from '../../providers/default-style';
 import { VerticalStyle } from '../../providers/vertical-style';
 import { TreeNode, nodeToStr, strToNode } from '../../tree/tree-node';
@@ -149,7 +149,7 @@ export class TreeShow {
 	paste() {
 		this.fab.close();
 		this.addHistory();
-		new NodeMerge(this.selectNode).merge(this.treeService.copyNode);
+		new NodeMerger(this.selectNode).merge(this.treeService.copyNode);
 		this.familyTree.ua = new Date();
 		this.treeStyle.show();
 		this.backService.trackAction('node', 'paste');
@@ -293,6 +293,10 @@ export class TreeShow {
 
 	changeMaleFirst() {
 		this.changeBoolean('maleFirst');
+	}
+
+	changeTitle() {
+		this.changeBoolean('title');
 	}
 
 	isRoot() {

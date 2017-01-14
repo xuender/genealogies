@@ -20,6 +20,7 @@ export class TreeService {
 	private _trees: Tree[];
 	private _mySelf: TreeNode;
 	private _style: number;
+	private _title: boolean;
 
 	copyNode: TreeNode;
 	private loadTime: Date;
@@ -31,6 +32,15 @@ export class TreeService {
 	}
 	get maleFirst(): boolean {
 		return this._maleFirst;
+	}
+
+	set title(v: boolean) {
+		this._title = v;
+		this.storageService.setItem('title', v);
+		this.backService.touch();
+	}
+	get title(): boolean {
+		return this._title;
 	}
 
 	get style(): number {
@@ -113,6 +123,7 @@ export class TreeService {
 	) {
 		this._style = this.storageService.getItem('style', 1);
 		this._maleFirst = this.storageService.getItem('maleFirst', true);
+		this._title = this.storageService.getItem('title', false);
 		this._noWoman = this.storageService.getItem('noWoman', false);
 		this._sameSurname = this.storageService.getItem('sameSurname', false);
 		this._mySelf = this.storageService.getItem('myself', void 0);

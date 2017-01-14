@@ -1,12 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, AlertController } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
+import { Nav, Platform, AlertController } from 'ionic-angular';
 
 // import { Home } from '../pages/home/home';
-import { TreeList } from '../pages/tree-list/tree-list';
-import { Setting } from '../pages/setting/setting';
-import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
 import { MenuPage } from './menu-page';
+import { Setting } from '../pages/setting/setting';
+import { TreeList } from '../pages/tree-list/tree-list';
+import { TitleListPage } from '../pages/title-list/title-list';
+import { UnknownTree } from '../pages/unknown-tree/unknown-tree';
 // import { NodeTest } from '../pages/node-test/node-test';
 
 
@@ -36,6 +37,11 @@ export class MyApp {
 				title: '问题',
 				icon: 'help-circle',
 				component: UnknownTree
+			},
+			{
+				title: '五服称谓',
+				icon: 'megaphone',
+				component: TitleListPage
 			},
 			{
 				title: '设置',

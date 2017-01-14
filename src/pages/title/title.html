@@ -1,0 +1,96 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>{{ title.title }}</ion-title>
+		<ion-buttons end>
+			<button class="default-button" [disabled]="!f.valid" ion-button (click)="f.onSubmit()">
+				确定
+			</button>
+		</ion-buttons>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<form #f="ngForm" (ngSubmit)="ok()">
+		<ion-item>
+			<ion-label>称谓</ion-label>
+			<ion-input type="text" [(ngModel)]="title.title" minlength="1" name="title"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true" required></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.father">
+			<ion-label>{{ title.title }}的父亲</ion-label>
+			<ion-input type="text" [(ngModel)]="title.father" minlength="1" name="father"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.mother">
+			<ion-label>{{ title.title }}的母亲</ion-label>
+			<ion-input type="text" [(ngModel)]="title.mother" minlength="1" name="mother"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.husband">
+			<ion-label>{{ title.title }}的丈夫</ion-label>
+			<ion-input type="text" [(ngModel)]="title.husband" minlength="1" name="husband"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.wife">
+			<ion-label>{{ title.title }}的妻子</ion-label>
+			<ion-input type="text" [(ngModel)]="title.wife" minlength="1" name="wife"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.exHusband">
+			<ion-label>{{ title.title }}的前夫</ion-label>
+			<ion-input type="text" [(ngModel)]="title.exHusband" minlength="1" name="exHusband"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.exWife">
+			<ion-label>{{ title.title }}的前妻</ion-label>
+			<ion-input type="text" [(ngModel)]="title.exWife" minlength="1" name="exWife"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label>{{ title.title }}的儿子年龄比较对象</ion-label>
+			<ion-select okText="确定" cancelText="取消"
+				[(ngModel)]="title.son.compare" name="sonCompare">
+				<ion-option value="">无</ion-option>
+				<ion-option *ngFor="let t of titles" [value]="t.title">{{ t.title }}</ion-option>
+			</ion-select>
+		</ion-item>
+		<ion-item *ngIf="!title.son.compare">
+			<ion-label>{{ title.title }}的儿子</ion-label>
+			<ion-input type="text" [(ngModel)]="title.son.title" minlength="1" name="sonTitle"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.son.compare">
+			<ion-label>{{ title.title }}儿子年长于{{ title.son.compare }}</ion-label>
+			<ion-input type="text" [(ngModel)]="title.son.older" minlength="1" name="sonOlder"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.son.compare">
+			<ion-label>{{ title.title }}儿子年幼于{{ title.son.compare }}</ion-label>
+			<ion-input type="text" [(ngModel)]="title.son.young" minlength="1" name="sonYoung"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-label>{{ title.title }}的女儿年龄比较对象</ion-label>
+			<ion-select okText="确定" cancelText="取消"
+				[(ngModel)]="title.daughter.compare" name="daughterCompare">
+				<ion-option value="">无</ion-option>
+				<ion-option *ngFor="let t of titles" [value]="t.title">{{ t.title }}</ion-option>
+			</ion-select>
+		</ion-item>
+		<ion-item *ngIf="!title.daughter.compare">
+			<ion-label>{{ title.title }}的女儿</ion-label>
+			<ion-input type="text" [(ngModel)]="title.daughter.title" minlength="1" name="daughterTitle"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.daughter.compare">
+			<ion-label>{{ title.title }}女儿年长于{{ title.daughter.compare }}</ion-label>
+			<ion-input type="text" [(ngModel)]="title.daughter.older" minlength="1" name="daughterOlder"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+		<ion-item *ngIf="title.daughter.compare">
+			<ion-label>{{ title.title }}女儿年幼于{{ title.daughter.compare }}</ion-label>
+			<ion-input type="text" [(ngModel)]="title.daughter.young" minlength="1" name="daughterYoung"
+			pattern="^[^-~.,()\\[\\]]+$" clearInput="true"></ion-input>
+		</ion-item>
+	</form>
+</ion-content>
