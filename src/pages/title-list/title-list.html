@@ -3,13 +3,16 @@
 		<button ion-button menuToggle>
 			<ion-icon name="menu"></ion-icon>
 		</button>
-		<ion-title>五服称谓</ion-title>
+		<ion-title>亲属称谓</ion-title>
 	</ion-navbar>
 </ion-header>
 
 <ion-content padding>
-	<ion-list>
-		<button ion-item *ngFor="let t of titles" (click)="open(t)">
+	<ion-list *ngFor="let c of titles">
+		<ion-list-header>
+			{{ c[0] }}
+		</ion-list-header>
+		<button ion-item *ngFor="let t of c[1]" (click)="open(t)">
 			{{ t.title }}
 		</button>
 	</ion-list>

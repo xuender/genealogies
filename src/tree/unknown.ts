@@ -32,6 +32,7 @@ export class Unknown {
 				tree.unknown += n.unknown;
 				us.push(u);
 			}
+			return false;
 		});
 		us.sort((a: Unknown, b: Unknown) => b.num - a.num);
 		return us;
@@ -140,8 +141,10 @@ export class Unknown {
 				if (p === null && o.children) {
 					if (count(o.children, (i: TreeNode) => i === this.node) > 0) {
 						p = o;
+						return true;
 					}
 				}
+				return false;
 			});
 			if (p) {
 				const on = count(p.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);

@@ -100,6 +100,7 @@ export class TreeService {
 				if (!n.dead) {
 					t.aliveNum += 1;
 				}
+				return false;
 			});
 		}
 		this._trees = trees;

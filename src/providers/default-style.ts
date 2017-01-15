@@ -179,6 +179,7 @@ export class DefaultStyle implements TreeStyle {
 		nodeEach(this.familyTree.root, (n, p) => {
 			n.p = p;
 			ret.push(n);
+			return false;
 		});
 		return ret;
 	}
@@ -207,6 +208,7 @@ export class DefaultStyle implements TreeStyle {
 		nodeEach(this.familyTree.root, (node) => {
 			node.bak = filter(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
 			remove(node.children, (c: TreeNode) => c.nt > NodeType.DEFAULT);
+			return false;
 		});
 	}
 

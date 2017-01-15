@@ -14,7 +14,10 @@ export class NodeTitler {
 	) {
 		this.cache = [];
 		this.allNodes = [];
-		nodeEach(this.root, (n) => this.allNodes.push(n));
+		nodeEach(this.root, (n) => {
+			this.allNodes.push(n);
+			return false;
+		});
 	}
 
 	set selectNode(node: TreeNode) {
@@ -37,20 +40,41 @@ export class NodeTitler {
 				if (title.son.title) {
 					this.setTitle(n, title.son.title);
 				} else {
-					const ca = find(this.cache, (c) => c[1] === title.son.compare);
-					const ct = this.beYoung(ca[0], n) ? title.son.young : title.son.older;
-					this.setTitle(n, ct);
+					const ca = this.getCache(title.son.compare);
+					if (ca) {
+						const ct = this.beYoung(ca[0], n) ? title.son.young : title.son.older;
+						this.setTitle(n, ct);
+					} else {
+						console.warn('比较错误:', title.son.compare);
+					}
 				}
 			} else {
 				if (title.daughter.title) {
 					this.setTitle(n, title.daughter.title);
 				} else {
-					const ca = find(this.cache, (c) => c[1] === title.daughter.compare);
-					const ct = this.beYoung(ca[0], n) ? title.daughter.young : title.daughter.older;
-					this.setTitle(n, ct);
+					const ca = this.getCache(title.daughter.compare);
+					if (ca) {
+						const ct = this.beYoung(ca[0], n) ? title.daughter.young : title.daughter.older;
+						this.setTitle(n, ct);
+					} else {
+						console.warn('比较错误:', title.daughter.compare);
+					}
 				}
 			}
 		});
+	}
+
+	private getCache(compare: string | string[]): [TreeNode, string] {
+		if (typeof compare === 'string') {
+			return find(this.cache, (c) => c[1] === compare);
+		}
+		for (const c of compare) {
+			const ret = this.getCache(c);
+			if (ret) {
+				return ret;
+			}
+		}
+		return null;
 	}
 
 	private beYoung(c: TreeNode, n: TreeNode): boolean {
@@ -78,15 +102,30 @@ export class NodeTitler {
 	}
 
 	private parentTitle(node: TreeNode, title: Title) {
+		let pt, ptp;
 		nodeEach(this.root, (n, p) => {
 			if (p && n === node) {
-				const pt = find(this.titles, (t) => p.gender ? t.title === title.father : t.title === title.mother);
-				if (pt) {
-					this.childrenTitle(p, pt);
-					this.parentTitle(p, pt);
-				}
+				pt = find(this.titles, (t) => {
+					switch (node.nt) {
+						case NodeType.DEFAULT:
+							return p.gender ? t.title === title.father : t.title === title.mother;
+						case NodeType.CONSORT:
+							return p.gender ? t.title === title.husband : t.title === title.wife;
+						case NodeType.EX:
+							return p.gender ? t.title === title.exHusband : t.title === title.exWife;
+					}
+				});
+				ptp = p;
+				return true;
 			}
+			return false;
 		});
+		if (pt) {
+			console.debug('pt', pt);
+			this.childrenTitle(ptp, pt);
+			this.parentTitle(ptp, pt);
+			console.debug('parent end');
+		}
 	}
 
 	title(node: TreeNode): string {

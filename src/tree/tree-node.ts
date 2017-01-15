@@ -33,18 +33,27 @@ export function strToNode(str: string): TreeNode {
 
 export function nodeEach(
 	node: TreeNode,
-	run: (n: TreeNode, p?: TreeNode, level?: number) => void,
+	run: (n: TreeNode, p?: TreeNode, level?: number) => boolean,
 		p = void 0,
 		level = 1
-) {
-	run(node, p, level);
+): boolean {
+	if (run(node, p, level)) {
+		return true;
+	}
 	for (const c of filter(node.children, (n: TreeNode) => n.nt > NodeType.DEFAULT)) {
-		nodeEach(c, run, node, level);
+		if (nodeEach(c, run, node, level)) {
+			return true;
+		}
 	}
 	for (const c of filter(node.children, (n: TreeNode) => n.nt === NodeType.DEFAULT && n.gender)) {
-		nodeEach(c, run, node, level + 1);
+		if (nodeEach(c, run, node, level + 1)) {
+			return true;
+		}
 	}
 	for (const c of filter(node.children, (n: TreeNode) => n.nt === NodeType.DEFAULT && !n.gender)) {
-		nodeEach(c, run, node, level + 1);
+		if (nodeEach(c, run, node, level + 1)) {
+			return true;
+		}
 	}
+	return false;
 }

@@ -53,6 +53,7 @@ export class NodeReader {
 					}
 				}
 			}
+			return false;
 		});
 		return this.root;
 	}

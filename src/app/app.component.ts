@@ -39,7 +39,7 @@ export class MyApp {
 				component: UnknownTree
 			},
 			{
-				title: '五服称谓',
+				title: '亲属称谓',
 				icon: 'megaphone',
 				component: TitleListPage
 			},
