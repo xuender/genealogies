@@ -26,7 +26,7 @@ export class TitleListPage {
 		// console.debug('title', title);
 		this.navCtrl.push(TitlePage, {
 			title: title,
-			titles: TITLE_DEFAULT.slice(0, 9)
+			titles: TITLE_DEFAULT.slice(0, 12)
 		});
 	}
 }

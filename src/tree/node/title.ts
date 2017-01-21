@@ -38,6 +38,10 @@ export const TITLE_DEFAULT: Title[] = [
 		son: {older: '哥哥', young: '弟弟', compare: '本人'}, daughter: {older: '姐姐', young: '妹妹', compare: '本人'},
 		classify: '宗亲', alias: '爸爸, 爹',
 	},
+	{title: '母亲', father: '外公', mother: '外婆', husband: '父亲', exHusband: '叔叔',
+		son: {older: '哥哥', young: '弟弟', compare: '本人'}, daughter: {older: '姐姐', young: '妹妹', compare: '本人'},
+		classify: '宗亲',
+	},
 	{title: '公公', father: '祖父', mother: '祖母', wife: '婆婆',
 		son: {older: '大伯子', young: '小叔子', compare: '丈夫'}, daughter: {older: '大姑子', young: '小姑子', compare: '丈夫'},
 		classify: '宗亲',
@@ -59,19 +63,19 @@ export const TITLE_DEFAULT: Title[] = [
 		classify: '宗亲',
 	},
 	{title: '天祖父', father: '列祖父', mother: '列祖母',  wife: '天祖母',
+		son: {older: '高伯祖父', young: '高叔祖父', compare: '高祖父'}, daughter: {title: '高祖姑'},
 		classify: '宗亲',
 	},
 	{title: '列祖父', father: '太祖父', mother: '太祖母',  wife: '列祖母',
+		son: {older: '天伯祖父', young: '天叔祖父', compare: '天祖父'}, daughter: {title: '天祖姑'},
 		classify: '宗亲',
 	},
 	{title: '太祖父', father: '远祖父', mother: '远祖母',  wife: '太祖母',
+		son: {older: '列伯祖父', young: '列叔祖父', compare: '列祖父'}, daughter: {title: '列祖姑'},
 		classify: '宗亲',
 	},
 	{title: '远祖父', father: '鼻祖父', mother: '鼻祖母',  wife: '远祖母',
-		classify: '宗亲',
-	},
-	{title: '母亲', father: '外公', mother: '外婆', husband: '父亲', exHusband: '叔叔',
-		son: {older: '哥哥', young: '弟弟', compare: '本人'}, daughter: {older: '姐姐', young: '妹妹', compare: '本人'},
+		son: {older: '太伯祖父', young: '太叔祖父', compare: '太祖父'}, daughter: {title: '太祖姑'},
 		classify: '宗亲',
 	},
 	{title: '儿子', father: '丈夫', mother: '妻子', wife: '儿媳',
@@ -195,9 +199,11 @@ export const TITLE_DEFAULT: Title[] = [
 		classify: '宗亲',
 	},
 	{title: '从甥', wife: '从甥媳',
+		son: {title: '从甥孙'}, daughter: {title: '从甥孙女'},
 		classify: '外亲', alias: '堂外甥',
 	},
 	{title: '从甥女', husband: '从甥女婿',
+		son: {title: '从甥外孙'}, daughter: {title: '从甥外孙女'},
 		classify: '外亲', alias: '堂外甥女',
 	},
 	{title: '伯祖父', father: '曾祖父', mother: '曾祖母', wife: '伯祖母',
@@ -297,10 +303,16 @@ function init() {
 	const count = countBy(TITLE_DEFAULT, (t) => t.title);
 	for (const c in count) {
 		if (c in count && count[c] > 1) {
-			throw '称谓重复: ' + c;
+			throw `称谓重复: ${c}`;
 		}
 	}
 	for (const t of TITLE_DEFAULT) {
+		if (!t.son) {
+			throw `${t.title}缺少儿子称谓`;
+		}
+		if (!t.daughter) {
+			throw `${t.title}缺少女儿称谓`;
+		}
 		if (t.son && t.son.title) {
 			t.son.compare = '';
 		}

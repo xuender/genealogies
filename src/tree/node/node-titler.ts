@@ -121,10 +121,14 @@ export class NodeTitler {
 			return false;
 		});
 		if (pt) {
-			console.debug('pt', pt);
-			this.childrenTitle(ptp, pt);
-			this.parentTitle(ptp, pt);
-			console.debug('parent end');
+			try {
+				console.debug('pt', pt);
+				this.childrenTitle(ptp, pt);
+				this.parentTitle(ptp, pt);
+				console.debug('parent end');
+			} catch (e) {
+				console.error(e);
+			}
 		}
 	}
 

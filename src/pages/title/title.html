@@ -1,7 +1,7 @@
 <ion-header>
 	<ion-navbar>
 		<ion-title>{{ title.title }}</ion-title>
-		<ion-buttons end>
+		<ion-buttons *ngIf="false" end>
 			<button class="default-button" [disabled]="!f.valid" ion-button (click)="f.onSubmit()">
 				确定
 			</button>
