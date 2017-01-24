@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="cn.oldbean.tree" version="2.1.8" android-versionCode="201008" mlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="cn.oldbean.tree" version="2.1.9" android-versionCode="201009" mlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>老豆家谱</name>
   <description>家谱制作、分享应用</description>
   <author email="xuender@139.com" href="http://genealogies.cn/">妙音</author>

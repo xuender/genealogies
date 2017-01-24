@@ -122,10 +122,10 @@ export class NodeTitler {
 		});
 		if (pt) {
 			try {
-				console.debug('pt', pt);
+				// console.debug('pt', pt);
 				this.childrenTitle(ptp, pt);
 				this.parentTitle(ptp, pt);
-				console.debug('parent end');
+				// console.debug('parent end');
 			} catch (e) {
 				console.error(e);
 			}

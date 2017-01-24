@@ -131,7 +131,12 @@ export class DefaultStyle implements TreeStyle {
 		if (this.selectNode.data) {
 			this.selectNode = find(nodes, (n: any) => n.data === this.selectNode.data);
 		} else {
-			this.selectNode = root;
+			const mySelf = find(nodes, (n: any) => n.data.name === this.treeService.mySelf.name);
+			if (mySelf) {
+				this.selectNode = mySelf;
+			} else {
+				this.selectNode = root;
+			}
 		}
 
 		if (this.treeService.title) {
